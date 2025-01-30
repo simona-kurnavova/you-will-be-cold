@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.youllbecold.trustme.ui.navigation.NavGraph
@@ -45,7 +46,12 @@ fun Main() {
         bottomBar = { NavigationBar(navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavGraph(navController)
+            NavGraph(
+                navController,
+                Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
+            )
         }
     }
 }

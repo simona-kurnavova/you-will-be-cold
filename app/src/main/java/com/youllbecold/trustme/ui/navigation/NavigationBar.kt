@@ -41,9 +41,6 @@ private fun RowScope.BottomNavItem(
         selected = currentDestination?.hierarchy?.any { it.route == item.path } == true,
         onClick = {
             navController.navigate(item.path) {
-                // Pop up to the start destination of the graph to
-                // avoid building up a large stack of destinations
-                // on the back stack as users select items
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }

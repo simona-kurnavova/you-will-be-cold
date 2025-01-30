@@ -17,7 +17,6 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
     )
 }
 
-
 @Preview
 @Composable
 fun HistoryScreenPreview() {

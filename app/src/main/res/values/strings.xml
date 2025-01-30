@@ -1,3 +1,7 @@
 <resources>
+    <!-- App name. -->
     <string name="app_name">You\'ll Be Cold</string>
+
+    <!-- Title of toggle to allow/deny daily notification. -->
+    <string name="settings_daily_notification">Allow daily notification</string>
 </resources>

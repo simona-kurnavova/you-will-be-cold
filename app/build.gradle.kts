@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,14 +49,36 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
+    // Navigation component
+    implementation(libs.androidx.navigation.runtime.ktx)
+
+    // Data store
+    implementation(libs.androidx.datastore.preferences)
+
+    // Koin
+    implementation(libs.koin)
+    implementation(libs.koin.annotations)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+    implementation(libs.okhttp3.interceptor)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines)
+
+    // Google services for location
+    implementation(libs.play.services.location)
+
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // Navigation component
-    implementation(libs.androidx.navigation.runtime.ktx)
 }
