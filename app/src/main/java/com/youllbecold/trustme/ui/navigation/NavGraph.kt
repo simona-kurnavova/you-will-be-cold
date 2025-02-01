@@ -20,7 +20,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = NavRoute.Home.path, modifier = modifier) {
         composable(route = NavRoute.Home.path) {
             val viewModel = koinViewModel<HomeViewModel>()
-            HomeScreen(viewModel.currentWeather)
+            HomeScreen(
+                viewModel.locationGranted,
+                viewModel.currentWeather
+            )
         }
         composable(route = NavRoute.History.path) { HistoryScreen() }
         composable(route = NavRoute.Settings.path) {

@@ -2,7 +2,9 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.weatherservice.WeatherProvider
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -11,7 +13,8 @@ import org.koin.android.annotation.KoinViewModel
  */
 @KoinViewModel
 class HomeViewModel(
-    weatherProvider: WeatherProvider
+    weatherProvider: WeatherProvider,
+    permissionHelper: PermissionHelper
 ) : ViewModel() {
 
     /**
@@ -19,7 +22,15 @@ class HomeViewModel(
      */
     val currentWeather by weatherProvider::currentWeather
 
+    val locationGranted by permissionHelper::locationState
+
     init {
-        viewModelScope.launch { weatherProvider.loadWeather() }
+        viewModelScope.launch {
+            permissionHelper.locationState.collectLatest { hasPermission ->
+                if (hasPermission) {
+                    weatherProvider.loadWeather()
+                }
+            }
+        }
     }
 }

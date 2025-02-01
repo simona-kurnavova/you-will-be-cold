@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.youllbecold.trustme"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,10 @@ dependencies {
 
     // Google services for location
     implementation(libs.play.services.location)
+
+    // For location permission flow
+    implementation(libs.accompanist.permissions)
+    implementation(libs.foundation)
 
     // Tests
     testImplementation(libs.junit)

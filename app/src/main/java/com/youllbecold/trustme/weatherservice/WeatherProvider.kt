@@ -1,39 +1,52 @@
 package com.youllbecold.trustme.weatherservice
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
-import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.LocationState
-import com.youllbecold.trustme.utils.PermissionUtils
-import kotlinx.coroutines.delay
+import com.youllbecold.trustme.utils.PermissionHelper
+import com.youllbecold.trustme.weatherservice.internal.WeatherRepository
+import com.youllbecold.trustme.weatherservice.internal.WeatherStats
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class WeatherProvider(
     private val app: Application,
     private val weatherRepository: WeatherRepository,
     private val locationHelper: LocationHelper
 ) {
-    val currentWeather by weatherRepository::currentWeather
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    suspend fun loadWeather() {
-        // TODO: get location from location service
-        if (PermissionUtils.hasLocationPermission(app)) {
-            Log.d("WeatherProvider", "loadWeather: has location permission")
-            locationHelper.refreshLocation(app)
-            delay(2000)
-            (locationHelper.locationState.value as? LocationState.Success)?.let { state ->
-                val loc = state.location
-                val result = weatherRepository.getForecast(loc.latitude.toFloat(), loc.longitude.toFloat())
-                Log.d("WeatherProvider", "loadWeather with real location: $result")
+    /**
+     * Current weather.
+     */
+    val currentWeather: StateFlow<WeatherStats?>
+        get() = weatherRepository.currentWeather
+
+    init {
+        coroutineScope.launch {
+            locationHelper.locationState.collectLatest { locationState ->
+                if (locationState is LocationState.Success) {
+                    val loc = locationState.location
+                    weatherRepository.getForecast(loc.latitude.toFloat(), loc.longitude.toFloat())
+                }
             }
-
-        } else {
-            Log.d("WeatherProvider", "loadWeather: no location permission")
-            val latitude: Float = 50.0755f
-            val longitude: Float = 14.4378f
-            val result = weatherRepository.getForecast(latitude, longitude)
-            Log.d("WeatherProvider", "loadWeather with fake location: $result")
         }
+    }
+
+    @SuppressLint("MissingPermission") // Solved by using PermissionHelper.hasLocationPermission
+    fun loadWeather() {
+        if (!PermissionHelper.hasLocationPermission(app)) {
+            Log.d("WeatherProvider", "loadWeather: missing location permission")
+            return
+        }
+
+        // Trigger location refresh, in case of successful, weather is refreshed automatically.
+        locationHelper.refreshLocation(app)
     }
 }

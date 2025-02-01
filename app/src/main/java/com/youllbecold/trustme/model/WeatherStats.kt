@@ -1,15 +1,36 @@
 package com.youllbecold.trustme.model
 
-data class WeatherStats(
-    val latitude: Double,
-    val longitude: Double,
-    val elevation: Double,
+import java.util.Date
+data class Weather(
+    val city: String,
+    val elevation: Float,
+    val date: Date,
     val timezone: String,
     val timezoneAbbreviation: String,
-    val temperatures: Temperatures
+    val temperatureUnit: TemperatureUnit,
+    val currentTemperature: Float,
+    val hourlyTemperatures: List<Temperature>,
+    val evaluation: Evaluation
 )
 
-data class Temperatures(
-    val time: List<String>,
-    val temperatures: List<Double>
+enum class TemperatureUnit {
+    CELSIUS,
+    FAHRENHEIT
+}
+
+data class Temperature(
+    val time: String,
+    val temperature: Double
 )
+
+enum class Evaluation {
+    SUNNY,
+    CLOUDY,
+    SUNNY_CLOUDY,
+    RAINY,
+    SNOWY,
+    WINDY,
+    NIGHT,
+    STORM,
+    // FOGGY,
+}

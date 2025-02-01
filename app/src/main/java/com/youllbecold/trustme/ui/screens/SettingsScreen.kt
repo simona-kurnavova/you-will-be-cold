@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.ToggleRow
+import com.youllbecold.trustme.ui.components.generic.ToggleRow
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -28,6 +28,7 @@ fun SettingsScreen(
     ) {
         ToggleRow(
             text = stringResource(R.string.settings_daily_notification),
+            subtitle = stringResource(R.string.settings_daily_notification_subtitle),
             checked = state.value,
             onChecked = setAllowDailyNotification,
         )
