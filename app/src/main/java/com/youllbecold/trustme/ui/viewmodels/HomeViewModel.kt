@@ -13,7 +13,7 @@ import org.koin.android.annotation.KoinViewModel
  */
 @KoinViewModel
 class HomeViewModel(
-    weatherProvider: WeatherProvider,
+    private val weatherProvider: WeatherProvider,
     permissionHelper: PermissionHelper
 ) : ViewModel() {
 
@@ -22,6 +22,9 @@ class HomeViewModel(
      */
     val currentWeather by weatherProvider::currentWeather
 
+    /**
+     * Location permission state.
+     */
     val locationGranted by permissionHelper::locationState
 
     init {
@@ -32,5 +35,9 @@ class HomeViewModel(
                 }
             }
         }
+    }
+
+    fun refreshWeather() {
+        weatherProvider.loadWeather()
     }
 }

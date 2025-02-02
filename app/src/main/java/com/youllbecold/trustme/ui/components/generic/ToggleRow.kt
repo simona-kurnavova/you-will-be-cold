@@ -3,9 +3,7 @@ package com.youllbecold.trustme.ui.components.generic
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -32,19 +30,18 @@ fun ToggleRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Absolute.SpaceAround,
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
     ) {
         Column(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .wrapContentWidth()
                 .padding(start = 12.dp)
                 .weight(1f),
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
 
             if (subtitle != null) {
@@ -70,10 +67,12 @@ fun ToggleRow(
 @Preview(showBackground = true)
 @Composable
 private fun ToggleRowPreview() {
-    ToggleRow(
-        text = "Toggle row",
-        subtitle = "subtitle of toggle row",
-        checked = true,
-        onChecked = {},
-    )
+    Column {
+        ToggleRow(
+            text = "Toggle row",
+            subtitle = "subtitle of toggle row, some very long text that should wrap around",
+            checked = true,
+            onChecked = {},
+        )
+    }
 }

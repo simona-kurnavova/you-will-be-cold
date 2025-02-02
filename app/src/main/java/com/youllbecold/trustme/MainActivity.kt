@@ -19,8 +19,10 @@ import com.youllbecold.trustme.ui.components.Toolbar
 import com.youllbecold.trustme.ui.navigation.NavGraph
 import com.youllbecold.trustme.ui.navigation.NavigationBar
 import com.youllbecold.trustme.ui.screens.overlays.LocationPermissionScreen
+import com.youllbecold.trustme.ui.screens.overlays.WelcomeScreen
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
+import com.youllbecold.trustme.ui.viewmodels.OverlayState
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +31,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            YoullBeColdTheme { Main() }
+            YoullBeColdTheme {
+                Main()
+            }
         }
     }
 }
@@ -56,15 +60,14 @@ fun Main() {
             }
         }
 
-        val locationGranted = viewModel.locationGranted.collectAsStateWithLifecycle()
+        val overlayState = viewModel.overlayState.collectAsStateWithLifecycle()
 
-        when {
-            // TODO: Welcome screen on first visit.
-
-            !locationGranted.value -> {
-                // Show overlay over everything as needed
+        when(overlayState.value) {
+            OverlayState.NEW_USER ->
+                WelcomeScreen(viewModel::refreshWelcomeState)
+            OverlayState.LOCATION_PERM_MISSING ->
                 LocationPermissionScreen(viewModel::refreshLocationPermissionState)
-            }
+            else -> Unit
         }
     }
 }

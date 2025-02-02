@@ -19,6 +19,11 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
     val allowDailyNotification: Flow<Boolean> = dataStore.allowDailyNotification
 
     /**
+     * Flow of whether to use Celsius units.
+     */
+    val useCelsiusUnits: Flow<Boolean> = dataStore.useCelsiusUnits
+
+    /**
      * Set whether daily notification is allowed.
      *
      * @param allow Whether daily notification is allowed.
@@ -26,6 +31,17 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
     fun setAllowDailyNotification(allow: Boolean) {
         viewModelScope.launch {
             dataStore.setAllowDailyNotification(allow)
+        }
+    }
+
+    /**
+     * Set whether to use Celsius units.
+     *
+     * @param useCelsius Whether to use Celsius units.
+     */
+    fun setUseCelsiusUnits(useCelsius: Boolean) {
+        viewModelScope.launch {
+            dataStore.setUseCelsiusUnits(useCelsius)
         }
     }
 }

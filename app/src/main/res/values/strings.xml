@@ -8,6 +8,11 @@
     <!-- Subtitle of toggle to allow/deny daily notification. -->
     <string name="settings_daily_notification_subtitle">You will be reminded every day to log your experience</string>
 
+    <!-- Title of toggle to use Celsius/Fahrenheit. -->
+    <string name="settings_use_celsius">Temperature in Celsius</string>
+    <!-- Subtitle of toggle to use Celsius/Fahrenheit. -->
+    <string name="settings_use_celsius_subtitle">Use Celsius with temperature values.</string>
+
     <!-- Location permission overlay -->
     <!-- Screen title. -->
     <string name="location_screen_title">I need to know where you are… for weather reasons</string>
@@ -15,12 +20,22 @@
     <string name="location_screen_description">"I can’t predict the weather out of thin air… or can I? Nah, I need your precise location. "</string>
     <!-- Text of a button showing grant permission dialog or leading to settings. -->
     <string name="location_screen_grant_permission_button">Grant location permission</string>
+    <!-- Text of a toast shown to instruct user in settings. -->
+    <string name="location_permission_ask_toast">Please enable precise location permission</string>
+    <!-- Text of a toast shown after user denies permission. -->
+    <string name="location_permission_deny_toast">Location permission is required, please</string>
 
     <!-- Home screen -->
     <!-- Temperature view with degrees up to 1 decimal point - Fahrenheit. -->
     <string name="temperature_fahrenheit">%1$.1f°F</string>
     <!-- Temperature view with degrees up to 1 decimal point - Celsius. -->
     <string name="temperature_celsius">%1$.1f°C</string>
-    <string name="location_permission_ask_toast">Please enable precise location permission</string>
-    <string name="location_permission_deny_toast">Location permission is required, please</string>
+
+    <!-- Welcome screen -->
+    <!-- Title of the welcome screen. -->
+    <string name="welcome_screen_title">Welcome to You\'ll Be Cold, trust me!</string>
+    <!-- Description of the welcome screen. -->
+    <string name="welcome_screen_description">Where, ironically, if everything goes well, you won\'t be cold.</string>
+    <!-- Button text of the welcome screen. -->
+    <string name="welcome_screen_button_text">Get Started</string>
 </resources>

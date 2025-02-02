@@ -20,17 +20,25 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = NavRoute.Home.path, modifier = modifier) {
         composable(route = NavRoute.Home.path) {
             val viewModel = koinViewModel<HomeViewModel>()
+
             HomeScreen(
                 viewModel.locationGranted,
-                viewModel.currentWeather
-            )
+                viewModel.currentWeather,
+            ) {
+                viewModel.refreshWeather()
+            }
         }
+
         composable(route = NavRoute.History.path) { HistoryScreen() }
+
         composable(route = NavRoute.Settings.path) {
             val viewmodel = koinViewModel<SettingsViewModel>()
+
             SettingsScreen(
                 allowDailyNotification = viewmodel.allowDailyNotification,
-                setAllowDailyNotification = viewmodel::setAllowDailyNotification
+                setAllowDailyNotification = viewmodel::setAllowDailyNotification,
+                useCelsius = viewmodel.useCelsiusUnits,
+                setUseCelsius = viewmodel::setUseCelsiusUnits,
             )
         }
     }

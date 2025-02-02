@@ -16,6 +16,9 @@ import kotlinx.coroutines.withContext
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
 private const val PREFERENCES_DAILY_NOTIF = "allow_daily_notif"
+private const val PREFERENCES_USE_CELSIUS_UNITS = "use_celsius_units"
+private const val PREFERENCES_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
+
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)
 
@@ -25,17 +28,13 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class DataStorePreferences(private val context: Context) {
 
     private val dailyNotificationKey = booleanPreferencesKey(PREFERENCES_DAILY_NOTIF)
+    private val useCelsiusUnitsKey = booleanPreferencesKey(PREFERENCES_USE_CELSIUS_UNITS)
+    private val welcomeScreenShownKey = booleanPreferencesKey(PREFERENCES_WELCOME_SCREEN_SHOWN)
 
     /**
      * Flow denoting whether daily notification is enabled.
      */
-    val allowDailyNotification: Flow<Boolean> = context.dataStore.data
-        .catch { exception ->
-            Log.d("AppDataStorePreferences", "Error reading preferences", exception)
-            flow { emit(false) }
-        }.map { preferences ->
-            preferences[dailyNotificationKey] ?: false
-        }
+    val allowDailyNotification: Flow<Boolean> = get(dailyNotificationKey, false)
 
     /**
      * Set whether daily notification is enabled.
@@ -43,9 +42,45 @@ class DataStorePreferences(private val context: Context) {
      * @param allow True if daily notification is enabled, false otherwise.
      */
     suspend fun setAllowDailyNotification(allow: Boolean) {
+        edit(dailyNotificationKey, allow)
+    }
+
+    /**
+     * Flow denoting whether to use Celsius units. True by default.
+     */
+    val useCelsiusUnits: Flow<Boolean> = get(useCelsiusUnitsKey, true)
+
+    /**
+     * Set whether to use Celsius units.
+     */
+    suspend fun setUseCelsiusUnits(useCelsius: Boolean) {
+        edit(useCelsiusUnitsKey, useCelsius)
+    }
+
+    /**
+     * Flow denoting whether the welcome screen has been shown.
+     */
+    val welcomeScreenShown: Flow<Boolean> = get(welcomeScreenShownKey, false)
+
+    /**
+     * Set whether the welcome screen has been shown.
+     */
+    suspend fun setWelcomeScreenShown(shown: Boolean) {
+        edit(welcomeScreenShownKey, shown)
+    }
+
+    private fun <T> get(key: Preferences. Key<T>, default: T): Flow<T> =
+        context.dataStore.data.catch { exception ->
+            Log.d("AppDataStorePreferences", "Error reading preferences", exception)
+            flow { emit(default) }
+        }.map { preferences ->
+            preferences[key] ?: default
+        }
+
+    private suspend fun <T> edit(key: Preferences.Key<T>, newValue: T) {
         withContext(Dispatchers.IO) {
             context.dataStore.edit { preferences ->
-                preferences[dailyNotificationKey] = allow
+                preferences[key] = newValue
             }
         }
     }

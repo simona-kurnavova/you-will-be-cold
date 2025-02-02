@@ -22,11 +22,8 @@ fun OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
         border = BorderStroke(0.1.dp, MaterialTheme.colorScheme.primary),
-        modifier = modifier,
+        modifier = modifier.padding(4.dp),
     ) {
         Box(
             modifier = modifier.padding(8.dp),

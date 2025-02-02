@@ -8,40 +8,61 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.model.Evaluation
-import com.youllbecold.trustme.model.Temperature
-import com.youllbecold.trustme.model.TemperatureUnit
-import com.youllbecold.trustme.model.Weather
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import java.util.Date
+import com.youllbecold.trustme.weatherservice.model.WeatherEvaluation
+import com.youllbecold.trustme.weatherservice.model.WeatherNow
 
 @Composable
 fun WeatherCard(
-    weather: Weather,
+    weather: WeatherNow,
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(modifier = modifier) {
         Column {
-            CityView(
-                city = weather.city,
-            )
+            if (weather.city != null) {
+                CityView(
+                    city = weather.city,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(2.dp))
 
             CurrentTemperatureView(
-                temperature = weather.currentTemperature,
-                unit = weather.temperatureUnit,
-                icon = weather.evaluation.resolveIcon(),
+                temperature = weather.temperature,
+                useCelsius = weather.unitsCelsius,
+                icon = weather.weatherEvaluation.resolveIcon(),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             )
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onBackground,
+                thickness = 0.1.dp,
+                modifier = Modifier.padding(8.dp),
+            )
+
+            WeatherParametersView(
+                windSpeed = weather.windSpeed,
+                precipitationProbability = weather.precipitationProbability,
+                uvIndex = weather.uvIndex,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+
         }
     }
 }
@@ -58,10 +79,11 @@ fun CityView(
             imageVector = Icons.Default.LocationOn,
             contentDescription = null,
             modifier = Modifier
-                .size(24.dp)
+                .size(12.dp)
                 .align(Alignment.CenterVertically)
-                .padding(end = 8.dp),
         )
+
+        Spacer(modifier = Modifier.padding(2.dp))
 
         Text(
             text = city,
@@ -74,18 +96,19 @@ fun CityView(
 
 @Composable
 fun CurrentTemperatureView(
-    temperature: Float,
-    unit: TemperatureUnit,
+    temperature: Double,
+    useCelsius: Boolean,
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Row(
         modifier = modifier,
     ) {
-        val temperatureWithUnits = if (unit == TemperatureUnit.CELSIUS) {
-            "$temperature°C"
+        val temperatureWithUnits = if (useCelsius) {
+            context.getString(R.string.temperature_celsius, temperature)
         } else {
-            "$temperature°F"
+            context.getString(R.string.temperature_fahrenheit, temperature)
         }
 
         Text(
@@ -102,21 +125,74 @@ fun CurrentTemperatureView(
             contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun WeatherParametersView(
+    windSpeed: Double,
+    precipitationProbability: Int,
+    uvIndex: Double,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier) {
+        IconText(
+            icon = R.drawable.ic_wind,
+            text = windSpeed.toString(),
+        )
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        IconText(
+            icon = R.drawable.ic_rain,
+            text = precipitationProbability.toString(),
+        )
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        IconText(
+            icon = R.drawable.ic_sun,
+            text = uvIndex.toString(),
+        )
+    }
+
+}
+
+@Composable
+fun IconText(
+    @DrawableRes icon: Int,
+    text: String,
+) {
+    Row {
+        Icon(
+            imageVector = ImageVector.vectorResource(icon),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.onBackground,
+        )
+
+        Spacer(modifier = Modifier.padding(2.dp))
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
 
 @DrawableRes
-private fun Evaluation.resolveIcon(): Int = when (this) {
-    Evaluation.SUNNY -> R.drawable.ic_sun
-    Evaluation.CLOUDY,
-    Evaluation.SUNNY_CLOUDY -> R.drawable.ic_cloud
-    Evaluation.RAINY -> R.drawable.ic_rain
-    Evaluation.SNOWY -> R.drawable.ic_snow
-    Evaluation.WINDY -> R.drawable.ic_wind
-    Evaluation.NIGHT -> R.drawable.ic_moon
-    Evaluation.STORM -> R.drawable.ic_lightning
+private fun WeatherEvaluation.resolveIcon(): Int = when (this) {
+    WeatherEvaluation.SUNNY -> R.drawable.ic_sun
+    WeatherEvaluation.CLOUDY -> R.drawable.ic_cloud
+    WeatherEvaluation.RAINY -> R.drawable.ic_rain
+    WeatherEvaluation.SNOWY -> R.drawable.ic_snow
+    WeatherEvaluation.STORM -> R.drawable.ic_lightning
+    WeatherEvaluation.FOGGY -> R.drawable.ic_cloud
+    WeatherEvaluation.UNKNOWN -> R.drawable.ic_cloud
 }
 
 @Preview(showBackground = true)
@@ -124,24 +200,16 @@ private fun Evaluation.resolveIcon(): Int = when (this) {
 private fun WeatherCardPreview() {
     YoullBeColdTheme {
         WeatherCard(
-            weather = Weather(
+            weather = WeatherNow(
                 city = "Prague",
-                elevation = 20f,
-                date = Date(),
-                timezone = "CET",
-                timezoneAbbreviation = "CET",
-                temperatureUnit = TemperatureUnit.CELSIUS,
-                currentTemperature = 20.0f,
-                evaluation = Evaluation.WINDY,
-                hourlyTemperatures = listOf(
-                    Temperature(time = "12:00", temperature = 20.0),
-                    Temperature(time = "13:00", temperature = 25.0),
-                    Temperature(time = "14:00", temperature = 7.0),
-                    Temperature(time = "15:00", temperature = 20.0),
-                    Temperature(time = "16:00", temperature = 22.0),
-                    Temperature(time = "17:00", temperature = -1.0),
-                    Temperature(time = "18:00", temperature = 20.0),
-                ),
+                unitsCelsius = true,
+                temperature = 20.0,
+                apparentTemperature = 20.0,
+                weatherEvaluation = WeatherEvaluation.SUNNY,
+                relativeHumidity = 50,
+                windSpeed = 10.0,
+                precipitationProbability = 0,
+                uvIndex = 0.0,
             ),
             modifier = Modifier.padding(4.dp),
         )

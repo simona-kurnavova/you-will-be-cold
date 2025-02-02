@@ -2,6 +2,7 @@ package com.youllbecold.trustme.utils
 
 import android.Manifest
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import android.os.Build
@@ -47,8 +48,9 @@ class LocationHelper {
                 if (task.isSuccessful && task.result != null) {
                     val location = task.result
 
-                    obtainCity(context, location.latitude, location.longitude) { city ->
+                    obtainAddress(context, location.latitude, location.longitude) { address ->
                         // City might be null, but that's fine.
+                        val city = address?.locality ?: address?.adminArea ?: address?.countryName
                         _locationState.value = LocationState.Success(
                             Location(location.latitude, location.longitude, city)
                         )
@@ -62,24 +64,24 @@ class LocationHelper {
             }
     }
 
-    private fun obtainCity(context: Context, latitude: Double, longitude: Double, onResult: (String?) -> Unit) {
+    private fun obtainAddress(context: Context, latitude: Double, longitude: Double, onResult: (Address?) -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getCityApi33AndHigher(context, latitude, longitude) { city -> onResult(city) }
+            getAddressApi33AndHigher(context, latitude, longitude) { city -> onResult(city) }
         } else {
             coroutineScope.launch {
                 // Blocking call, can linger for a while on lower API levels
-                val city = getCity(context, latitude, longitude)
+                val city = getAddress(context, latitude, longitude)
                 onResult(city)
             }
         }
     }
 
-    private suspend fun getCity(context: Context, latitude: Double, longitude: Double): String? =
+    private suspend fun getAddress(context: Context, latitude: Double, longitude: Double): Address? =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                addresses?.firstOrNull()?.locality
+                addresses?.firstOrNull()
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -87,10 +89,10 @@ class LocationHelper {
         }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun getCityApi33AndHigher(context: Context, latitude: Double, longitude: Double, action: (String?) -> Unit) {
+    private fun getAddressApi33AndHigher(context: Context, latitude: Double, longitude: Double, action: (Address?) -> Unit) {
         val geocoder = Geocoder(context, Locale.getDefault())
         val listener = GeocodeListener { addresses ->
-            action(addresses.firstOrNull()?.locality)
+            action(addresses.firstOrNull())
         }
         geocoder.getFromLocation(latitude, longitude, 1, listener)
     }

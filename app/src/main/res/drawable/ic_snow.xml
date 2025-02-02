@@ -10,7 +10,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M8,16L8.01,16"
@@ -18,7 +18,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M8,20L8.01,20"
@@ -26,7 +26,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M12,18L12.01,18"
@@ -34,7 +34,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M12,22L12.01,22"
@@ -42,7 +42,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M16,16L16.01,16"
@@ -50,7 +50,7 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M16,20L16.01,20"
@@ -58,6 +58,6 @@
       android:strokeWidth="2"
       android:fillColor="#00000000"
       tools:strokeColor="#111111"
-      android:strokeColor="?colorPrimary"
+      android:strokeColor="#111111"
       android:strokeLineCap="round"/>
 </vector>

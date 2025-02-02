@@ -15,6 +15,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = PrettyBlue,
     background = Black,
+    onBackground = White,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -22,7 +23,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = PastelBlue,
     background = White,
-)
+    onBackground = Black,
+    )
 
 @Composable
 fun YoullBeColdTheme(

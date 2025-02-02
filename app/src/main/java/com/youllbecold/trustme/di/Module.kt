@@ -22,7 +22,7 @@ val appModule = module {
     single<DataStorePreferences> { DataStorePreferences(androidApplication()) }
     single<WeatherApi> { get<Retrofit>().create(WeatherApi::class.java) }
     single<WeatherRepository> { WeatherRepository(get()) }
-    single<WeatherProvider> { WeatherProvider(androidApplication(), get(), get()) }
+    single<WeatherProvider> { WeatherProvider(androidApplication(), get(), get(), get()) }
 
     // Helpers
     single<LocationHelper> { LocationHelper() }
@@ -32,7 +32,7 @@ val appModule = module {
 val uiModule = module {
     viewModel<SettingsViewModel> { SettingsViewModel(get()) }
     viewModel<HomeViewModel> { HomeViewModel(get(), get()) }
-    viewModel<MainViewModel> { MainViewModel(get()) }
+    viewModel<MainViewModel> { MainViewModel(get(), get()) }
 }
 
 private fun buildRetrofit(): Retrofit {
