@@ -62,7 +62,8 @@ fun HomeScreenPreview() {
     YoullBeColdTheme {
         HomeScreen(
             MutableStateFlow(true),
-            MutableStateFlow(null)
-        ) {}
+            MutableStateFlow(null),
+            refreshWeather = {},
+        )
     }
 }

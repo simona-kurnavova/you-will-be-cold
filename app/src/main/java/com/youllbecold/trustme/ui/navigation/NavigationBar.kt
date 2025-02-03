@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -22,7 +23,12 @@ fun NavigationBar(navController: NavController) {
     androidx.compose.material3.NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        bottomNavItems.forEach { BottomNavItem(it, navController, currentDestination) }
+        NavRouteItem.allNavRouteItems()
+            .forEach {
+                if (it is MenuItem) {
+                    BottomNavItem(it.navRoute, it, navController, currentDestination)
+                }
+            }
     }
 }
 
@@ -31,16 +37,17 @@ fun NavigationBar(navController: NavController) {
  */
 @Composable
 private fun RowScope.BottomNavItem(
-    item: NavRoute,
+    navRoute: NavRoute,
+    menuItem: MenuItem,
     navController: NavController,
     currentDestination: NavDestination?
-) {
+)  {
     NavigationBarItem(
-        icon = { Icon(item.icon, contentDescription = item.path) },
-        label = { Text(item.path) },
-        selected = currentDestination?.hierarchy?.any { it.route == item.path } == true,
+        icon = { Icon(imageVector = menuItem.menuIcon, contentDescription = null) },
+        label = { Text(stringResource(menuItem.menuTitle)) },
+        selected = currentDestination?.hierarchy?.any { it.route == navRoute.route } == true,
         onClick = {
-            navController.navigate(item.path) {
+            navController.navigate(navRoute.route) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
@@ -53,7 +60,6 @@ private fun RowScope.BottomNavItem(
         }
     )
 }
-
 
 @Preview
 @Composable

@@ -20,6 +20,7 @@ fun WelcomeScreen(
         subtitle = R.string.welcome_screen_description,
         buttonText = R.string.welcome_screen_button_text,
         action = onPass,
+        image = R.drawable.thermometer_0
     )
 }
 

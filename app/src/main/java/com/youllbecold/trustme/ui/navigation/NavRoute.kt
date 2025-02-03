@@ -2,46 +2,99 @@ package com.youllbecold.trustme.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.youllbecold.trustme.R
 
 /**
  * Represents navigation routes/destinations.
- *
- * @property path Route path.
- * @property icon Icon for the route (shown in bottom menu).
  */
-sealed class NavRoute(val path: String, val icon: ImageVector) {
+sealed class NavRoute(val route: String) {
 
     /**
      * Home screen - default screen.
      */
-    data object Home: NavRoute(HOME_PATH, icon = Icons.Filled.Home)
+    data object Home : NavRoute("home")
 
     /**
      * History screen.
      */
-    data object History: NavRoute(HISTORY_PATH, icon = Icons.AutoMirrored.Filled.List)
+    data object History : NavRoute("history")
 
     /**
      * Settings/Preferences screen.
      */
-    data object Settings: NavRoute(SETTINGS_PATH, icon = Icons.Filled.Settings)
+    data object Settings : NavRoute("settings")
+
+    /**
+     * Add log screen.
+     */
+    data object AddLog : NavRoute("add_log")
 }
 
-/**
- * Path constants.
- */
-private const val HOME_PATH = "home"
-private const val HISTORY_PATH ="history"
-private const val SETTINGS_PATH ="settings"
+sealed class NavRouteItem(
+    val navRoute: NavRoute
+) {
+    data object HomeItem : NavRouteItem(
+        navRoute = NavRoute.Home
+    ), MenuItem, FloatingAction {
+        override val menuTitle: Int = R.string.menu_home
+        override val menuIcon: ImageVector = Icons.Filled.Home
 
-/**
- * List of all bottom navigation items.
- */
-internal val bottomNavItems = listOf(
-    NavRoute.Home,
-    NavRoute.History,
-    NavRoute.Settings
-)
+        override val floatingActionTitle: Int = R.string.add_log_action
+        override val floatingActionIcon: ImageVector = Icons.Filled.Add
+        override val floatingActionTo: NavRoute = NavRoute.AddLog
+    }
+
+    data object HistoryItem : NavRouteItem(
+        navRoute = NavRoute.History
+    ), MenuItem {
+        override val menuTitle: Int = R.string.menu_history
+        override val menuIcon: ImageVector = Icons.AutoMirrored.Filled.List
+    }
+
+    data object SettingsItem : NavRouteItem(
+        navRoute = NavRoute.Settings
+    ), MenuItem {
+        override val menuTitle: Int = R.string.menu_settings
+        override val menuIcon: ImageVector = Icons.Filled.Settings
+    }
+
+    data object AddLogItem : NavRouteItem(
+        navRoute = NavRoute.AddLog
+    )
+
+    fun isMenuItem(): Boolean = this is MenuItem
+
+    fun getFloatingAction(): FloatingAction? = if (this is FloatingAction) this else null
+
+    companion object {
+        fun fromRoute(route: String): NavRouteItem = when (route) {
+            NavRoute.Home.route -> HomeItem
+            NavRoute.History.route -> HistoryItem
+            NavRoute.Settings.route -> SettingsItem
+            NavRoute.AddLog.route -> AddLogItem
+            else -> throw IllegalArgumentException("Route $route not found")
+        }
+
+        fun allNavRouteItems(): List<NavRouteItem> = listOf(
+            HomeItem,
+            HistoryItem,
+            SettingsItem,
+            AddLogItem
+        )
+    }
+}
+
+interface MenuItem {
+    val menuTitle: Int
+    val menuIcon: ImageVector
+}
+
+interface FloatingAction {
+    val floatingActionTitle: Int
+    val floatingActionIcon: ImageVector
+    val floatingActionTo: NavRoute
+}

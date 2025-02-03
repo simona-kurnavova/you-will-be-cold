@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.youllbecold.trustme.ui.screens.AddLogScreen
 import com.youllbecold.trustme.ui.screens.HistoryScreen
 import com.youllbecold.trustme.ui.screens.HomeScreen
 import com.youllbecold.trustme.ui.screens.SettingsScreen
@@ -17,21 +18,22 @@ import org.koin.androidx.compose.koinViewModel
  */
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = NavRoute.Home.path, modifier = modifier) {
-        composable(route = NavRoute.Home.path) {
+    NavHost(navController = navController, startDestination = NavRoute.Home.route, modifier = modifier) {
+        composable(NavRoute.Home.route) {
             val viewModel = koinViewModel<HomeViewModel>()
 
             HomeScreen(
                 viewModel.locationGranted,
                 viewModel.currentWeather,
-            ) {
-                viewModel.refreshWeather()
-            }
+                refreshWeather = viewModel::refreshWeather,
+            )
         }
 
-        composable(route = NavRoute.History.path) { HistoryScreen() }
+        composable(NavRoute.History.route) {
+            HistoryScreen()
+        }
 
-        composable(route = NavRoute.Settings.path) {
+        composable(NavRoute.Settings.route) {
             val viewmodel = koinViewModel<SettingsViewModel>()
 
             SettingsScreen(
@@ -40,6 +42,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 useCelsius = viewmodel.useCelsiusUnits,
                 setUseCelsius = viewmodel::setUseCelsiusUnits,
             )
+        }
+
+        composable(NavRoute.AddLog.route) {
+            AddLogScreen()
         }
     }
 }
