@@ -9,6 +9,7 @@ import com.youllbecold.trustme.ui.screens.AddLogScreen
 import com.youllbecold.trustme.ui.screens.HistoryScreen
 import com.youllbecold.trustme.ui.screens.HomeScreen
 import com.youllbecold.trustme.ui.screens.SettingsScreen
+import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -30,7 +31,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable(NavRoute.History.route) {
-            HistoryScreen()
+            val viewModel = koinViewModel<HistoryViewModel>()
+            HistoryScreen(viewModel.logs)
         }
 
         composable(NavRoute.Settings.route) {

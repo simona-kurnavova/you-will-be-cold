@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -73,7 +74,14 @@ dependencies {
 
     // For location permission flow
     implementation(libs.accompanist.permissions)
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.25.1")
+
     implementation(libs.foundation)
+
+    // DB
+    implementation(libs.room)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     // Tests
     testImplementation(libs.junit)
