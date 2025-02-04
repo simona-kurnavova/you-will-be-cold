@@ -1,7 +1,5 @@
 package com.youllbecold.trustme.di
 
-import android.app.Application
-import androidx.room.Room
 import com.youllbecold.trustme.database.LogDao
 import com.youllbecold.trustme.database.LogDatabase
 import com.youllbecold.trustme.preferences.DataStorePreferences
@@ -30,7 +28,7 @@ val appModule = module {
     single<WeatherProvider> { WeatherProvider(androidApplication(), get(), get(), get()) }
 
     // Database
-    single<LogDatabase> { buildDatabase(androidApplication()) }
+    single<LogDatabase> { LogDatabase.buildDatabase(androidApplication()) }
     single<LogDao> { get<LogDatabase>().logDao() }
 
     // Helpers
@@ -59,9 +57,3 @@ private fun buildRetrofit(): Retrofit {
 
 private const val BASE_URL = "https://api.open-meteo.com"
 
-private fun buildDatabase(app: Application): LogDatabase =
-    Room.databaseBuilder(
-        app,
-        LogDatabase::class.java,
-        LogDatabase.DATABASE_NAME
-    ).build()

@@ -1,6 +1,7 @@
 package com.youllbecold.trustme.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -33,36 +35,42 @@ fun WeatherCard(
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(modifier = modifier) {
-        Column {
-            if (weather.city != null) {
-                CityView(
-                    city = weather.city,
+        Row {
+            Image(
+                painter = painterResource(id = weather.resolveThermometer()),
+                contentDescription = null,
+            )
+
+            Column {
+                if (weather.city != null) {
+                    CityView(
+                        city = weather.city,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(2.dp))
+
+                CurrentTemperatureView(
+                    temperature = weather.temperature,
+                    useCelsius = weather.unitsCelsius,
+                    icon = weather.weatherEvaluation.resolveIcon(),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
+
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    thickness = 0.1.dp,
+                    modifier = Modifier.padding(8.dp),
+                )
+
+                WeatherParametersView(
+                    windSpeed = weather.windSpeed,
+                    precipitationProbability = weather.precipitationProbability,
+                    uvIndex = weather.uvIndex,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
-
-            Spacer(modifier = Modifier.padding(2.dp))
-
-            CurrentTemperatureView(
-                temperature = weather.temperature,
-                useCelsius = weather.unitsCelsius,
-                icon = weather.weatherEvaluation.resolveIcon(),
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
-
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onBackground,
-                thickness = 0.1.dp,
-                modifier = Modifier.padding(8.dp),
-            )
-
-            WeatherParametersView(
-                windSpeed = weather.windSpeed,
-                precipitationProbability = weather.precipitationProbability,
-                uvIndex = weather.uvIndex,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
-
         }
     }
 }
@@ -114,6 +122,7 @@ fun CurrentTemperatureView(
         Text(
             text = temperatureWithUnits,
             style = MaterialTheme.typography.headlineLarge,
+            fontSize = 64.sp,
             modifier = modifier
                 .align(Alignment.CenterVertically)
         )
@@ -124,7 +133,7 @@ fun CurrentTemperatureView(
             painter = painterResource(id = icon),
             contentDescription = null,
             modifier = Modifier
-                .size(24.dp)
+                .size(48.dp)
                 .align(Alignment.CenterVertically),
             tint = MaterialTheme.colorScheme.secondary
         )
@@ -195,6 +204,24 @@ private fun WeatherEvaluation.resolveIcon(): Int = when (this) {
     WeatherEvaluation.UNKNOWN -> R.drawable.ic_cloud
 }
 
+@DrawableRes
+private fun WeatherNow.resolveThermometer(): Int =
+    if (unitsCelsius) {
+        when {
+            temperature < 0 -> R.drawable.thermometer_0
+            temperature < 10 -> R.drawable.thermometer_1
+            temperature < 20 -> R.drawable.thermometer_2
+            else -> R.drawable.thermometer_3
+        }
+    } else {
+        when {
+            temperature < 32 -> R.drawable.thermometer_0
+            temperature < 50 -> R.drawable.thermometer_1
+            temperature < 68 -> R.drawable.thermometer_2
+            else -> R.drawable.thermometer_3
+        }
+    }
+
 @Preview(showBackground = true)
 @Composable
 private fun WeatherCardPreview() {
@@ -203,7 +230,7 @@ private fun WeatherCardPreview() {
             weather = WeatherNow(
                 city = "Prague",
                 unitsCelsius = true,
-                temperature = 20.0,
+                temperature = -10.0,
                 apparentTemperature = 20.0,
                 weatherEvaluation = WeatherEvaluation.SUNNY,
                 relativeHumidity = 50,

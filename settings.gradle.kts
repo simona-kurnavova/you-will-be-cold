@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "You'll Be Cold"
 include(":app")
- 
