@@ -64,6 +64,32 @@ class LocationHelper {
             }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    fun refreshLocation(context: Context, onSuccess: (Location) -> Unit, onError: (String?) -> Unit) {
+        _locationState.value = LocationState.Loading
+
+        val locationClient = LocationServices.getFusedLocationProviderClient(context)
+        val priority = Priority.PRIORITY_HIGH_ACCURACY
+
+        locationClient.getCurrentLocation(priority, CancellationTokenSource().token)
+            .addOnCompleteListener { task: Task<android.location.Location> ->
+                if (task.isSuccessful && task.result != null) {
+                    val location = task.result
+
+                    obtainAddress(context, location.latitude, location.longitude) { address ->
+                        // City might be null, but that's fine.
+                        val city = address?.locality ?: address?.adminArea ?: address?.countryName
+                        onSuccess(Location(location.latitude, location.longitude, city))
+                    }
+
+                } else {
+                    task.exception?.let {
+                        onError(it.message)
+                    }
+                }
+            }
+    }
+
     private fun obtainAddress(context: Context, latitude: Double, longitude: Double, onResult: (Address?) -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getAddressApi33AndHigher(context, latitude, longitude) { city -> onResult(city) }
@@ -76,6 +102,7 @@ class LocationHelper {
         }
     }
 
+    @Suppress("Deprecation") // Geocoder.getFromLocation is deprecated, but needed for lower Androids.
     private suspend fun getAddress(context: Context, latitude: Double, longitude: Double): Address? =
         withContext(Dispatchers.IO) {
             return@withContext try {

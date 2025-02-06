@@ -43,6 +43,7 @@ android {
 dependencies {
     // Project modules
     api(project(":logdatabase"))
+    api(project(":weather"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

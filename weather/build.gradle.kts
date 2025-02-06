@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    namespace = "com.youllbecold.logdatabase"
+    namespace = "com.youllbecold.weather"
     compileSdk = 35
 
     defaultConfig {
@@ -34,14 +33,10 @@ android {
 }
 
 dependencies {
-    // Koin
-    implementation(libs.koin)
-    implementation(libs.koin.annotations)
-
-    // DB
-    implementation(libs.room)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+    implementation(libs.okhttp3.interceptor)
 
     // Gson
     implementation(libs.gson.converter)
@@ -51,7 +46,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

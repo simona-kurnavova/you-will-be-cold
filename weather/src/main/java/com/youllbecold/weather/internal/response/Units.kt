@@ -1,16 +1,16 @@
-package com.youllbecold.trustme.weatherservice.internal.response
+package com.youllbecold.weather.internal.response
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Units for weather data.
  */
-data class Units(
+internal data class Units(
     @SerializedName("temperature_2m")
     val temperatureUnit: TemperatureUnit
 )
 
-enum class TemperatureUnit {
+internal enum class TemperatureUnit {
     @SerializedName("°C")
     CELSIUS,
     @SerializedName("°F")

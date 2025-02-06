@@ -24,9 +24,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             val viewModel = koinViewModel<HomeViewModel>()
 
             HomeScreen(
-                viewModel.locationGranted,
-                viewModel.currentWeather,
-                refreshWeather = viewModel::refreshWeather,
+                viewModel.uiState,
+                refreshWeather = viewModel::refreshLocationAndWeather,
             )
         }
 

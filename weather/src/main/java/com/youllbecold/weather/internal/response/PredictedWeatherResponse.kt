@@ -1,8 +1,8 @@
-package com.youllbecold.trustme.weatherservice.internal.response
+package com.youllbecold.weather.internal.response
 
 import com.google.gson.annotations.SerializedName
 
-data class PredictedWeatherResponse(
+internal data class PredictedWeatherResponse(
     @SerializedName("latitude")
     val latitude: Double,
 
@@ -16,7 +16,7 @@ data class PredictedWeatherResponse(
     val hourlyUnits: Units
 )
 
-data class Hourly(
+internal data class Hourly(
     @SerializedName("time")
     val time: List<String>,
 

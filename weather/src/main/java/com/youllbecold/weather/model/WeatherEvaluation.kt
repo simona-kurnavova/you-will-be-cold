@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.weatherservice.model
+package com.youllbecold.weather.model
 
 enum class WeatherEvaluation {
     SUNNY,

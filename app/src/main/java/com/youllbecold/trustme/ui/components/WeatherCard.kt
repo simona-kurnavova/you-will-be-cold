@@ -26,15 +26,16 @@ import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.weatherservice.model.WeatherEvaluation
-import com.youllbecold.trustme.weatherservice.model.WeatherNow
+import com.youllbecold.weather.model.WeatherEvaluation
+import com.youllbecold.weather.model.WeatherNow
 
 @Composable
 fun WeatherCard(
     weather: WeatherNow,
+    city: String?,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedCard(modifier = modifier) {
+    OutlinedCard(modifier = modifier.padding(4.dp)) {
         Row {
             Image(
                 painter = painterResource(id = weather.resolveThermometer()),
@@ -42,9 +43,9 @@ fun WeatherCard(
             )
 
             Column {
-                if (weather.city != null) {
+                if (city != null) {
                     CityView(
-                        city = weather.city,
+                        city = city,
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                 }
@@ -228,7 +229,6 @@ private fun WeatherCardPreview() {
     YoullBeColdTheme {
         WeatherCard(
             weather = WeatherNow(
-                city = "Prague",
                 unitsCelsius = true,
                 temperature = -10.0,
                 apparentTemperature = 20.0,
@@ -238,6 +238,7 @@ private fun WeatherCardPreview() {
                 precipitationProbability = 0,
                 uvIndex = 0.0,
             ),
+            city = "Berlin",
             modifier = Modifier.padding(4.dp),
         )
     }

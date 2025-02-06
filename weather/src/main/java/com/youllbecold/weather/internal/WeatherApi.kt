@@ -1,9 +1,9 @@
-package com.youllbecold.trustme.weatherservice.internal
+package com.youllbecold.weather.internal
 
-import com.youllbecold.trustme.weatherservice.internal.request.TemperatureUnitRequest
-import com.youllbecold.trustme.weatherservice.internal.request.WeatherCategoriesRequest
-import com.youllbecold.trustme.weatherservice.internal.response.CurrentWeatherResponse
-import com.youllbecold.trustme.weatherservice.internal.response.PredictedWeatherResponse
+import com.youllbecold.weather.internal.request.TemperatureUnitRequest
+import com.youllbecold.weather.internal.request.WeatherCategoriesRequest
+import com.youllbecold.weather.internal.response.CurrentWeatherResponse
+import com.youllbecold.weather.internal.response.PredictedWeatherResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,7 +11,7 @@ import retrofit2.http.Query
 /**
  * Weather API.
  */
-interface WeatherApi {
+internal interface WeatherApi {
     /**
      * Get forecast weather.
      */

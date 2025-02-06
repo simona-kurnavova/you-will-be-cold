@@ -1,18 +1,19 @@
-package com.youllbecold.trustme.weatherservice.internal
+package com.youllbecold.weather.internal
 
-import com.youllbecold.trustme.utils.Location
-import com.youllbecold.trustme.weatherservice.internal.request.TemperatureUnitRequest
-import com.youllbecold.trustme.weatherservice.internal.response.CurrentWeatherResponse
-import com.youllbecold.trustme.weatherservice.internal.response.Hourly
-import com.youllbecold.trustme.weatherservice.internal.response.TemperatureUnit
-import com.youllbecold.trustme.weatherservice.internal.response.PredictedWeatherResponse
-import com.youllbecold.trustme.weatherservice.model.HourlyData
-import com.youllbecold.trustme.weatherservice.model.WeatherEvaluation
-import com.youllbecold.trustme.weatherservice.model.WeatherNow
-import com.youllbecold.trustme.weatherservice.model.WeatherPrediction
+import com.youllbecold.weather.api.WeatherRepository
+import com.youllbecold.weather.internal.request.TemperatureUnitRequest
+import com.youllbecold.weather.internal.response.CurrentWeatherResponse
+import com.youllbecold.weather.internal.response.Hourly
+import com.youllbecold.weather.internal.response.TemperatureUnit
+import com.youllbecold.weather.internal.response.PredictedWeatherResponse
+import com.youllbecold.weather.model.HourlyData
+import com.youllbecold.weather.model.WeatherEvaluation
+import com.youllbecold.weather.model.WeatherNow
+import com.youllbecold.weather.model.WeatherPrediction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDateTime
@@ -20,41 +21,39 @@ import java.time.LocalDateTime
 /**
  * Repository for weather data.
  */
-class WeatherRepository(
-    private val weatherDao: WeatherApi
-) {
-    private val _prediction: MutableStateFlow<WeatherPrediction?> = MutableStateFlow(null)
-    private val _current: MutableStateFlow<WeatherNow?> = MutableStateFlow(null)
+internal class WeatherRepositoryImpl(
+    private val weatherApi: WeatherApi
+) : WeatherRepository {
+    private val dispatchers = Dispatchers.IO
 
-    /**
-     * Current weather.
-     */
-    val current: StateFlow<WeatherNow?> = _current
+    private val _futureWeather: MutableStateFlow<WeatherPrediction?> = MutableStateFlow(null)
+    private val _currentWeather: MutableStateFlow<WeatherNow?> = MutableStateFlow(null)
 
-    /**
-     * Prediction weather for today.
-     */
-    val prediction: StateFlow<WeatherPrediction?> = _prediction
+    override val currentWeather: StateFlow<WeatherNow?>
+        get() = _currentWeather.asStateFlow()
+
+    override val futureWeather: StateFlow<WeatherPrediction?>
+        get() = _futureWeather.asStateFlow()
 
     /**
      * Get current weather.
      */
-    suspend fun getCurrent(location: Location, useCelsius: Boolean): Result<Unit> =
-        withContext(Dispatchers.IO) {
-            return@withContext weatherDao.getCurrent(location.latitude, location.longitude, temperatureUnit = getUnits(useCelsius))
+    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Unit> =
+        withContext(dispatchers) {
+            weatherApi.getCurrent(latitude, longitude, temperatureUnit = getUnits(useCelsius))
                 .processResponse { responseBody ->
-                    _current.value = responseBody.toWeather(location.city)
+                    _currentWeather.value = responseBody.toWeather()
                 }
         }
 
     /**
      * Get forecast weather for today.
      */
-    suspend fun getForecast(location: Location, useCelsius: Boolean): Result<Unit> =
-        withContext(Dispatchers.IO) {
-            weatherDao.getForecast(location.latitude, location.longitude, temperatureUnit = getUnits(useCelsius))
+    override suspend fun getFutureWeather(latitude: Double, longitude: Double, useCelsius: Boolean, days: Int): Result<Unit> =
+        withContext(dispatchers) {
+            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = days)
                 .processResponse { responseBody ->
-                    _prediction.value = responseBody.toWeather(location.city)
+                    _futureWeather.value = responseBody.toWeather()
                 }
         }
 
@@ -78,8 +77,7 @@ class WeatherRepository(
         )
     }
 
-    private fun PredictedWeatherResponse.toWeather(city: String?): WeatherPrediction = WeatherPrediction(
-        city = city,
+    private fun PredictedWeatherResponse.toWeather(): WeatherPrediction = WeatherPrediction(
         unitsCelsius = hourlyUnits.temperatureUnit == TemperatureUnit.CELSIUS,
         hourlyData = hourly.toHourlyData()
     )
@@ -104,8 +102,7 @@ class WeatherRepository(
         return hourlyData
     }
 
-    private fun CurrentWeatherResponse.toWeather(city: String?): WeatherNow = WeatherNow(
-        city = city,
+    private fun CurrentWeatherResponse.toWeather(): WeatherNow = WeatherNow(
         unitsCelsius = units.temperatureUnit == TemperatureUnit.CELSIUS,
         temperature = current.temperature2m,
         apparentTemperature = current.apparentTemperature,

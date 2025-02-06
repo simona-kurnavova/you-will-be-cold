@@ -26,3 +26,4 @@ include(":app")
 
 // Database for logs module
 include(":logdatabase")
+include(":weather")

@@ -1,8 +1,14 @@
-package com.youllbecold.trustme.weatherservice.model
+package com.youllbecold.weather.model
 
-data class WeatherNow(
-    val city: String?,
+import java.time.LocalDateTime
+
+data class WeatherPrediction(
     val unitsCelsius: Boolean,
+    val hourlyData: List<HourlyData>,
+)
+
+data class HourlyData(
+    val time: LocalDateTime,
     val temperature: Double,
     val apparentTemperature: Double,
     val weatherEvaluation: WeatherEvaluation,
@@ -11,3 +17,4 @@ data class WeatherNow(
     val precipitationProbability: Int,
     val uvIndex: Double,
 )
+

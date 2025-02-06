@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.weatherservice.internal.request
+package com.youllbecold.weather.internal.request
 
 internal enum class WeatherCategoriesRequest(val value: String) {
     TEMPERATURE("temperature_2m"),
