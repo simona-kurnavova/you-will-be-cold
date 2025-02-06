@@ -1,7 +1,7 @@
 package com.youllbecold.trustme.di
 
-import com.youllbecold.trustme.database.LogDao
-import com.youllbecold.trustme.database.LogDatabase
+import com.youllbecold.logdatabase.LogRepositoryProvider
+import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
@@ -27,13 +27,12 @@ val appModule = module {
     single<WeatherRepository> { WeatherRepository(get()) }
     single<WeatherProvider> { WeatherProvider(androidApplication(), get(), get(), get()) }
 
-    // Database
-    single<LogDatabase> { LogDatabase.buildDatabase(androidApplication()) }
-    single<LogDao> { get<LogDatabase>().logDao() }
-
     // Helpers
     single<LocationHelper> { LocationHelper() }
     single<PermissionHelper> { PermissionHelper(androidApplication())  }
+
+    // Log Repository
+    single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
 }
 
 val uiModule = module {

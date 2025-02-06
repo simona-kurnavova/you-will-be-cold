@@ -41,6 +41,9 @@ android {
 }
 
 dependencies {
+    // Project modules
+    api(project(":logdatabase"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -74,7 +77,7 @@ dependencies {
 
     // For location permission flow
     implementation(libs.accompanist.permissions)
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.25.1")
+    implementation(libs.accompanist.swiperefresh)
 
     implementation(libs.foundation)
 

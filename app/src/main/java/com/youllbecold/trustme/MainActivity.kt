@@ -21,7 +21,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.youllbecold.trustme.database.LogDatabase
 import com.youllbecold.trustme.ui.components.Toolbar
 import com.youllbecold.trustme.ui.navigation.FloatingAction
 import com.youllbecold.trustme.ui.navigation.NavGraph

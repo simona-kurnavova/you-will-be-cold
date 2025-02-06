@@ -20,4 +20,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "You'll Be Cold"
+
+// Base application
 include(":app")
+
+// Database for logs module
+include(":logdatabase")

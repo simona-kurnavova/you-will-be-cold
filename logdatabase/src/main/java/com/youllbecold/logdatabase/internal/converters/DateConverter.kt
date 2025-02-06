@@ -1,11 +1,11 @@
-package com.youllbecold.trustme.database.converters
+package com.youllbecold.logdatabase.internal.converters
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
 
-class DateConverter {
+internal class DateConverter {
     @TypeConverter
-    fun fromTimestamp(value: String): LocalDateTime? =
+    internal fun fromTimestamp(value: String): LocalDateTime? =
        LocalDateTime.parse(value)
 
     @TypeConverter

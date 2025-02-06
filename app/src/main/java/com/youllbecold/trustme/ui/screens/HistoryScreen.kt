@@ -11,16 +11,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youllbecold.trustme.database.entity.Feeling
-import com.youllbecold.trustme.database.entity.LogEntity
-import com.youllbecold.trustme.database.entity.WeatherData
+import com.youllbecold.logdatabase.model.Log
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,15 +28,10 @@ import java.time.LocalDateTime
  */
 @Composable
 fun HistoryScreen(
-    logs: StateFlow<List<LogEntity>>,
-    addLog: (LogEntity) -> Unit = {},
+    logs: StateFlow<List<Log>>,
     modifier: Modifier = Modifier,
 ) {
     val logList by logs.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        addLog(LogEntity(1, LocalDateTime.now(), Feeling.WARM, WeatherData(0.0, 0.0)))
-    }
 
     LazyColumn(modifier
         .padding(12.dp)
@@ -69,7 +61,7 @@ fun HistoryScreen(
 
 @Composable
 private fun LogItem(
-    logEntity: LogEntity,
+    log: Log,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -81,7 +73,7 @@ private fun LogItem(
             modifier = Modifier.padding(4.dp)
         ) {
             Row(modifier = modifier) {
-                Text(text = logEntity.toString())
+                Text(text = log.toString())
                 //Text(text = log.formatedDate())
             }
         }
@@ -92,16 +84,15 @@ private fun LogItem(
 @Composable
 fun HistoryScreenPreview() {
     YoullBeColdTheme {
-        val logEntityItem = LogEntity(
+        val logEntityItem = Log(
             1,
             LocalDateTime.now(),
-            Feeling.WARM,
-            weatherData = WeatherData(0.0, 0.0)
+            Log.Feeling.WARM,
+            weatherData = Log.WeatherData(0.0, 0.0)
         )
 
         HistoryScreen(
             logs = MutableStateFlow(listOf(logEntityItem, logEntityItem, logEntityItem)),
-            addLog = {}
         )
     }
 }
