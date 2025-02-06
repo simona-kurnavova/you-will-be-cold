@@ -15,31 +15,34 @@ import com.youllbecold.trustme.weatherservice.internal.WeatherRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
-    single<Retrofit> { buildRetrofit() }
-    single<DataStorePreferences> { DataStorePreferences(androidApplication()) }
-    single<WeatherApi> { get<Retrofit>().create(WeatherApi::class.java) }
-    single<WeatherRepository> { WeatherRepository(get()) }
-    single<WeatherProvider> { WeatherProvider(androidApplication(), get(), get(), get()) }
+    singleOf(::DataStorePreferences)
 
     // Helpers
-    single<LocationHelper> { LocationHelper() }
-    single<PermissionHelper> { PermissionHelper(androidApplication())  }
+    singleOf(::LocationHelper)
+    singleOf(::PermissionHelper)
 
     // Log Repository
     single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
+
+    // Weather API
+    single<Retrofit> { buildRetrofit() }
+    single<WeatherApi> { get<Retrofit>().create(WeatherApi::class.java) }
+    singleOf(::WeatherRepository)
+    singleOf(::WeatherProvider)
 }
 
 val uiModule = module {
-    viewModel<SettingsViewModel> { SettingsViewModel(get()) }
-    viewModel<HomeViewModel> { HomeViewModel(get(), get()) }
-    viewModel<HistoryViewModel> { HistoryViewModel(get()) }
-    viewModel<MainViewModel> { MainViewModel(get(), get()) }
+    viewModelOf(::SettingsViewModel)
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::HistoryViewModel)
+    viewModelOf(::MainViewModel)
 }
 
 private fun buildRetrofit(): Retrofit {
