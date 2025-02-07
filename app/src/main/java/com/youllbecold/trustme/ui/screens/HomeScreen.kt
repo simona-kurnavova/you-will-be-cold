@@ -1,11 +1,13 @@
 package com.youllbecold.trustme.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -16,6 +18,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
+import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.trustme.ui.viewmodels.WeatherStatus
 import com.youllbecold.weather.model.WeatherEvaluation
 import com.youllbecold.weather.model.Weather
@@ -55,7 +58,7 @@ fun HomeScreen(
         swipeEnabled = true,
         onRefresh = {
             // Trigger refresh when user pulls to refresh
-            onAction(HomeAction.RefreshCurrentWeather)
+            onAction(HomeAction.RefreshWeather)
         }
     ) {
         // SwipeRefresh needs scrollable content to function
@@ -66,7 +69,10 @@ fun HomeScreen(
                         WeatherCard(
                             weather = it,
                             city = state.city,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = PADDING_ITEMS.dp)
+                                .padding(top = PADDING_ITEMS.dp)
                         )
                     }
                 }
@@ -75,7 +81,13 @@ fun HomeScreen(
             item {
                 FadingItem(visible = state.currentWeather != null,) {
                     state.currentWeather?.let {
-                        HourlyWeatherCard()
+                        HourlyWeatherCard(
+                            hourlyTemperatures = state.hourlyTemperatures,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = PADDING_ITEMS.dp)
+                                .padding(top = PADDING_ITEMS.dp)
+                        )
                     }
                 }
             }
@@ -86,6 +98,8 @@ fun HomeScreen(
         }
     }
 }
+
+private const val PADDING_ITEMS = 4
 
 @Preview
 @Composable
@@ -106,6 +120,18 @@ fun HomeScreenPreview() {
                     precipitationProbability = 2,
                     uvIndex = 5.0,
                 ),
+                hourlyTemperatures = listOf(
+                    HourlyTemperature(
+                        LocalDateTime.now(),
+                        0.0,
+                        WeatherEvaluation.CLOUDY
+                    ),
+                    HourlyTemperature(
+                        LocalDateTime.now(),
+                        0.0,
+                        WeatherEvaluation.SUNNY
+                    )
+                )
             )),
             onAction = {},
         )

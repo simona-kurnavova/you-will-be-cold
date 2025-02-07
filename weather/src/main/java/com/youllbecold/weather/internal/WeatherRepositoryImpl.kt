@@ -31,7 +31,7 @@ internal class WeatherRepositoryImpl(
 
     override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<List<Weather>> =
         withContext(dispatchers) {
-            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = 1)
+            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = 2)
                 .processResponse { responseBody -> responseBody.toWeatherList() }
         }
 

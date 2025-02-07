@@ -30,6 +30,8 @@
     <string name="temperature_fahrenheit">%1$.1f°F</string>
     <!-- Temperature view with degrees up to 1 decimal point - Celsius. -->
     <string name="temperature_celsius">%1$.1f°C</string>
+    <!-- Temperature view with general degrees using int. -->
+    <string name="temperature_degrees_short">%d°</string>
 
     <!-- Welcome screen -->
     <!-- Title of the welcome screen. -->

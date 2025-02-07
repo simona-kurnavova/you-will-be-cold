@@ -7,8 +7,10 @@ import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
-import com.youllbecold.trustme.usecases.CurrentWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.utils.PermissionHelper
+import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.WeatherProvider
 import com.youllbecold.weather.api.WeatherRepository
 import org.koin.android.ext.koin.androidApplication
@@ -21,6 +23,7 @@ val appModule = module {
 
     // Helpers
     singleOf(::PermissionHelper)
+    singleOf(::NetworkHelper)
 
     // Repositories
     single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
@@ -28,6 +31,7 @@ val appModule = module {
     
     // UseCases
     singleOf(::CurrentWeatherUseCase)
+    singleOf(::HourlyWeatherUseCase)
 }
 
 val uiModule = module {

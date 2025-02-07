@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.trustme.ui.utils.thermometerImage
 import com.youllbecold.weather.model.WeatherEvaluation
 import com.youllbecold.weather.model.Weather
 import java.time.LocalDateTime
@@ -36,10 +38,10 @@ fun WeatherCard(
     city: String?,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedCard(modifier = modifier.padding(4.dp)) {
+    OutlinedCard(modifier = modifier) {
         Row {
             Image(
-                painter = painterResource(id = weather.resolveThermometer()),
+                painter = painterResource(id = weather.thermometerImage()),
                 contentDescription = null,
             )
 
@@ -56,7 +58,7 @@ fun WeatherCard(
                 CurrentTemperatureView(
                     temperature = weather.temperature,
                     useCelsius = weather.unitsCelsius,
-                    icon = weather.weatherEvaluation.resolveIcon(),
+                    icon = weather.weatherEvaluation.icon(),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
@@ -194,35 +196,6 @@ fun IconText(
         )
     }
 }
-
-@DrawableRes
-private fun WeatherEvaluation.resolveIcon(): Int = when (this) {
-    WeatherEvaluation.SUNNY -> R.drawable.ic_sun
-    WeatherEvaluation.CLOUDY -> R.drawable.ic_cloud
-    WeatherEvaluation.RAINY -> R.drawable.ic_rain
-    WeatherEvaluation.SNOWY -> R.drawable.ic_snow
-    WeatherEvaluation.STORM -> R.drawable.ic_lightning
-    WeatherEvaluation.FOGGY -> R.drawable.ic_cloud
-    WeatherEvaluation.UNKNOWN -> R.drawable.ic_cloud
-}
-
-@DrawableRes
-private fun Weather.resolveThermometer(): Int =
-    if (unitsCelsius) {
-        when {
-            temperature < 0 -> R.drawable.thermometer_0
-            temperature < 10 -> R.drawable.thermometer_1
-            temperature < 20 -> R.drawable.thermometer_2
-            else -> R.drawable.thermometer_3
-        }
-    } else {
-        when {
-            temperature < 32 -> R.drawable.thermometer_0
-            temperature < 50 -> R.drawable.thermometer_1
-            temperature < 68 -> R.drawable.thermometer_2
-            else -> R.drawable.thermometer_3
-        }
-    }
 
 @Preview(showBackground = true)
 @Composable

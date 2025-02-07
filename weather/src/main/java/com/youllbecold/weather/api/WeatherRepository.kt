@@ -15,3 +15,6 @@ interface WeatherRepository {
         useCelsius: Boolean
     ): Result<List<Weather>>
 }
+
+val <T> Result<T>.isSuccessful: Boolean
+    get() = this.isSuccess && this.getOrNull() != null
