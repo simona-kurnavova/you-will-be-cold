@@ -20,11 +20,8 @@ class HistoryViewModel(
 ) : ViewModel() {
 
     val logs: StateFlow<List<Log>>
-        get() = logRepository.logs.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = emptyList()
-        )
+        get() = logRepository.logs
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
         viewModelScope.launch {

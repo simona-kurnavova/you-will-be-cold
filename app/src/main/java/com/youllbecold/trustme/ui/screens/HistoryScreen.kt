@@ -19,23 +19,33 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.logdatabase.model.Log
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
+@Composable
+fun HistoryScreenRoot(
+    viewModel: HistoryViewModel = koinViewModel()
+) {
+    HistoryScreen(
+        logs = viewModel.logs,
+    )
+}
 /**
  * History screen.
  */
 @Composable
 fun HistoryScreen(
     logs: StateFlow<List<Log>>,
-    modifier: Modifier = Modifier,
 ) {
     val logList by logs.collectAsStateWithLifecycle()
 
-    LazyColumn(modifier
-        .padding(12.dp)
-        .fillMaxSize()
+    LazyColumn(
+        Modifier
+            .padding(12.dp)
+            .fillMaxSize()
     ) {
         items(logList.size) { index ->
             LogItem(

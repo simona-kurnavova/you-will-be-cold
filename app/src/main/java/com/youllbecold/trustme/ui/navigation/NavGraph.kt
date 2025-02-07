@@ -5,14 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.youllbecold.trustme.ui.screens.AddLogScreen
-import com.youllbecold.trustme.ui.screens.HistoryScreen
-import com.youllbecold.trustme.ui.screens.HomeScreen
-import com.youllbecold.trustme.ui.screens.SettingsScreen
-import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
-import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
-import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
-import org.koin.androidx.compose.koinViewModel
+import com.youllbecold.trustme.ui.screens.AdLogRoot
+import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
+import com.youllbecold.trustme.ui.screens.HomeScreenRoot
+import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 
 /**
  * Navigation graph for the application.
@@ -20,33 +16,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = NavRoute.Home.route, modifier = modifier) {
-        composable(NavRoute.Home.route) {
-            val viewModel = koinViewModel<HomeViewModel>()
-
-            HomeScreen(
-                viewModel.uiState,
-                refreshWeather = viewModel::refreshLocationAndWeather,
-            )
-        }
-
-        composable(NavRoute.History.route) {
-            val viewModel = koinViewModel<HistoryViewModel>()
-            HistoryScreen(viewModel.logs)
-        }
-
-        composable(NavRoute.Settings.route) {
-            val viewmodel = koinViewModel<SettingsViewModel>()
-
-            SettingsScreen(
-                allowDailyNotification = viewmodel.allowDailyNotification,
-                setAllowDailyNotification = viewmodel::setAllowDailyNotification,
-                useCelsius = viewmodel.useCelsiusUnits,
-                setUseCelsius = viewmodel::setUseCelsiusUnits,
-            )
-        }
-
-        composable(NavRoute.AddLog.route) {
-            AddLogScreen()
-        }
+        composable(NavRoute.Home.route) { HomeScreenRoot() }
+        composable(NavRoute.History.route) { HistoryScreenRoot() }
+        composable(NavRoute.Settings.route) { SettingsScreenRoot() }
+        composable(NavRoute.AddLog.route) { AdLogRoot() }
     }
 }

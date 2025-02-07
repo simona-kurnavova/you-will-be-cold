@@ -13,8 +13,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.ToggleRow
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun SettingsScreenRoot(
+    viewModel: SettingsViewModel = koinViewModel()
+) {
+    SettingsScreen(
+        allowDailyNotification = viewModel.allowDailyNotification,
+        setAllowDailyNotification = viewModel::setAllowDailyNotification,
+        useCelsius = viewModel.useCelsiusUnits,
+        setUseCelsius = viewModel::setUseCelsiusUnits,
+    )
+}
 
 /**
  * Settings screen.
@@ -50,8 +64,6 @@ fun SettingsScreen(
             checked = useCelsiusState.value,
             onChecked = setUseCelsius,
         )
-
-        // TODO: Add toggle for dark mode
 
         // TODO: Add toggle for morning recommendation notification
     }
