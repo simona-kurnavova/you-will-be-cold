@@ -62,7 +62,11 @@ fun HomeScreen(
         }
     ) {
         // SwipeRefresh needs scrollable content to function
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(CONTENT_PADDING.dp)
+        ) {
             item {
                 FadingItem(visible = state.currentWeather != null) {
                     state.currentWeather?.let {
@@ -71,8 +75,7 @@ fun HomeScreen(
                             city = state.city,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = PADDING_ITEMS.dp)
-                                .padding(top = PADDING_ITEMS.dp)
+                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
                         )
                     }
                 }
@@ -85,8 +88,7 @@ fun HomeScreen(
                             hourlyTemperatures = state.hourlyTemperatures,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = PADDING_ITEMS.dp)
-                                .padding(top = PADDING_ITEMS.dp)
+                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
                         )
                     }
                 }
@@ -99,39 +101,37 @@ fun HomeScreen(
     }
 }
 
-private const val PADDING_ITEMS = 4
+private const val CONTENT_PADDING = 8
+private const val PADDING_BETWEEN_ITEMS = 4
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
+    val hourlyTemperature = HourlyTemperature(
+        LocalDateTime.now(),
+        0.0,
+        WeatherEvaluation.SUNNY
+    )
+
+    val weather = Weather(
+        time = LocalDateTime.now(),
+        unitsCelsius = true,
+        temperature = 2.0,
+        apparentTemperature = 20.0,
+        weatherEvaluation = WeatherEvaluation.CLOUDY,
+        relativeHumidity = 1,
+        windSpeed = 5.0,
+        precipitationProbability = 2,
+        uvIndex = 5.0,
+    )
+
     YoullBeColdTheme {
         HomeScreen(
             uiState = MutableStateFlow(HomeUiState(
                 hasPermission = true,
                 status = WeatherStatus.Idle,
-                currentWeather = Weather(
-                    time = LocalDateTime.now(),
-                    unitsCelsius = true,
-                    temperature = 2.0,
-                    apparentTemperature = 20.0,
-                    weatherEvaluation = WeatherEvaluation.CLOUDY,
-                    relativeHumidity = 1,
-                    windSpeed = 5.0,
-                    precipitationProbability = 2,
-                    uvIndex = 5.0,
-                ),
-                hourlyTemperatures = listOf(
-                    HourlyTemperature(
-                        LocalDateTime.now(),
-                        0.0,
-                        WeatherEvaluation.CLOUDY
-                    ),
-                    HourlyTemperature(
-                        LocalDateTime.now(),
-                        0.0,
-                        WeatherEvaluation.SUNNY
-                    )
-                )
+                currentWeather = weather,
+                hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
             )),
             onAction = {},
         )

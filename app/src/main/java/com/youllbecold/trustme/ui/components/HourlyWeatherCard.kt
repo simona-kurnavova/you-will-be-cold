@@ -2,7 +2,6 @@ package com.youllbecold.trustme.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -86,20 +85,14 @@ private const val ITEM_PADDING = 4
 @Preview(showBackground = true)
 @Composable
 private fun HourlyWeatherCardPreview() {
+    val item = HourlyTemperature(
+        LocalDateTime.now(),
+        3.5,
+        WeatherEvaluation.CLOUDY
+    )
     YoullBeColdTheme {
         HourlyWeatherCard(
-            listOf(
-                HourlyTemperature(
-                    LocalDateTime.now(),
-                    0.0,
-                    WeatherEvaluation.CLOUDY
-                ),
-                HourlyTemperature(
-                    LocalDateTime.now(),
-                    0.0,
-                    WeatherEvaluation.SUNNY
-                )
-            )
+            listOf(item, item, item, item)
         )
     }
 }

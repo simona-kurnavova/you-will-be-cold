@@ -45,16 +45,16 @@ fun HistoryScreen(
 
     LazyColumn(
         Modifier
-            .padding(12.dp)
+            .padding(CONTENT_PADDING.dp)
             .fillMaxSize()
     ) {
         items(state.logs.size) { index ->
             LogItem(
                 state.logs[index],
-                Modifier.padding(8.dp)
+                Modifier.padding(BETWEEN_ITEM_PADDING.dp)
             )
 
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp))
         }
 
         if (state.logs.isEmpty()) {
@@ -70,6 +70,9 @@ fun HistoryScreen(
     }
 }
 
+private const val CONTENT_PADDING = 12
+private const val BETWEEN_ITEM_PADDING = 8
+
 @Composable
 private fun LogItem(
     log: Log,
@@ -81,15 +84,16 @@ private fun LogItem(
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(INSIDE_ITEM_PADDING.dp)
         ) {
             Row(modifier = modifier) {
                 Text(text = log.toString())
-                //Text(text = log.formatedDate())
             }
         }
     }
 }
+
+private const val INSIDE_ITEM_PADDING = 4
 
 @Preview(showBackground = true)
 @Composable
