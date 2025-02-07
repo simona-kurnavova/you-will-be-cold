@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -14,21 +15,34 @@ import org.koin.android.annotation.KoinViewModel
 class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel() {
 
     /**
-     * Flow of whether daily notification is allowed.
+     * Flow of [SettingsUiState].
      */
-    val allowDailyNotification: Flow<Boolean> = dataStore.allowDailyNotification
+    val uiState: Flow<SettingsUiState> = combine(
+        dataStore.allowDailyNotification,
+        dataStore.useCelsiusUnits
+    ) { allowDailyNotification, useCelsiusUnits ->
+        SettingsUiState(
+            allowDailyNotification = allowDailyNotification,
+            useCelsiusUnits = useCelsiusUnits
+        )
+    }
 
     /**
-     * Flow of whether to use Celsius units.
+     * Handles [SettingsAction]
      */
-    val useCelsiusUnits: Flow<Boolean> = dataStore.useCelsiusUnits
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            is SettingsAction.SetAllowDailyNotification -> setAllowDailyNotification(action.allow)
+            is SettingsAction.SetUseCelsiusUnits -> setUseCelsiusUnits(action.useCelsius)
+        }
+    }
 
     /**
      * Set whether daily notification is allowed.
      *
      * @param allow Whether daily notification is allowed.
      */
-    fun setAllowDailyNotification(allow: Boolean) {
+    private fun setAllowDailyNotification(allow: Boolean) {
         viewModelScope.launch {
             dataStore.setAllowDailyNotification(allow)
         }
@@ -39,9 +53,25 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
      *
      * @param useCelsius Whether to use Celsius units.
      */
-    fun setUseCelsiusUnits(useCelsius: Boolean) {
+    private fun setUseCelsiusUnits(useCelsius: Boolean) {
         viewModelScope.launch {
             dataStore.setUseCelsiusUnits(useCelsius)
         }
     }
+}
+
+/**
+ * UI state for settings screen.
+ */
+data class SettingsUiState(
+    val allowDailyNotification: Boolean = false,
+    val useCelsiusUnits: Boolean = false
+)
+
+/**
+ * Actions for settings screen.
+ */
+sealed class SettingsAction {
+    data class SetAllowDailyNotification(val allow: Boolean) : SettingsAction()
+    data class SetUseCelsiusUnits(val useCelsius: Boolean) : SettingsAction()
 }

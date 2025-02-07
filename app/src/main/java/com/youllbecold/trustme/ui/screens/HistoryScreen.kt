@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.logdatabase.model.Log
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
@@ -30,7 +31,7 @@ fun HistoryScreenRoot(
     viewModel: HistoryViewModel = koinViewModel()
 ) {
     HistoryScreen(
-        logs = viewModel.logs,
+        uiState = viewModel.uiState,
     )
 }
 /**
@@ -38,25 +39,25 @@ fun HistoryScreenRoot(
  */
 @Composable
 fun HistoryScreen(
-    logs: StateFlow<List<Log>>,
+    uiState: Flow<HistoryUiState>,
 ) {
-    val logList by logs.collectAsStateWithLifecycle()
+    val state by uiState.collectAsStateWithLifecycle(HistoryUiState())
 
     LazyColumn(
         Modifier
             .padding(12.dp)
             .fillMaxSize()
     ) {
-        items(logList.size) { index ->
+        items(state.logs.size) { index ->
             LogItem(
-                logList[index],
+                state.logs[index],
                 Modifier.padding(8.dp)
             )
 
             Spacer(modifier = Modifier.padding(8.dp))
         }
 
-        if (logList.isEmpty()) {
+        if (state.logs.isEmpty()) {
             item {
                 Text(
                     text = "No logs available",
@@ -102,7 +103,7 @@ fun HistoryScreenPreview() {
         )
 
         HistoryScreen(
-            logs = MutableStateFlow(listOf(logEntityItem, logEntityItem, logEntityItem)),
+            uiState = flow { emit(HistoryUiState(listOf(logEntityItem, logEntityItem))) },
         )
     }
 }
@@ -112,7 +113,7 @@ fun HistoryScreenPreview() {
 fun HistoryScreenEmptyPreview() {
     YoullBeColdTheme {
         HistoryScreen(
-            logs = MutableStateFlow(emptyList())
+            uiState = flow { emit(HistoryUiState(emptyList())) },
         )
     }
 }

@@ -14,9 +14,12 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.youllbecold.trustme.ui.components.WeatherCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.WeatherStatus
+import com.youllbecold.weather.model.WeatherEvaluation
+import com.youllbecold.weather.model.WeatherNow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
@@ -27,7 +30,7 @@ fun HomeScreenRoot(
 ) {
     HomeScreen(
         viewmodel.uiState,
-        viewmodel::refreshLocationAndWeather,
+        viewmodel::onAction,
     )
 }
 
@@ -37,7 +40,7 @@ fun HomeScreenRoot(
 @Composable
 fun HomeScreen(
     uiState: StateFlow<HomeUiState>,
-    refreshWeather: () -> Unit,
+    onAction: (HomeAction) -> Unit,
 ) {
     val state by uiState.collectAsStateWithLifecycle(HomeUiState())
     if (!state.hasPermission) {
@@ -50,7 +53,10 @@ fun HomeScreen(
         modifier = Modifier.fillMaxWidth(),
         state = swipeRefreshState,
         swipeEnabled = true,
-        onRefresh = { refreshWeather() }, // Trigger refresh when user pulls to refresh
+        onRefresh = {
+            // Trigger refresh when user pulls to refresh
+            onAction(HomeAction.RefreshLocationAndWeather)
+        }
     ) {
         // SwipeRefresh needs scrollable content to function
         LazyColumn {
@@ -82,10 +88,21 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     YoullBeColdTheme {
         HomeScreen(
-            MutableStateFlow(
-                HomeUiState()
-            ),
-            refreshWeather = {},
+            uiState = MutableStateFlow(HomeUiState(
+                hasPermission = true,
+                status = WeatherStatus.Idle,
+                currentWeather = WeatherNow(
+                    unitsCelsius = true,
+                    temperature = 2.0,
+                    apparentTemperature = 20.0,
+                    weatherEvaluation = WeatherEvaluation.CLOUDY,
+                    relativeHumidity = 1,
+                    windSpeed = 5.0,
+                    precipitationProbability = 2,
+                    uvIndex = 5.0,
+                ),
+            )),
+            onAction = {},
         )
     }
 }

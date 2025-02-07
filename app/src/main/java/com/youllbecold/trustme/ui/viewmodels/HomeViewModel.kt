@@ -65,7 +65,13 @@ class HomeViewModel(
         }
     }
 
-    fun refreshLocationAndWeather() {
+    fun onAction(action: HomeAction) {
+        when (action) {
+            HomeAction.RefreshLocationAndWeather -> refreshLocationAndWeather()
+        }
+    }
+
+    private fun refreshLocationAndWeather() {
         loadingState.update { WeatherStatus.Loading }
 
         viewModelScope.launch {
@@ -104,4 +110,8 @@ enum class WeatherStatus {
     Idle,
     Loading,
     Error
+}
+
+sealed class HomeAction {
+    data object RefreshLocationAndWeather : HomeAction()
 }

@@ -37,11 +37,17 @@ class MainViewModel(
         refreshLocationPermissionState()
     }
 
+    /**
+     * Refreshes location permission state.
+     */
     fun refreshLocationPermissionState() {
         permissionHelper.refreshLocationPermissionState()
     }
 
-    fun refreshWelcomeState() {
+    /**
+     * Called when welcome screen is seen and passed by user.
+     */
+    fun onWelcomeScreenPass() {
         viewModelScope.launch {
             dataStorePreferences.setWelcomeScreenShown(true)
         }

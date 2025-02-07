@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.model.Log
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDateTime
@@ -19,11 +18,17 @@ class HistoryViewModel(
     private val logRepository: LogRepository
 ) : ViewModel() {
 
-    val logs: StateFlow<List<Log>>
-        get() = logRepository.logs
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    /**
+     * UI state for the history screen.
+     */
+    val uiState: Flow<HistoryUiState> = logRepository.logs.map { logs ->
+        HistoryUiState(
+            logs = logs
+        )
+    }
 
     init {
+        // TODO: Just for testing, remove when logic implemented.
         viewModelScope.launch {
             logRepository.addLog(
                 Log(
@@ -40,3 +45,10 @@ class HistoryViewModel(
         }
     }
 }
+
+/**
+ * UI state for the history screen.
+ */
+data class HistoryUiState(
+    val logs: List<Log> = emptyList()
+)

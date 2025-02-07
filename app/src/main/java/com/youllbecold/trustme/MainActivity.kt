@@ -82,7 +82,7 @@ fun Main() {
 
         when(overlayState.value) {
             OverlayState.NEW_USER ->
-                WelcomeScreen(viewModel::refreshWelcomeState)
+                WelcomeScreen(viewModel::onWelcomeScreenPass)
             OverlayState.LOCATION_PERM_MISSING ->
                 LocationPermissionScreen(viewModel::refreshLocationPermissionState)
             else -> Unit
