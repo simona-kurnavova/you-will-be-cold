@@ -5,20 +5,15 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youllbecold.trustme.preferences.DataStorePreferences
-import com.youllbecold.trustme.utils.Location
-import com.youllbecold.trustme.utils.LocationHelper
+import com.youllbecold.trustme.usecases.CurrentWeatherStatus
+import com.youllbecold.trustme.usecases.CurrentWeatherUseCase
 import com.youllbecold.trustme.utils.PermissionHelper
-import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.model.WeatherNow
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.youllbecold.weather.model.Weather
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -29,37 +24,37 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class HomeViewModel(
     private val app: Application,
-    private val weatherRepository: WeatherRepository,
-    private val locationHelper: LocationHelper,
-    private val dataStorePreferences: DataStorePreferences,
+    private val currentWeatherUseCase: CurrentWeatherUseCase,
     permissionHelper: PermissionHelper,
 ) : ViewModel() {
 
-    private var currentCity: String? = null
-
-    private val loadingState: MutableStateFlow<WeatherStatus> = MutableStateFlow(WeatherStatus.Idle)
-
     val uiState: StateFlow<HomeUiState> =
         combine(
-            permissionHelper.locationState,
-            weatherRepository.currentWeather,
-            loadingState
-        ) { hasPermission, currentWeather, loadingState ->
+            permissionHelper.hasLocationPermission,
+            currentWeatherUseCase.weatherState,
+        ) { hasPermission, weatherState ->
+            Log.d("HomeViewModel", "hasPermission=$hasPermission, weatherState=$weatherState")
+
             HomeUiState(
                 hasPermission = hasPermission,
-                status = loadingState,
-                currentWeather = currentWeather,
-                city = currentCity
+                status = when(weatherState.status) {
+                    CurrentWeatherStatus.Idle,
+                    CurrentWeatherStatus.Success -> WeatherStatus.Idle
+                    CurrentWeatherStatus.Loading -> WeatherStatus.Loading
+                    CurrentWeatherStatus.Error -> WeatherStatus.Error
+                },
+                currentWeather = weatherState.weather,
+                city = weatherState.city
             )
         }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
 
     init {
         viewModelScope.launch {
-            permissionHelper.locationState.collectLatest { hasPermission ->
+            permissionHelper.hasLocationPermission.collectLatest { hasPermission ->
                 Log.d("HomeViewModel", "Location permission state: $hasPermission")
 
                 if (hasPermission) {
-                    refreshLocationAndWeather()
+                    currentWeatherUseCase.refreshCurrentWeather()
                 }
             }
         }
@@ -67,32 +62,13 @@ class HomeViewModel(
 
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.RefreshLocationAndWeather -> refreshLocationAndWeather()
+            HomeAction.RefreshCurrentWeather -> refreshCurrentWeather()
         }
     }
 
-    private fun refreshLocationAndWeather() {
-        loadingState.update { WeatherStatus.Loading }
-
-        viewModelScope.launch {
-            locationHelper.refreshLocation(
-                app,
-                onSuccess = ::onLocationObtained,
-                onError = { loadingState.update { WeatherStatus.Error } }
-            )
-        }
-    }
-
-    private fun onLocationObtained(location: Location) {
-        currentCity = location.city
-
-        viewModelScope.launch {
-            val useCelsius = dataStorePreferences.useCelsiusUnits.first()
-            val result = weatherRepository.getCurrentWeather(location.latitude, location.longitude, useCelsius)
-
-            loadingState.update {
-                if (result.isSuccess) WeatherStatus.Idle else WeatherStatus.Error
-            }
+    private fun refreshCurrentWeather() {
+        if (PermissionHelper.hasLocationPermission(app)) {
+            currentWeatherUseCase.refreshCurrentWeather()
         }
     }
 }
@@ -100,7 +76,7 @@ class HomeViewModel(
 data class HomeUiState(
     val hasPermission: Boolean = false,
     val status: WeatherStatus = WeatherStatus.Idle,
-    val currentWeather: WeatherNow? = null,
+    val currentWeather: Weather? = null,
     val city: String? = null,
 ) {
     fun isRefreshing() = status == WeatherStatus.Loading && currentWeather != null
@@ -113,5 +89,5 @@ enum class WeatherStatus {
 }
 
 sealed class HomeAction {
-    data object RefreshLocationAndWeather : HomeAction()
+    data object RefreshCurrentWeather : HomeAction()
 }

@@ -1,15 +1,17 @@
 package com.youllbecold.weather.api
 
-import com.youllbecold.weather.model.WeatherNow
-import com.youllbecold.weather.model.WeatherPrediction
-import kotlinx.coroutines.flow.StateFlow
+import com.youllbecold.weather.model.Weather
 
 interface WeatherRepository {
-    val currentWeather: StateFlow<WeatherNow?>
+    suspend fun getCurrentWeather(
+        latitude: Double,
+        longitude: Double,
+        useCelsius: Boolean
+    ): Result<Weather>
 
-    val futureWeather: StateFlow<WeatherPrediction?>
-
-    suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Unit>
-
-    suspend fun getFutureWeather(latitude: Double, longitude: Double, useCelsius: Boolean, days: Int): Result<Unit>
+    suspend fun getHourlyWeather(
+        latitude: Double,
+        longitude: Double,
+        useCelsius: Boolean
+    ): Result<List<Weather>>
 }

@@ -18,12 +18,12 @@ class PermissionHelper(
     private val app: Application
 ){
 
-    private val _locationState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _hasLocationPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
      * Flow of the current location permission state.
      */
-    val locationState: StateFlow<Boolean> = _locationState
+    val hasLocationPermission: StateFlow<Boolean> = _hasLocationPermission
 
     init {
         refreshLocationPermissionState()
@@ -33,7 +33,7 @@ class PermissionHelper(
      * Refresh the location permission state.
      */
     fun refreshLocationPermissionState() {
-        _locationState.value = hasLocationPermission(app)
+        _hasLocationPermission.value = hasLocationPermission(app)
     }
 
     companion object {

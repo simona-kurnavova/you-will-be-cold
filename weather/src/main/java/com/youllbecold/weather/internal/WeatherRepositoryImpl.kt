@@ -3,17 +3,11 @@ package com.youllbecold.weather.internal
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.internal.request.TemperatureUnitRequest
 import com.youllbecold.weather.internal.response.CurrentWeatherResponse
-import com.youllbecold.weather.internal.response.Hourly
 import com.youllbecold.weather.internal.response.TemperatureUnit
 import com.youllbecold.weather.internal.response.PredictedWeatherResponse
-import com.youllbecold.weather.model.HourlyData
 import com.youllbecold.weather.model.WeatherEvaluation
-import com.youllbecold.weather.model.WeatherNow
-import com.youllbecold.weather.model.WeatherPrediction
+import com.youllbecold.weather.model.Weather
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDateTime
@@ -26,35 +20,19 @@ internal class WeatherRepositoryImpl(
 ) : WeatherRepository {
     private val dispatchers = Dispatchers.IO
 
-    private val _futureWeather: MutableStateFlow<WeatherPrediction?> = MutableStateFlow(null)
-    private val _currentWeather: MutableStateFlow<WeatherNow?> = MutableStateFlow(null)
-
-    override val currentWeather: StateFlow<WeatherNow?>
-        get() = _currentWeather.asStateFlow()
-
-    override val futureWeather: StateFlow<WeatherPrediction?>
-        get() = _futureWeather.asStateFlow()
-
     /**
      * Get current weather.
      */
-    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Unit> =
+    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Weather> =
         withContext(dispatchers) {
             weatherApi.getCurrent(latitude, longitude, temperatureUnit = getUnits(useCelsius))
-                .processResponse { responseBody ->
-                    _currentWeather.value = responseBody.toWeather()
-                }
+                .processResponse { responseBody ->  responseBody.toWeather() }
         }
 
-    /**
-     * Get forecast weather for today.
-     */
-    override suspend fun getFutureWeather(latitude: Double, longitude: Double, useCelsius: Boolean, days: Int): Result<Unit> =
+    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<List<Weather>> =
         withContext(dispatchers) {
-            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = days)
-                .processResponse { responseBody ->
-                    _futureWeather.value = responseBody.toWeather()
-                }
+            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = 1)
+                .processResponse { responseBody -> responseBody.toWeatherList() }
         }
 
     private fun getUnits(useCelsius: Boolean): String =
@@ -62,14 +40,13 @@ internal class WeatherRepositoryImpl(
 
     private fun <R, T> Response<R>.processResponse(
         processBody: (R) -> T
-    ): Result<Unit> = if (isSuccessful) {
+    ): Result<T> = if (isSuccessful) {
         val body = body()
 
         if (body == null) {
             Result.failure(Exception("Weather data is null"))
         } else {
-            processBody(body)
-            Result.success(Unit)
+            Result.success(processBody(body))
         }
     } else {
         Result.failure(
@@ -77,32 +54,8 @@ internal class WeatherRepositoryImpl(
         )
     }
 
-    private fun PredictedWeatherResponse.toWeather(): WeatherPrediction = WeatherPrediction(
-        unitsCelsius = hourlyUnits.temperatureUnit == TemperatureUnit.CELSIUS,
-        hourlyData = hourly.toHourlyData()
-    )
-
-    private fun Hourly.toHourlyData(): List<HourlyData> {
-        val hourlyData = mutableListOf<HourlyData>()
-        time.forEachIndexed { index: Int, time: String ->
-           val dateTime = LocalDateTime.parse(time)
-            hourlyData.add(
-                HourlyData(
-                    time = dateTime,
-                    temperature = temperature2m[index],
-                    apparentTemperature = apparentTemperature[index],
-                    weatherEvaluation = weatherCode[index].toEvaluation(),
-                    relativeHumidity = relativeHumidity[index],
-                    windSpeed = windSpeed[index],
-                    precipitationProbability = precipitationProbability[index],
-                    uvIndex = uvIndex[index]
-                )
-            )
-        }
-        return hourlyData
-    }
-
-    private fun CurrentWeatherResponse.toWeather(): WeatherNow = WeatherNow(
+    private fun CurrentWeatherResponse.toWeather(): Weather = Weather(
+        time = LocalDateTime.parse(current.time),
         unitsCelsius = units.temperatureUnit == TemperatureUnit.CELSIUS,
         temperature = current.temperature2m,
         apparentTemperature = current.apparentTemperature,
@@ -124,4 +77,22 @@ internal class WeatherRepositoryImpl(
             95, 96, 99 -> WeatherEvaluation.STORM
             else -> WeatherEvaluation.UNKNOWN
         }
+
+    private fun PredictedWeatherResponse.toWeatherList(): List<Weather> {
+        val unitsCelsius = hourlyUnits.temperatureUnit == TemperatureUnit.CELSIUS
+
+        return hourly.time.mapIndexed { index, time ->
+            Weather(
+                time = LocalDateTime.parse(time),
+                unitsCelsius = unitsCelsius,
+                temperature = hourly.temperature2m[index],
+                apparentTemperature = hourly.apparentTemperature[index],
+                weatherEvaluation = hourly.weatherCode[index].toEvaluation(),
+                relativeHumidity = hourly.relativeHumidity[index],
+                windSpeed = hourly.windSpeed[index],
+                precipitationProbability = hourly.precipitationProbability[index],
+                uvIndex = hourly.uvIndex[index]
+            )
+        }
+    }
 }

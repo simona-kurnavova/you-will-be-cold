@@ -22,7 +22,7 @@ class MainViewModel(
      * State flow for overlay state - what kind of overlay to show or none.
      */
     val overlayState: StateFlow<OverlayState> = combine(
-        permissionHelper.locationState,
+        permissionHelper.hasLocationPermission,
         dataStorePreferences.welcomeScreenShown
     ) { locationState, welcomeScreenShown ->
         Log.d("MainViewModel", "Location state: $locationState, welcome screen shown: $welcomeScreenShown")

@@ -1,6 +1,9 @@
 package com.youllbecold.weather.model
 
-data class WeatherNow(
+import java.time.LocalDateTime
+
+data class Weather(
+    val time: LocalDateTime,
     val unitsCelsius: Boolean,
     val temperature: Double,
     val apparentTemperature: Double,

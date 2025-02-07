@@ -27,11 +27,12 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.weather.model.WeatherEvaluation
-import com.youllbecold.weather.model.WeatherNow
+import com.youllbecold.weather.model.Weather
+import java.time.LocalDateTime
 
 @Composable
 fun WeatherCard(
-    weather: WeatherNow,
+    weather: Weather,
     city: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -206,7 +207,7 @@ private fun WeatherEvaluation.resolveIcon(): Int = when (this) {
 }
 
 @DrawableRes
-private fun WeatherNow.resolveThermometer(): Int =
+private fun Weather.resolveThermometer(): Int =
     if (unitsCelsius) {
         when {
             temperature < 0 -> R.drawable.thermometer_0
@@ -228,7 +229,8 @@ private fun WeatherNow.resolveThermometer(): Int =
 private fun WeatherCardPreview() {
     YoullBeColdTheme {
         WeatherCard(
-            weather = WeatherNow(
+            weather = Weather(
+                time = LocalDateTime.now(),
                 unitsCelsius = true,
                 temperature = -10.0,
                 apparentTemperature = 20.0,
