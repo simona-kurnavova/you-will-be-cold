@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.TimePickerDialog
+import com.youllbecold.trustme.ui.components.TimePicker
 import com.youllbecold.trustme.ui.components.generic.ClickableText
 import com.youllbecold.trustme.ui.components.generic.SelectRows
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
@@ -42,17 +39,16 @@ fun AdLogRoot() {
 fun AddLogScreen() {
     val currentTime = LocalTime.now()
 
-    var showFromTime by remember { mutableStateOf(false) }
-    var showToTime by remember { mutableStateOf(false) }
-
-    var timeFrom by remember {
+    var rangeTimeState by remember {
         mutableStateOf(
-            currentTime
-                .minusHours(1)
-                .formatTime()
+            RangeTimeState(
+                timeFrom = currentTime.minusHours(1),
+                timeTo = LocalTime.now(),
+                showFromPicker = false,
+                showToPicker = false
+            )
         )
     }
-    var timeTo by remember { mutableStateOf(currentTime.formatTime()) }
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -75,8 +71,12 @@ fun AddLogScreen() {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 ClickableText(
-                    text = timeFrom,
-                    onClick = { showFromTime = true }
+                    text = rangeTimeState.timeFrom.formatTime(),
+                    onClick = {
+                        rangeTimeState = rangeTimeState.copy(
+                            showFromPicker = true
+                        )
+                    }
                 )
 
                 Spacer(modifier = Modifier.padding(PADDING_BETWEEN_ITEMS.dp))
@@ -90,8 +90,12 @@ fun AddLogScreen() {
                 Spacer(modifier = Modifier.padding(PADDING_BETWEEN_ITEMS.dp))
 
                 ClickableText(
-                    text = timeTo,
-                    onClick = { showToTime = true }
+                    text = rangeTimeState.timeTo.formatTime(),
+                    onClick = {
+                        rangeTimeState = rangeTimeState.copy(
+                            showToPicker = true
+                        )
+                    }
                 )
             }
 
@@ -116,47 +120,28 @@ fun AddLogScreen() {
         }
 
         TimePicker(
-            initial = currentTime.minusHours(1),
-            onDismiss = { showFromTime = false },
+            initial = rangeTimeState.timeFrom,
+            onDismiss = { rangeTimeState = rangeTimeState.copy(showFromPicker = false) },
             onChange = {
-                timeFrom = it.formatTime()
-                showFromTime = false
+                rangeTimeState = rangeTimeState.copy(
+                    timeFrom = it,
+                    showFromPicker = false
+                )
             },
-            showPicker = showFromTime,
+            showPicker = rangeTimeState.showFromPicker,
         )
 
         TimePicker(
-            initial = currentTime,
-            onDismiss = { showToTime = false },
+            initial = rangeTimeState.timeTo,
+            onDismiss = { rangeTimeState = rangeTimeState.copy(showToPicker = false) },
             onChange = {
-                timeTo = it.formatTime()
-                showToTime = false
+                rangeTimeState = rangeTimeState.copy(
+                    timeTo = it,
+                    showToPicker = false
+                )
             },
-            showPicker = showToTime,
+            showPicker = rangeTimeState.showToPicker,
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TimePicker(
-    initial: LocalTime,
-    onDismiss: () -> Unit,
-    onChange: (LocalTime) -> Unit,
-    showPicker: Boolean,
-) {
-    val timePickerState = rememberTimePickerState(
-        initialHour = initial.hour,
-        initialMinute = initial.minute,
-    )
-
-    if (showPicker) {
-        TimePickerDialog(
-            onDismiss = { onDismiss() },
-            onConfirm = { onChange(LocalTime.of(timePickerState.hour, timePickerState.minute)) }
-        ) {
-            TimePicker(state = timePickerState)
-        }
     }
 }
 
@@ -164,6 +149,13 @@ private fun LocalTime.formatTime(): String {
     val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
     return this.format(formatter)
 }
+
+private data class RangeTimeState(
+    val timeFrom: LocalTime,
+    val timeTo: LocalTime,
+    val showFromPicker: Boolean,
+    val showToPicker: Boolean
+)
 
 @Composable
 private fun feelingItems(): List<SelectableItemContent> =

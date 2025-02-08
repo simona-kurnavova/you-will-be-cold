@@ -5,39 +5,37 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import java.util.Calendar
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialWithDialog(
-    onConfirm: (TimePickerState) -> Unit,
+fun TimePicker(
+    initial: LocalTime,
     onDismiss: () -> Unit,
+    onChange: (LocalTime) -> Unit,
+    showPicker: Boolean,
 ) {
-    val currentTime = Calendar.getInstance()
-
     val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
+        initialHour = initial.hour,
+        initialMinute = initial.minute,
     )
 
-    TimePickerDialog(
-        onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(timePickerState) }
-    ) {
-        TimePicker(
-            state = timePickerState,
-        )
+    if (showPicker) {
+        TimePickerDialog(
+            onDismiss = { onDismiss() },
+            onConfirm = { onChange(LocalTime.of(timePickerState.hour, timePickerState.minute)) }
+        ) {
+            TimePicker(state = timePickerState)
+        }
     }
 }
 
 @Composable
-fun TimePickerDialog(
+private fun TimePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     content: @Composable () -> Unit
@@ -58,13 +56,14 @@ fun TimePickerDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun DialWithDialogExamplePreview() {
     YoullBeColdTheme {
-        DialWithDialog(
-            onConfirm = {},
+        TimePicker(
+            initial = LocalTime.now(),
+            showPicker = true,
+            onChange = {},
             onDismiss = {},
         )
     }
