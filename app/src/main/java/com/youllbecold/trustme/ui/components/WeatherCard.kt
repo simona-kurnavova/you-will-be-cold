@@ -16,20 +16,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconAttributes
+import com.youllbecold.trustme.ui.components.generic.IconText
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.thermometerImage
-import com.youllbecold.weather.model.WeatherEvaluation
 import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
 
 @Composable
@@ -153,48 +153,25 @@ fun WeatherParametersView(
 ) {
     Row(modifier = modifier) {
         IconText(
-            icon = R.drawable.ic_wind,
+            iconAttributes = IconAttributes(R.drawable.ic_wind),
             text = windSpeed.toString(),
         )
 
         Spacer(modifier = Modifier.padding(8.dp))
 
         IconText(
-            icon = R.drawable.ic_rain,
+            iconAttributes = IconAttributes(R.drawable.ic_rain),
             text = precipitationProbability.toString(),
         )
 
         Spacer(modifier = Modifier.padding(8.dp))
 
         IconText(
-            icon = R.drawable.ic_sun,
+            iconAttributes = IconAttributes(R.drawable.ic_sun),
             text = uvIndex.toString(),
         )
     }
 
-}
-
-@Composable
-fun IconText(
-    @DrawableRes icon: Int,
-    text: String,
-) {
-    Row {
-        Icon(
-            imageVector = ImageVector.vectorResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.onBackground,
-        )
-
-        Spacer(modifier = Modifier.padding(2.dp))
-
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-    }
 }
 
 @Preview(showBackground = true)

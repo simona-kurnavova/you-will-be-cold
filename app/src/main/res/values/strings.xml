@@ -46,5 +46,10 @@
     <string name="add_log_action">Log</string>
 
     <string name="add_log_action_history">Add log</string>
+    <string name="feeling_very_cold">Freezing my balls off</string>
+    <string name="feeling_cold">A little cold</string>
+    <string name="feeling_normal">Perfect (just like me)</string>
+    <string name="feeling_hot">A little warm</string>
+    <string name="feeling_very_hot">Too hot (hot damn)</string>
 
 </resources>
