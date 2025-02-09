@@ -9,37 +9,43 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultBorderAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable
 fun OutlinedCard(
     modifier: Modifier = Modifier,
+    borderAttr: BorderAttr = defaultBorderAttr(),
+    containerColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit,
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = containerColor,
         ),
-        border = BorderStroke(0.1.dp, MaterialTheme.colorScheme.primary),
-        modifier = modifier.padding(4.dp),
+        border = BorderStroke(borderAttr.width.dp, borderAttr.color),
+        modifier = modifier,
     ) {
         Box(
-            modifier = modifier.padding(8.dp),
+            modifier = Modifier.padding(INSIDE_PADDING.dp),
         ) {
             content()
         }
     }
 }
 
+private const val INSIDE_PADDING = 8
+private const val DEFAULT_BORDER_WIDTH = 0.1
+
 @Preview(showBackground = true)
 @Composable
 private fun OutlinedCardPreview() {
     YoullBeColdTheme {
-        OutlinedCard(
-            modifier = Modifier.padding(16.dp),
-        ) {
+        OutlinedCard {
             Text(text = "This is an outlined card")
         }
     }

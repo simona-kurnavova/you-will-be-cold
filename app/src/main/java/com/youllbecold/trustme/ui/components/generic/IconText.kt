@@ -11,27 +11,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
 
 @Composable
 fun IconText(
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.bodySmall,
-    iconAttributes: IconAttributes? = null,
+    @DrawableRes icon: Int? = null,
+    iconAttr: IconAttr = defaultSmallIconAttr(),
     paddingBeforeText: Int = PADDING_BETWEEN_ELEMENTS
 ) {
     Row {
-        iconAttributes?.let {
+        icon?.let {
             Icon(
-                imageVector = ImageVector.vectorResource(it.icon),
-                contentDescription = null,
-                modifier = Modifier.size(it.iconSize.dp),
-                tint = it.tint ?: MaterialTheme.colorScheme.onBackground,
+                imageVector = ImageVector.vectorResource(it),
+                contentDescription = iconAttr.contentDescription,
+                modifier = Modifier.size(iconAttr.size.dp),
+                tint = iconAttr.tint,
             )
         }
 
@@ -45,13 +48,6 @@ fun IconText(
     }
 }
 
-data class IconAttributes(
-    @DrawableRes val icon: Int,
-    val iconSize: Int = DEFAULT_ICON_SIZE,
-    val tint: Color? = null,
-)
-
-private const val DEFAULT_ICON_SIZE = 24
 private const val PADDING_BETWEEN_ELEMENTS = 2
 
 @Preview
@@ -59,9 +55,6 @@ private const val PADDING_BETWEEN_ELEMENTS = 2
 private fun IconTextPreview() {
     IconText(
         text = "Icon Text",
-        iconAttributes = IconAttributes(
-            icon = android.R.drawable.ic_menu_search,
-            iconSize = 24,
-        ),
+        icon = R.drawable.ic_cloud,
     )
 }

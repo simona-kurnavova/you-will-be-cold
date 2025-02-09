@@ -4,7 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.youllbecold.trustme.R
 
 /**
@@ -12,9 +12,10 @@ import com.youllbecold.trustme.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar() {
-    val context = LocalContext.current
+fun Toolbar(
+    title: String = stringResource(R.string.app_name)
+) {
     TopAppBar(
-        title = { Text(text = context.getString(R.string.app_name)) }
+        title = { Text(text = title) }
     )
 }

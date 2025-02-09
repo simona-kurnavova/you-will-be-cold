@@ -51,5 +51,7 @@
     <string name="feeling_normal">Perfect (just like me)</string>
     <string name="feeling_hot">A little warm</string>
     <string name="feeling_very_hot">Too hot (hot damn)</string>
+    <string name="dialog_dismiss">Dismiss</string>
+    <string name="dialog_ok">OK</string>
 
 </resources>

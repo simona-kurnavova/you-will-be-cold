@@ -20,4 +20,4 @@ fun FadingItem(
     }
 }
 
-private const val FADE_DURATION_MS = 800
+private const val FADE_DURATION_MS = 700

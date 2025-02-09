@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.utils
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import com.youllbecold.trustme.R
 import com.youllbecold.weather.model.Weather
@@ -32,4 +33,11 @@ fun Weather.thermometerImage(): Int =
             temperature < 68 -> R.drawable.thermometer_2
             else -> R.drawable.thermometer_3
         }
+    }
+
+fun Context.getTemperatureString(temperature: Double, unitsCelsius: Boolean): String =
+    if (unitsCelsius) {
+        getString(R.string.temperature_celsius, temperature)
+    } else {
+        getString(R.string.temperature_fahrenheit, temperature)
     }

@@ -1,23 +1,17 @@
 package com.youllbecold.trustme.ui.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
@@ -34,53 +28,25 @@ fun HourlyWeatherCard(
         modifier = modifier.wrapContentHeight(),
     ) {
         items(hourlyTemperatures.size) { index ->
-            HourlyWeatherItem(hourlyTemperatures[index])
-        }
-    }
-}
+            val hourItem = hourlyTemperatures[index]
 
-@Composable
-private fun HourlyWeatherItem(
-    hourlyTemperature: HourlyTemperature,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(ITEM_PADDING.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = hourlyTemperature.weatherEvaluation.icon()),
-                contentDescription = null,
-                modifier = Modifier.size(ITEM_ICON_SIZE.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.padding(SPACE_INSIDE_ITEM.dp))
-
-            Text(
-                text = stringResource(
+            Tile(
+                title = stringResource(
                     R.string.temperature_degrees_short,
-                    hourlyTemperature.roundedTemperature
+                    hourItem.roundedTemperature
                 ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                icon = hourItem.weatherEvaluation.icon(),
+                subtitle = hourItem.formattedTime,
             )
 
-            Spacer(modifier = Modifier.padding(SPACE_INSIDE_ITEM.dp))
-
-            Text(
-                text = hourlyTemperature.formattedTime,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            if (index != hourlyTemperatures.size - 1) {
+                Spacer(modifier = Modifier.size(SPACE_BETWEEN_ITEMS.dp))
+            }
         }
     }
 }
 
-private const val SPACE_INSIDE_ITEM = 2
-private const val ITEM_ICON_SIZE = 24
-private const val ITEM_PADDING = 4
+private const val SPACE_BETWEEN_ITEMS = 4
 
 @Preview(showBackground = true)
 @Composable

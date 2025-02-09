@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.IconAttributes
 import com.youllbecold.trustme.ui.components.generic.IconText
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.utils.getTemperatureString
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.thermometerImage
 import com.youllbecold.weather.model.Weather
@@ -117,11 +117,7 @@ fun CurrentTemperatureView(
     Row(
         modifier = modifier,
     ) {
-        val temperatureWithUnits = if (useCelsius) {
-            context.getString(R.string.temperature_celsius, temperature)
-        } else {
-            context.getString(R.string.temperature_fahrenheit, temperature)
-        }
+        val temperatureWithUnits = context.getTemperatureString(temperature, useCelsius)
 
         Text(
             text = temperatureWithUnits,
@@ -153,26 +149,27 @@ fun WeatherParametersView(
 ) {
     Row(modifier = modifier) {
         IconText(
-            iconAttributes = IconAttributes(R.drawable.ic_wind),
+            icon = R.drawable.ic_wind,
             text = windSpeed.toString(),
         )
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(SPACER_PADDING.dp))
 
         IconText(
-            iconAttributes = IconAttributes(R.drawable.ic_rain),
+            icon = R.drawable.ic_rain,
             text = precipitationProbability.toString(),
         )
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(SPACER_PADDING.dp))
 
         IconText(
-            iconAttributes = IconAttributes(R.drawable.ic_sun),
+            icon = R.drawable.ic_sun,
             text = uvIndex.toString(),
         )
     }
-
 }
+
+private const val SPACER_PADDING = 8
 
 @Preview(showBackground = true)
 @Composable
@@ -191,7 +188,6 @@ private fun WeatherCardPreview() {
                 uvIndex = 0.0,
             ),
             city = "Berlin",
-            modifier = Modifier.padding(4.dp),
         )
     }
 }

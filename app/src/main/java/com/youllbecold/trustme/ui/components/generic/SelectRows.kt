@@ -113,12 +113,7 @@ private fun SelectableItem(
             .padding(PADDING_BG_INSIDE_ITEM.dp)
     ) {
         IconText(
-            iconAttributes = icon?.let {
-                IconAttributes(
-                    icon = it,
-                    iconSize = ITEM_ICON_SIZE,
-                )
-            },
+            icon = icon,
             text = title,
             textStyle = MaterialTheme.typography.bodyMedium,
             paddingBeforeText = PADDING_ITEM_ICON_END,
@@ -128,7 +123,6 @@ private fun SelectableItem(
 
 private const val PADDING_BG_INSIDE_ITEM = 18
 private const val PADDING_ITEM_ICON_END = 12
-private const val ITEM_ICON_SIZE = 24
 private const val ITEM_CORNER_RADIUS = 16
 
 data class SelectableItemContent(

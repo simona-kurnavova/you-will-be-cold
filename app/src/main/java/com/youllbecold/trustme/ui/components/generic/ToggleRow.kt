@@ -13,21 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/**
- * Component for toggle with title.
- *
- * @param text title of the toggle.
- * @param subtitle subtitle of the toggle. Optional
- * @param checked current state of the toggle.
- * @param onChecked callback when the toggle is checked.
- */
 @Composable
 fun ToggleRow(
     text: String,
-    subtitle: String? = null,
     checked: Boolean,
-    onChecked: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    onChecked: (Boolean) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -36,7 +28,7 @@ fun ToggleRow(
         Column(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(start = 12.dp)
+                .padding(start = START_PADDING.dp)
                 .weight(1f),
         ) {
             Text(
@@ -48,8 +40,8 @@ fun ToggleRow(
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                    maxLines = 3,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = SUBTITLE_ALPHA),
+                    maxLines = SUBTITLE_MAX_LINES,
                 )
             }
         }
@@ -57,20 +49,25 @@ fun ToggleRow(
         Switch(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = SWITCH_HORIZONTAL_PADDING.dp),
             checked = checked,
             onCheckedChange = onChecked,
         )
     }
 }
 
+private const val START_PADDING = 12
+private const val SUBTITLE_ALPHA = 0.7f
+private const val SUBTITLE_MAX_LINES = 3
+private const val SWITCH_HORIZONTAL_PADDING = 8
+
 @Preview(showBackground = true)
 @Composable
 private fun ToggleRowPreview() {
     Column {
         ToggleRow(
-            text = "Toggle row",
-            subtitle = "subtitle of toggle row, some very long text that should wrap around",
+            text = "Title",
+            subtitle = "Subtitle",
             checked = true,
             onChecked = {},
         )
