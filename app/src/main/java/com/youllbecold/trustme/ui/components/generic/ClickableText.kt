@@ -13,7 +13,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
+import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.fadedBorderAttr
 
 @Composable
@@ -21,6 +24,8 @@ fun ClickableText(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: Int? = null,
+    iconAttr: IconAttr = defaultSmallIconAttr(),
     textStyle: TextStyle = MaterialTheme.typography.headlineMedium,
     cornerRadius: Int = ITEM_CORNER_RADIUS,
     borderAttr: BorderAttr = fadedBorderAttr()
@@ -40,9 +45,11 @@ fun ClickableText(
             )
             .padding(INSIDE_PADDING.dp)
     ) {
-        Text(
+        IconText(
             text = text,
-            style = textStyle
+            textStyle = textStyle,
+            icon = icon,
+            iconAttr = iconAttr
         )
     }
 }
@@ -55,6 +62,7 @@ private const val INSIDE_PADDING = 8
 private fun ClickableTextPreview() {
     ClickableText(
         text = "Clickable text",
+        icon = R.drawable.ic_cloud,
         onClick = {},
         modifier = Modifier
     )

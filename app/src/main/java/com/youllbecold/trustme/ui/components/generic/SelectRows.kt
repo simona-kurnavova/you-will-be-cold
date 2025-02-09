@@ -41,8 +41,7 @@ fun SelectRows(
    var selectedItems by rememberSaveable { mutableStateOf(setOf<Int>()) }
 
     LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         items(items.size) { item ->
             val selectableItem = items[item]

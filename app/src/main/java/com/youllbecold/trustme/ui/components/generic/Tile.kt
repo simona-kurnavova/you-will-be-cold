@@ -2,12 +2,13 @@ package com.youllbecold.trustme.ui.components.generic
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,12 +50,16 @@ fun Tile(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(INSIDE_PADDING.dp)
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(INSIDE_PADDING.dp)
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = iconAttr.contentDescription,
-                modifier = Modifier.size(iconAttr.size.dp),
+                modifier = Modifier
+                    .size(iconAttr.size.dp),
                 tint = iconAttr.tint
             )
 
@@ -63,7 +68,8 @@ fun Tile(
             Text(
                 text = title,
                 style = titleAttr.style,
-                color = titleAttr.color
+                color = titleAttr.color,
+
             )
 
             subtitle?.let {

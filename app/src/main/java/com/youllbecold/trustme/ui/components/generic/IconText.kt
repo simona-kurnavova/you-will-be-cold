@@ -33,7 +33,9 @@ fun IconText(
             Icon(
                 imageVector = ImageVector.vectorResource(it),
                 contentDescription = iconAttr.contentDescription,
-                modifier = Modifier.size(iconAttr.size.dp),
+                modifier = Modifier
+                    .size(iconAttr.size.dp)
+                    .align(Alignment.CenterVertically),
                 tint = iconAttr.tint,
             )
         }
