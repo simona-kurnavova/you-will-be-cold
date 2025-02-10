@@ -1,26 +1,29 @@
 package com.youllbecold.logdatabase.api
 
-import com.youllbecold.logdatabase.model.Log
+import com.youllbecold.logdatabase.model.LogData
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * A repository for logs.
+ */
 interface LogRepository {
     /**
      * Returns all logs.
      */
-    val logs: Flow<List<Log>>
+    val logs: Flow<List<LogData>>
 
     /**
      * Adds a new log.
      */
-    suspend fun addLog(log: Log)
+    suspend fun addLog(log: LogData)
 
     /**
      * Updates a log.
      */
-    suspend fun updateLog(log: Log)
+    suspend fun updateLog(log: LogData)
 
     /**
      * Deletes a log.
      */
-    suspend fun deleteLog(log: Log)
+    suspend fun deleteLog(log: LogData)
 }

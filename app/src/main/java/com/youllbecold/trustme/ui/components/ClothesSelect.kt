@@ -22,11 +22,10 @@ import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 @Composable
 fun ClothesSelect(
     modifier: Modifier = Modifier,
-    category: ClothesCategory,
+    items: List<SelectableItemContent>,
     selected: List<Int> = emptyList(),
     onSave: (List<Int>) -> Unit = {},
 ) {
-    val items = getItems(category)
     var selectedState by rememberSaveable { mutableStateOf(selected) }
 
     Column(
@@ -40,7 +39,6 @@ fun ClothesSelect(
             allowMultipleSelection = true,
             maxSelectedItems = items.size,
             preSelected = selected.toSet(),
-            modifier = modifier,
         )
 
         Spacer(modifier = Modifier.padding(SPACE_BETWEEN_ITEMS.dp))
@@ -56,17 +54,15 @@ fun ClothesSelect(
 
 private const val SPACE_BETWEEN_ITEMS = 8
 
-private fun getItems(category: ClothesCategory): List<SelectableItemContent> = listOf(
-    SelectableItemContent(R.drawable.ic_shirt, "$category T-shirt"),
-    SelectableItemContent(R.drawable.ic_shirt, "$category Long sleeve"),
-    SelectableItemContent(R.drawable.ic_shirt, "$category  Sweater"),
-)
-
 @Preview(showBackground = true)
 @Composable
 fun ClothesSelectPreview() {
     ClothesSelect(
-        category = ClothesCategory.Top,
+        items = listOf(
+                SelectableItemContent(R.drawable.ic_shirt, "T-shirt"),
+                SelectableItemContent(R.drawable.ic_shirt, "Long sleeve"),
+                SelectableItemContent(R.drawable.ic_shirt, "Sweater"),
+            ),
         selected = listOf(0, 1),
     )
 }

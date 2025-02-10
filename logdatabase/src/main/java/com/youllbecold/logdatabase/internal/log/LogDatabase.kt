@@ -1,12 +1,15 @@
-package com.youllbecold.logdatabase.internal
+package com.youllbecold.logdatabase.internal.log
 
 import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.youllbecold.logdatabase.internal.converters.DateConverter
-import com.youllbecold.logdatabase.internal.entity.LogEntity
+import com.youllbecold.logdatabase.internal.log.converters.ClothesIdConverter
+import com.youllbecold.logdatabase.internal.log.converters.ClothesIdListConverter
+import com.youllbecold.logdatabase.internal.log.converters.DateConverter
+import com.youllbecold.logdatabase.internal.log.converters.FeelingEntityConverter
+import com.youllbecold.logdatabase.internal.log.entity.LogEntity
 
 /**
  * Database for logs.
@@ -16,7 +19,7 @@ import com.youllbecold.logdatabase.internal.entity.LogEntity
     version = 1,
     exportSchema = false
 )
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateConverter::class, FeelingEntityConverter::class, ClothesIdConverter::class, ClothesIdListConverter::class)
 internal abstract class LogDatabase : RoomDatabase() {
 
     abstract fun logDao(): LogDao

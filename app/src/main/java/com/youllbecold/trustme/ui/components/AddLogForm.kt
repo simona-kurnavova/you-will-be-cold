@@ -21,7 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.SelectRows
+import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -37,7 +40,7 @@ fun AddLogForm(
     var showTimePickerTo by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
-    var clothesBottomSheet by remember { mutableStateOf<ClothesCategory?>(null) }
+    var clothesBottomSheet by remember { mutableStateOf<Clothes.Category?>(null) }
 
     val formScrollState = rememberScrollState()
     val clothesScrollState = rememberScrollState()
@@ -72,7 +75,8 @@ fun AddLogForm(
                 Row(
                    modifier = Modifier.horizontalScroll(clothesScrollState),
                 ){
-                    ClothesCategory.entries.forEachIndexed { index, type ->
+
+                    Clothes.Category.entries.forEachIndexed { index, type ->
                         val (title, icon) = type.getUiData()
 
                         Tile(
@@ -112,14 +116,17 @@ fun AddLogForm(
                 sheetState = sheetState,
                 onDismissRequest = { clothesBottomSheet = null },
                 content = {
+                    val items = category.getItems()
+
                     ClothesSelect(
-                        category = category,
+                        items = items,
                         selected = emptyList(),
-                        onSave = {
+                        onSave = { selected ->
                             // TODO: Add selected items
+                            val result = selected.map { items[it] }
                             clothesBottomSheet = null
                         },
-                        modifier = Modifier.padding(PADDING_AROUND_QUESTION.dp)
+                        modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
                     )
                 }
             )
@@ -128,6 +135,16 @@ fun AddLogForm(
 }
 
 private const val PADDING_AROUND_QUESTION = 8
+private const val BOTTOM_SHEET_PADDING = 12
+
+private fun Clothes.Category.getItems(): List<SelectableItemContent> {
+    return Clothes.entries.filter { it.category == this }.map {
+        SelectableItemContent(
+            icon = R.drawable.ic_shirt,
+            title = it.name
+        )
+    }
+}
 
 @Composable
 private fun Section(

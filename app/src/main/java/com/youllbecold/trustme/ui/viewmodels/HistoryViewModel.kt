@@ -3,7 +3,10 @@ package com.youllbecold.trustme.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.model.Log
+import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.LogData
+import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.WeatherData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -31,15 +34,17 @@ class HistoryViewModel(
         // TODO: Just for testing, remove when logic implemented.
         viewModelScope.launch {
             logRepository.addLog(
-                Log(
+                LogData(
                     id = null,
-                    date = LocalDateTime.now(),
-                    overallFeeling = Log.Feeling.WARM,
-                    weatherData = Log.WeatherData(
-                        temperature = 25.0,
-                        apparentTemperature = 25.0,
-                    )
-
+                    dateFrom = LocalDateTime.now(),
+                    dateTo = LocalDateTime.now(),
+                    overallFeeling = Feeling.WARM,
+                    weatherData = WeatherData(
+                        apparentTemperatureMin = 25.0,
+                        apparentTemperatureMax = 25.0,
+                        avgTemperature = 25.0
+                    ),
+                    clothes = emptyList() // listOf(Clothes.DRESS)
                 )
             )
         }
@@ -50,5 +55,5 @@ class HistoryViewModel(
  * UI state for the history screen.
  */
 data class HistoryUiState(
-    val logs: List<Log> = emptyList()
+    val logs: List<LogData> = emptyList()
 )

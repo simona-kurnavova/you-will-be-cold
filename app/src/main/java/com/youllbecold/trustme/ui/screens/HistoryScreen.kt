@@ -17,7 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youllbecold.logdatabase.model.Log
+import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.LogData
+import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
@@ -77,7 +79,7 @@ private const val BETWEEN_ITEM_PADDING = 8
 
 @Composable
 private fun LogItem(
-    log: Log,
+    log: LogData,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -101,11 +103,13 @@ private const val INSIDE_ITEM_PADDING = 4
 @Composable
 fun HistoryScreenPreview() {
     YoullBeColdTheme {
-        val logEntityItem = Log(
+        val logEntityItem = LogData(
             1,
             LocalDateTime.now(),
-            Log.Feeling.WARM,
-            weatherData = Log.WeatherData(0.0, 0.0)
+            LocalDateTime.now(),
+            WeatherData(0.0, 0.0, 0.0),
+            Feeling.WARM,
+            emptyList()
         )
 
         HistoryScreen(

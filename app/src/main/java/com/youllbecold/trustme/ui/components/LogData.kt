@@ -2,6 +2,7 @@ package com.youllbecold.trustme.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 import java.time.LocalTime
@@ -32,15 +33,15 @@ enum class ClothesCategory {
     FullBody
 }
 
-fun ClothesCategory.getUiData(): Pair<String, Int> =
+fun Clothes.Category.getUiData(): Pair<String, Int> =
     when (this) {
-        ClothesCategory.Top -> "Tops" to R.drawable.ic_shirt
-        ClothesCategory.Jackets -> "Jackets" to R.drawable.ic_jacket
-        ClothesCategory.Bottom -> "Bottoms" to R.drawable.ic_pants
-        ClothesCategory.Shoes -> "Shoes" to R.drawable.ic_stocking
-        ClothesCategory.Hats -> "Hats" to R.drawable.ic_hat
-        ClothesCategory.Accessories -> "Accessories" to R.drawable.ic_sunglasses
-        ClothesCategory.FullBody -> "Dresses and overalls" to R.drawable.ic_dress
+        Clothes.Category.TOPS -> "Tops" to R.drawable.ic_shirt
+        Clothes.Category.JACKETS -> "Jackets" to R.drawable.ic_jacket
+        Clothes.Category.BOTTOMS -> "Bottoms" to R.drawable.ic_pants
+        Clothes.Category.SHOES -> "Shoes" to R.drawable.ic_stocking
+        Clothes.Category.HATS -> "Hats" to R.drawable.ic_hat
+        Clothes.Category.ACCESSORIES -> "Accessories" to R.drawable.ic_sunglasses
+        Clothes.Category.FULL_BODY -> "Dresses and overalls" to R.drawable.ic_dress
     }
 
 

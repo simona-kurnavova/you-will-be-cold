@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal
+package com.youllbecold.logdatabase.internal.log
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.youllbecold.logdatabase.internal.entity.LogEntity
+import com.youllbecold.logdatabase.internal.log.entity.LogEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,4 +24,4 @@ internal interface LogDao {
     fun delete(logEntity: LogEntity)
 }
 
-private val DEFAULT_LIMIT = 100
+private const val DEFAULT_LIMIT = 100
