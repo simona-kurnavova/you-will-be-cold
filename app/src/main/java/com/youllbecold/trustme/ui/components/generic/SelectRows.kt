@@ -29,6 +29,7 @@ fun SelectRows(
     items: List<SelectableItemContent>,
     onItemsSelected: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
+    preSelected: Set<Int> = emptySet(),
     allowMultipleSelection: Boolean = false,
     maxSelectedItems: Int = 1,
     bgDefinition: BackgroundDefinition = BackgroundDefinition(
@@ -38,12 +39,11 @@ fun SelectRows(
         borderWidth = 0,
     ),
 ) {
-   var selectedItems by rememberSaveable { mutableStateOf(setOf<Int>()) }
+   var selectedItems by rememberSaveable { mutableStateOf(preSelected) }
 
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-
         items.forEachIndexed { index, selectableItem ->
 
             SelectableItem(
@@ -145,6 +145,7 @@ fun SelectRowsPreview() {
             SelectableItemContent(title = "Item 2", icon = R.drawable.ic_snow),
             SelectableItemContent(title = "Item 3"),
         ),
+        preSelected = setOf(0),
         onItemsSelected = { },
     )
 }

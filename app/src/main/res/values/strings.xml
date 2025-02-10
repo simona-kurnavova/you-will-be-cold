@@ -53,5 +53,6 @@
     <string name="feeling_very_hot">Too hot</string>
     <string name="dialog_dismiss">Dismiss</string>
     <string name="dialog_ok">OK</string>
+    <string name="add_clothes">Add</string>
 
 </resources>
