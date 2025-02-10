@@ -135,7 +135,7 @@ fun CurrentTemperatureView(
             modifier = Modifier
                 .size(48.dp)
                 .align(Alignment.CenterVertically),
-            tint = MaterialTheme.colorScheme.secondary
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

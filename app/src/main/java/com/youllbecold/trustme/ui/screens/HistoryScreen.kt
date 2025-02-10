@@ -45,9 +45,11 @@ fun HistoryScreen(
 
     LazyColumn(
         Modifier
-            .padding(CONTENT_PADDING.dp)
+            .padding(horizontal = CONTENT_PADDING.dp)
             .fillMaxSize()
     ) {
+        item { Spacer(modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp)) }
+
         items(state.logs.size) { index ->
             LogItem(
                 state.logs[index],

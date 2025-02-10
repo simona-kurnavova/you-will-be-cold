@@ -102,7 +102,7 @@ fun HomeScreen(
 }
 
 private const val CONTENT_PADDING = 8
-private const val PADDING_BETWEEN_ITEMS = 4
+private const val PADDING_BETWEEN_ITEMS = 8
 
 @Preview
 @Composable

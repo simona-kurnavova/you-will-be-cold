@@ -46,7 +46,7 @@ fun HourlyWeatherCard(
     }
 }
 
-private const val SPACE_BETWEEN_ITEMS = 4
+private const val SPACE_BETWEEN_ITEMS = 8
 
 @Preview(showBackground = true)
 @Composable

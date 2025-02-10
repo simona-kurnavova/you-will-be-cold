@@ -107,6 +107,7 @@ private fun getFloatingButton(currentRoute: String?): FloatingAction? {
 
 @Composable
 private fun SetupFloatingButton(navController: NavController, action: FloatingAction) {
+    // Note: uses secondaryContainer color.
     ExtendedFloatingActionButton(
         onClick = { navController.navigate(action.floatingActionTo.route) },
         icon = {

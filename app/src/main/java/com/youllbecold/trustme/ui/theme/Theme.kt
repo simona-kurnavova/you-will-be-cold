@@ -11,26 +11,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PrettyBlue,
-    secondary = PurpleGrey80,
-    tertiary = PrettyBlue,
     background = Black,
     onBackground = White,
+
+    primary = PrettyBlue,
+    secondary = PastelPurple,
+
+    // Floating action button
+    primaryContainer = PastelBlue,
+    onPrimaryContainer = Black,
+
+    // Menu highlight
+    secondaryContainer = PastelBlue,
+    onSecondaryContainer = Black,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = PastelBlue,
-    secondary = PurpleGrey40,
-    tertiary = PastelBlue,
     background = White,
     onBackground = Black,
-    )
+
+    primary = MetalicBlue,
+    secondary = PrettyBlue,
+
+    // Floating action button
+    primaryContainer = PrettyBlue,
+    onPrimaryContainer = White,
+
+    // Menu highlight
+    secondaryContainer = PrettyBlue,
+    onSecondaryContainer = White,
+)
 
 @Composable
 fun YoullBeColdTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // False because it ruins the color scheme
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

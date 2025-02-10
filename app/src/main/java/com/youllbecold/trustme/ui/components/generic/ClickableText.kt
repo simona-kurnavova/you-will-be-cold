@@ -26,7 +26,7 @@ fun ClickableText(
     modifier: Modifier = Modifier,
     icon: Int? = null,
     iconAttr: IconAttr = defaultSmallIconAttr(),
-    textStyle: TextStyle = MaterialTheme.typography.headlineMedium,
+    textStyle: TextStyle = MaterialTheme.typography.bodySmall,
     cornerRadius: Int = ITEM_CORNER_RADIUS,
     borderAttr: BorderAttr = fadedBorderAttr()
 ) {

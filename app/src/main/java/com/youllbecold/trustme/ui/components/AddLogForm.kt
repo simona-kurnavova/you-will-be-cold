@@ -1,14 +1,21 @@
 package com.youllbecold.trustme.ui.components
 
 import android.util.Log
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -42,8 +49,12 @@ fun AddLogForm(
     val sheetState = rememberModalBottomSheetState()
     var clothesBottomSheet by remember { mutableStateOf<ClothesCategory?>(null) }
 
+    val formScrollState = rememberScrollState()
+    val clothesScrollState = rememberScrollState()
+
     Box {
         Column(modifier = Modifier
+            .verticalScroll(formScrollState)
             .padding(PADDING_AROUND_QUESTION.dp)
         ) {
             Section(title = "When were you out?",  modifier = Modifier.fillMaxWidth()) {
@@ -62,17 +73,16 @@ fun AddLogForm(
                     onItemsSelected = { selectedItems ->
                         val result = Feeling.entries.filter { selectedItems.contains(it.ordinal) }
                         // Note: Allowed just one option.
-                        onLogChange(log.copy(overallFeeling = result.first()))
+                        onLogChange(log.copy(overallFeeling = result.firstOrNull()))
                     },
                 )
             }
 
             Section(title = "What did you wear?") {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(ClothesCategory.entries.size) { index ->
-                        val type = ClothesCategory.entries[index]
+                Row(
+                   modifier = Modifier.horizontalScroll(clothesScrollState),
+                ){
+                    ClothesCategory.entries.forEachIndexed { index, type ->
                         val (title, icon) = type.getUiData()
 
                         Tile(
@@ -80,7 +90,6 @@ fun AddLogForm(
                             icon = icon,
                             onClick = { clothesBottomSheet = type },
                             modifier = Modifier
-                                .defaultMinSize(120.dp)
                                 .padding(4.dp)
                         )
                     }
