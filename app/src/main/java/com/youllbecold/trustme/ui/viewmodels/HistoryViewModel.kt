@@ -3,7 +3,6 @@ package com.youllbecold.trustme.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.WeatherData

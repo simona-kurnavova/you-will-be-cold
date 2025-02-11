@@ -42,6 +42,7 @@ android {
 
 dependencies {
     // Project modules
+    api(project(":recomendation"))
     api(project(":logdatabase"))
     api(project(":weather"))
 

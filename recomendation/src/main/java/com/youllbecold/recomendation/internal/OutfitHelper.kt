@@ -1,9 +1,20 @@
-package com.youllbecold.logdatabase.internal.recommendation
+package com.youllbecold.recomendation.internal
 
-import com.youllbecold.logdatabase.internal.log.entity.ClothesId
+import com.youllbecold.logdatabase.model.Clothes
 
 internal object OutfitHelper {
-    fun calculateWeight(outfit: List<ClothesId>): ClothesWeight = outfit
+    private val clothesWeights = mapOf(
+        Clothes.SHORT_SLEEVE to ClothesWeight(top = 2),
+        Clothes.LONG_SLEEVE to ClothesWeight(top = 3),
+        Clothes.SHORT_SKIRT to ClothesWeight(bottom = 1),
+        Clothes.SHORTS to ClothesWeight(bottom = 1),
+        Clothes.JEANS to ClothesWeight(bottom = 3),
+        Clothes.SANDALS to ClothesWeight(feet = 2),
+        Clothes.TENNIS_SHOES to ClothesWeight(feet = 3),
+        Clothes.DRESS to ClothesWeight(top = 2, bottom = 2)
+    )
+
+    fun calculateWeight(outfit: List<Clothes>): ClothesWeight = outfit
         .mapNotNull { clothesWeights[it] }
         .let { concatWeights(it) }
 
@@ -17,17 +28,6 @@ internal object OutfitHelper {
             feet = weights.sumOf { it.feet }
         )
 }
-
-private val clothesWeights = mapOf(
-    ClothesId.SHORT_SLEEVE to ClothesWeight(top = 2),
-    ClothesId.LONG_SLEEVE to ClothesWeight(top = 3),
-    ClothesId.SHORT_SKIRT to ClothesWeight(bottom = 1),
-    ClothesId.SHORTS to ClothesWeight(bottom = 1),
-    ClothesId.JEANS to ClothesWeight(bottom = 3),
-    ClothesId.SANDALS to ClothesWeight(feet = 2),
-    ClothesId.TENNIS_SHOES to ClothesWeight(feet = 3),
-    ClothesId.DRESS to ClothesWeight(top = 2, bottom = 2)
-)
 
 internal class ClothesWeight(
     val head: Int = 0,

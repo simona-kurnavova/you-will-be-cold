@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.youllbecold.trustme.ui.screens.AdLogRoot
+import com.youllbecold.trustme.ui.screens.AddLogRoot
 import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
 import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
@@ -19,6 +19,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(NavRoute.Home.route) { HomeScreenRoot() }
         composable(NavRoute.History.route) { HistoryScreenRoot() }
         composable(NavRoute.Settings.route) { SettingsScreenRoot() }
-        composable(NavRoute.AddLog.route) { AdLogRoot() }
+        composable(NavRoute.AddLog.route) {
+            AddLogRoot(
+                navigateToHistory = { navController.navigate(NavRoute.History.route) }
+            )
+        }
     }
 }

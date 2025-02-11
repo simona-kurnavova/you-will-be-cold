@@ -54,5 +54,9 @@
     <string name="dialog_dismiss">Dismiss</string>
     <string name="dialog_ok">OK</string>
     <string name="add_clothes">Add</string>
+    <string name="add_log_form_when">When were you out?</string>
+    <string name="add_log_feeling">How did you feel today?</string>
+    <string name="add_log_wearing">What did you wear?</string>
+    <string name="add_log_save">Save</string>
 
 </resources>

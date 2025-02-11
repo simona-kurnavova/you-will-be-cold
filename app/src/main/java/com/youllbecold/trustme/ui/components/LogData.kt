@@ -5,33 +5,8 @@ import androidx.compose.ui.res.stringResource
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
+import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import java.time.LocalTime
-
-data class LogData(
-    val timeFrom: LocalTime,
-    val timeTo: LocalTime,
-    val overallFeeling: Feeling? = null,
-    // TODO: Update
-    val clothes: Map<ClothesCategory, List<String>> = emptyMap()
-)
-
-enum class Feeling {
-    VeryHot,
-    Hot,
-    Normal,
-    Cold,
-    VeryCold,
-}
-
-enum class ClothesCategory {
-    Top,
-    Jackets,
-    Bottom,
-    Shoes,
-    Hats,
-    Accessories,
-    FullBody
-}
 
 fun Clothes.Category.getUiData(): Pair<String, Int> =
     when (this) {
@@ -44,32 +19,40 @@ fun Clothes.Category.getUiData(): Pair<String, Int> =
         Clothes.Category.FULL_BODY -> "Dresses and overalls" to R.drawable.ic_dress
     }
 
+fun Clothes.Category.getItems(): List<SelectableItemContent> {
+    return Clothes.entries.filter { it.category == this }.map {
+        SelectableItemContent(
+            icon = R.drawable.ic_shirt,
+            title = it.name
+        )
+    }
+}
 
 @Composable
-fun feelingItems(): List<SelectableItemContent> =
-    Feeling.entries.map { feeling ->
+fun selectableFeelings(): List<SelectableItemContent> =
+    FeelingState.entries.map { feeling ->
         when (feeling) {
-            Feeling.VeryHot -> SelectableItemContent(
+            FeelingState.VERY_WARM -> SelectableItemContent(
                 R.drawable.ic_fire,
                 stringResource(id = R.string.feeling_very_hot)
             )
 
-            Feeling.Hot -> SelectableItemContent(
+            FeelingState.WARM -> SelectableItemContent(
                 R.drawable.ic_sun,
                 stringResource(id = R.string.feeling_hot)
             )
 
-            Feeling.Normal -> SelectableItemContent(
+            FeelingState.NORMAL -> SelectableItemContent(
                 R.drawable.ic_smile,
                 stringResource(id = R.string.feeling_normal)
             )
 
-            Feeling.Cold -> SelectableItemContent(
+            FeelingState.COLD -> SelectableItemContent(
                 R.drawable.ic_snowflake,
                 stringResource(id = R.string.feeling_cold)
             )
 
-            Feeling.VeryCold -> SelectableItemContent(
+            FeelingState.VERY_COLD -> SelectableItemContent(
                 R.drawable.ic_popsicle,
                 stringResource(id = R.string.feeling_very_cold)
             )

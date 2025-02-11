@@ -1,10 +1,10 @@
-package com.youllbecold.logdatabase
+package com.youllbecold.recomendation
 
 import android.app.Application
+import com.youllbecold.logdatabase.LogRepositoryProvider
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.api.RecommendRepository
-import com.youllbecold.logdatabase.internal.log.LogDatabase
-import com.youllbecold.logdatabase.internal.recommendation.RecommendRepositoryImpl
+import com.youllbecold.recomendation.api.RecommendRepository
+import com.youllbecold.recomendation.internal.RecommendRepositoryImpl
 
 /**
  * Provider for LogRepository.
@@ -16,5 +16,5 @@ object RecommendRepositoryProvider {
      * @param application The application.
      */
     fun repository(application: Application): RecommendRepository =
-        RecommendRepositoryImpl(LogDatabase.getInstance(application).logDao())
+        RecommendRepositoryImpl(LogRepositoryProvider.repository(application))
 }

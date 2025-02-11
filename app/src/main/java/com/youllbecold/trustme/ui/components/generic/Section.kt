@@ -1,0 +1,26 @@
+package com.youllbecold.trustme.ui.components.generic
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.ui.components.SectionTitle
+
+@Composable
+fun Section(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = modifier) {
+        SectionTitle(
+            text = title,
+        )
+        content()
+        Spacer(modifier = Modifier.padding(PADDING_BETWEEN_SECTIONS.dp))
+    }
+}
+
+private const val PADDING_BETWEEN_SECTIONS = 16

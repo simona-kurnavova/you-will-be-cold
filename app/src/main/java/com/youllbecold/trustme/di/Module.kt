@@ -2,7 +2,10 @@ package com.youllbecold.trustme.di
 
 import com.youllbecold.logdatabase.LogRepositoryProvider
 import com.youllbecold.logdatabase.api.LogRepository
+import com.youllbecold.recomendation.RecommendRepositoryProvider
+import com.youllbecold.recomendation.api.RecommendRepository
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
@@ -27,6 +30,7 @@ val appModule = module {
 
     // Repositories
     single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
+    single<RecommendRepository> { RecommendRepositoryProvider.repository(androidApplication()) }
     single<WeatherRepository> { WeatherProvider.weatherRepository }
     
     // UseCases
@@ -39,5 +43,5 @@ val uiModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::HistoryViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::AddLogViewModel)
 }
-

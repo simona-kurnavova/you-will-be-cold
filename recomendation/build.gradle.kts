@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.youllbecold.weather"
+    namespace = "com.youllbecold.recomendation"
     compileSdk = 35
 
     defaultConfig {
@@ -33,16 +33,7 @@ android {
 }
 
 dependencies {
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.gson.converter)
-    implementation(libs.okhttp3.interceptor)
-
-    // Gson
-    implementation(libs.gson.converter)
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines)
+    api(project("::logdatabase"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
