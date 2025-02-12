@@ -11,13 +11,21 @@ data class TextAttr(
 )
 
 @Composable
-fun defaultTitleAttr(): TextAttr = TextAttr(
+fun defaultMediumTextAttr(): TextAttr = TextAttr(
     style = MaterialTheme.typography.bodyMedium,
     color = MaterialTheme.colorScheme.onBackground
 )
 
 @Composable
-fun defaultSubtitleAttr(): TextAttr = TextAttr(
+fun defaultSmallTextAttr(): TextAttr = TextAttr(
     style = MaterialTheme.typography.bodySmall,
     color = MaterialTheme.colorScheme.onBackground
 )
+
+@Composable
+fun defaultSmallFadedTextAttr(): TextAttr = TextAttr(
+    style = MaterialTheme.typography.bodySmall,
+    color = MaterialTheme.colorScheme.onBackground.copy(alpha = FADED_ALPHA)
+)
+
+private const val FADED_ALPHA = 0.7f

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -50,7 +51,7 @@ fun HistoryScreen(
             .padding(horizontal = CONTENT_PADDING.dp)
             .fillMaxSize()
     ) {
-        item { Spacer(modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp)) }
+        item { Spacer(modifier = Modifier.width(BETWEEN_ITEM_PADDING.dp)) }
 
         items(state.logs.size) { index ->
             LogItem(
@@ -58,7 +59,7 @@ fun HistoryScreen(
                 Modifier.padding(BETWEEN_ITEM_PADDING.dp)
             )
 
-            Spacer(modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp))
+            Spacer(modifier = Modifier.width(BETWEEN_ITEM_PADDING.dp))
         }
 
         if (state.logs.isEmpty()) {

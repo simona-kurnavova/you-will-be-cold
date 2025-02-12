@@ -41,7 +41,7 @@ fun HomeScreenRoot(
  * Home screen.
  */
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     uiState: StateFlow<HomeUiState>,
     onAction: (HomeAction) -> Unit,
 ) {
@@ -56,10 +56,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxWidth(),
         state = swipeRefreshState,
         swipeEnabled = true,
-        onRefresh = {
-            // Trigger refresh when user pulls to refresh
-            onAction(HomeAction.RefreshWeather)
-        }
+        onRefresh = { onAction(HomeAction.RefreshWeather) }
     ) {
         // SwipeRefresh needs scrollable content to function
         LazyColumn(
@@ -67,8 +64,10 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(CONTENT_PADDING.dp)
         ) {
+            val showWeather = state.currentWeather != null
+
             item {
-                FadingItem(visible = state.currentWeather != null) {
+                FadingItem(visible = showWeather) {
                     state.currentWeather?.let {
                         WeatherCard(
                             weather = it,
@@ -82,7 +81,7 @@ fun HomeScreen(
             }
 
             item {
-                FadingItem(visible = state.currentWeather != null,) {
+                FadingItem(visible = showWeather) {
                     state.currentWeather?.let {
                         HourlyWeatherCard(
                             hourlyTemperatures = state.hourlyTemperatures,
@@ -96,7 +95,7 @@ fun HomeScreen(
         }
 
         if (state.status == WeatherStatus.Error) {
-            // TODO: Some error state
+            // TODO: Some error states
         }
     }
 }

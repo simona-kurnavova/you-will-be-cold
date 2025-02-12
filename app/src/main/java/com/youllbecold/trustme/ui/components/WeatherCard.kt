@@ -5,8 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.HorizontalDivider
@@ -16,14 +18,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconRowData
 import com.youllbecold.trustme.ui.components.generic.IconText
+import com.youllbecold.trustme.ui.components.generic.IconTextRow
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
 import com.youllbecold.trustme.ui.utils.icon
@@ -53,7 +59,7 @@ fun WeatherCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(2.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
                 CurrentTemperatureView(
                     temperature = weather.temperature,
@@ -68,7 +74,7 @@ fun WeatherCard(
                     modifier = Modifier.padding(8.dp),
                 )
 
-                WeatherParametersView(
+                WeatherParameters(
                     windSpeed = weather.windSpeed,
                     precipitationProbability = weather.precipitationProbability,
                     uvIndex = weather.uvIndex,
@@ -84,9 +90,13 @@ fun CityView(
     city: String,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-    ) {
+    Row(modifier = modifier) {
+        IconText(
+            text = city,
+            icon = rememberVectorPainter(Icons.Default.LocationOn),
+            modifier = Modifier.align(Alignment.CenterVertically),
+        )
+
         Icon(
             imageVector = Icons.Default.LocationOn,
             contentDescription = null,
@@ -95,13 +105,12 @@ fun CityView(
                 .align(Alignment.CenterVertically)
         )
 
-        Spacer(modifier = Modifier.padding(2.dp))
+        Spacer(modifier = Modifier.width(2.dp))
 
         Text(
             text = city,
             style = MaterialTheme.typography.bodySmall,
-            modifier = modifier
-                .align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
@@ -127,7 +136,7 @@ fun CurrentTemperatureView(
                 .align(Alignment.CenterVertically)
         )
 
-        Spacer(modifier = Modifier.padding(4.dp))
+        Spacer(modifier = Modifier.width(4.dp))
 
         Icon(
             painter = painterResource(id = icon),
@@ -141,35 +150,31 @@ fun CurrentTemperatureView(
 }
 
 @Composable
-fun WeatherParametersView(
+fun WeatherParameters(
     windSpeed: Double,
     precipitationProbability: Int,
     uvIndex: Double,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier) {
-        IconText(
-            icon = R.drawable.ic_wind,
-            text = windSpeed.toString(),
-        )
-
-        Spacer(modifier = Modifier.padding(SPACER_PADDING.dp))
-
-        IconText(
-            icon = R.drawable.ic_rain,
-            text = precipitationProbability.toString(),
-        )
-
-        Spacer(modifier = Modifier.padding(SPACER_PADDING.dp))
-
-        IconText(
-            icon = R.drawable.ic_sun,
-            text = uvIndex.toString(),
-        )
-    }
+    IconTextRow(
+        items = listOf(
+            IconRowData(
+                painter = rememberVector(R.drawable.ic_wind),
+                text = windSpeed.toString(),
+            ),
+            IconRowData(
+                painter = rememberVector(R.drawable.ic_rain),
+                text = precipitationProbability.toString(),
+            ),
+            IconRowData(
+                painter = rememberVector(R.drawable.ic_sun),
+                text = uvIndex.toString(),
+            ),
+        ),
+        modifier = modifier
+    )
 }
 
-private const val SPACER_PADDING = 8
 
 @Preview(showBackground = true)
 @Composable

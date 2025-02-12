@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
+import com.youllbecold.trustme.ui.components.utils.rememberVector
 
 @Composable
 fun SelectRows(
@@ -112,9 +114,9 @@ private fun SelectableItem(
             .padding(PADDING_BG_INSIDE_ITEM.dp)
     ) {
         IconText(
-            icon = icon,
+            icon = icon?.let { rememberVector(it) },
             text = title,
-            textStyle = MaterialTheme.typography.bodyMedium,
+            textAttr = defaultMediumTextAttr(),
             paddingBeforeText = PADDING_ITEM_ICON_END,
         )
     }

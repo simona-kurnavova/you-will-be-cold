@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.components.generic
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,9 +45,9 @@ fun OutlinedCard(
 }
 
 private const val INSIDE_PADDING = 8
-private const val DEFAULT_BORDER_WIDTH = 0.1
 
-@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun OutlinedCardPreview() {
     YoullBeColdTheme {

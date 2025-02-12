@@ -58,5 +58,7 @@
     <string name="add_log_feeling">How did you feel today?</string>
     <string name="add_log_wearing">What did you wear?</string>
     <string name="add_log_save">Save</string>
+    <string name="time_range_from">from:</string>
+    <string name="time_range_to">to:</string>
 
 </resources>

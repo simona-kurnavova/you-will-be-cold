@@ -3,7 +3,7 @@ package com.youllbecold.trustme.ui.screens.overlays
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.OverlaySkeleton
+import com.youllbecold.trustme.ui.components.OverlaySkeleton
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 /**
@@ -13,7 +13,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 fun WelcomeScreen(
     onPass: () -> Unit
 ) {
-    // TODO: add how does it work section + some image
+    // TODO: add how does it work section
 
     OverlaySkeleton(
         title = R.string.welcome_screen_title,

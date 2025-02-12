@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -45,7 +46,7 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxWidth()
     ) {
         ToggleRow(
-            text = stringResource(R.string.settings_daily_notification),
+            title = stringResource(R.string.settings_daily_notification),
             subtitle = stringResource(R.string.settings_daily_notification_subtitle),
             checked = state.allowDailyNotification,
             onChecked = { isChecked ->
@@ -53,10 +54,10 @@ fun SettingsScreen(
             },
         )
         
-        Spacer(modifier = Modifier.padding(SPACE_BETWEEN_TOGGLES.dp))
+        Spacer(modifier = Modifier.width(SPACE_BETWEEN_TOGGLES.dp))
 
         ToggleRow(
-            text = stringResource(R.string.settings_use_celsius),
+            title = stringResource(R.string.settings_use_celsius),
             subtitle = stringResource(R.string.settings_use_celsius_subtitle),
             checked = state.useCelsiusUnits,
             onChecked = { isChecked ->

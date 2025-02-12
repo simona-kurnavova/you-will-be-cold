@@ -1,5 +1,6 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components
 
+import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -18,9 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.utils.center
+import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 /**
  * Skeleton for overlay screen containing image, title, description and button.
@@ -44,37 +48,35 @@ fun OverlaySkeleton(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(horizontal = PADDING_HORIZONTAL.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (image != null) {
+        image?.let {
             Image(
-                painter = painterResource(id = image),
+                painter = painterResource(id = it),
                 contentDescription = null,
             )
 
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.height(SPACE_UNDER_IMAGE.dp))
         }
 
         Text(
             text = stringResource(title),
             style = MaterialTheme.typography.headlineLarge.center(),
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 18.dp)
-                .padding(horizontal = 18.dp),
         )
+
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
 
         Text(
             text = stringResource(subtitle),
             style = MaterialTheme.typography.bodyMedium.center(),
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(18.dp),
         )
+
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
 
         Button(
             onClick = { action() },
@@ -87,5 +89,21 @@ fun OverlaySkeleton(
         }
     }
 }
+private const val PADDING_HORIZONTAL = 18
+private const val SPACE_UNDER_IMAGE = 24
+private const val SPACE_BETWEEN_ITEMS = 12
 
-private fun TextStyle.center() = this.copy(textAlign = TextAlign.Center)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun OverlaySkeletonPreview() {
+    YoullBeColdTheme {
+        OverlaySkeleton(
+            title = R.string.welcome_screen_title,
+            subtitle = R.string.welcome_screen_description,
+            buttonText = R.string.welcome_screen_button_text,
+            action = {},
+            image = R.drawable.thermometer_0,
+        )
+    }
+}

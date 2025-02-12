@@ -27,35 +27,25 @@ fun TimePicker(
     )
 
     if (showPicker) {
-        TimePickerDialog(
-            onDismiss = { onDismiss() },
-            onConfirm = { onChange(LocalTime.of(timePickerState.hour, timePickerState.minute)) }
-        ) {
-            TimePicker(state = timePickerState)
-        }
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(stringResource(R.string.dialog_dismiss))
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onChange(LocalTime.of(timePickerState.hour, timePickerState.minute))
+                    }
+                ) {
+                    Text(stringResource(R.string.dialog_ok))
+                }
+            },
+            text = { TimePicker(state = timePickerState) }
+        )
     }
-}
-
-@Composable
-private fun TimePickerDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        dismissButton = {
-            TextButton(onClick = { onDismiss() }) {
-                Text(stringResource(R.string.dialog_dismiss))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onConfirm() }) {
-                Text(stringResource(R.string.dialog_ok))
-            }
-        },
-        text = { content() }
-    )
 }
 
 @Preview

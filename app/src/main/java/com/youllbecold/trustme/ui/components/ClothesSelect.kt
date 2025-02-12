@@ -1,10 +1,13 @@
 package com.youllbecold.trustme.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.SelectRows
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
+import com.youllbecold.trustme.ui.components.generic.ThemedButton
 
 @Composable
 fun ClothesSelect(
-    modifier: Modifier = Modifier,
     items: List<SelectableItemContent>,
+    modifier: Modifier = Modifier,
     selected: List<Int> = emptyList(),
     onSave: (List<Int>) -> Unit = {},
 ) {
@@ -41,20 +45,20 @@ fun ClothesSelect(
             preSelected = selected.toSet(),
         )
 
-        Spacer(modifier = Modifier.padding(SPACE_BETWEEN_ITEMS.dp))
+        Spacer(modifier = Modifier.width(SPACE_BETWEEN_ITEMS.dp))
 
-        Button(
+        ThemedButton(
+            text = stringResource(R.string.add_clothes),
             onClick = { onSave(selectedState) },
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.add_clothes))
-        }
+        )
     }
 }
 
 private const val SPACE_BETWEEN_ITEMS = 8
 
-@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun ClothesSelectPreview() {
     ClothesSelect(

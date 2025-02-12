@@ -1,5 +1,6 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.generic
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -37,7 +38,8 @@ fun SectionTitle(
 
 private const val PADDING_UNDER_TITLE = 12
 
-@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun SectionTitlePreview() {
     YoullBeColdTheme {

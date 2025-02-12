@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.OverlaySkeleton
+import com.youllbecold.trustme.ui.components.OverlaySkeleton
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.utils.IntentUtils
 import com.youllbecold.trustme.utils.PermissionHelper
