@@ -55,9 +55,6 @@ fun AddLogForm(
     removeClothes: (Set<Clothes>) -> Unit,
     onSave: () -> Unit,
 ) {
-    var showTimePickerFrom by remember { mutableStateOf(false) }
-    var showTimePickerTo by remember { mutableStateOf(false) }
-
     val sheetState = rememberModalBottomSheetState()
     var clothesBottomSheet by remember { mutableStateOf<Clothes.Category?>(null) }
 
@@ -73,8 +70,8 @@ fun AddLogForm(
                 date = date,
                 timeFrom = timeFrom,
                 timeTo = timeTo,
-                onFromTimeClick = { showTimePickerFrom = true },
-                onToTimeClick = { showTimePickerTo = true },
+                onFromTimeSelected = { onTimeFromChange(it) },
+                onToTimeSelected = { onTimeToChange(it) },
                 onDateChanged = { onDateChanged(it) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -95,26 +92,6 @@ fun AddLogForm(
                 Text(stringResource(R.string.add_log_save))
             }
         }
-
-        TimePicker(
-            initial = timeFrom,
-            onDismiss = { showTimePickerFrom = false },
-            onChange = {
-                onTimeFromChange(it)
-                showTimePickerFrom = false
-            },
-            showPicker = showTimePickerFrom,
-        )
-
-        TimePicker(
-            initial = timeTo,
-            onDismiss = { showTimePickerTo = false },
-            onChange = {
-                onTimeToChange(it)
-                showTimePickerTo = false
-            },
-            showPicker = showTimePickerTo,
-        )
 
         clothesBottomSheet?.let { category ->
             ModalBottomSheet(
@@ -152,8 +129,8 @@ private fun DateTimeSection(
     timeFrom: ImmutableTime,
     timeTo: ImmutableTime,
     onDateChanged: (ImmutableDate) -> Unit,
-    onFromTimeClick: () -> Unit,
-    onToTimeClick: () -> Unit,
+    onFromTimeSelected: (ImmutableTime) -> Unit,
+    onToTimeSelected: (ImmutableTime) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Section(
@@ -172,8 +149,8 @@ private fun DateTimeSection(
             TimeRangeInput(
                 fromTime = timeFrom,
                 toTime = timeTo,
-                onFromTimeClick = onFromTimeClick,
-                onToTimeClick = onToTimeClick,
+                onFromTimeSelected = onFromTimeSelected,
+                onToTimeSelected = onToTimeSelected,
             )
         }
 
