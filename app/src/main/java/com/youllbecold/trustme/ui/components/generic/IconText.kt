@@ -54,7 +54,7 @@ fun IconText(
     }
 }
 
-private const val PADDING_BETWEEN_ELEMENTS = 2
+private const val PADDING_BETWEEN_ELEMENTS = 4
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

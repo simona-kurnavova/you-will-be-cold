@@ -3,6 +3,7 @@ package com.youllbecold.trustme.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -45,6 +46,8 @@ fun SettingsScreen(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
+
         ToggleRow(
             title = stringResource(R.string.settings_daily_notification),
             subtitle = stringResource(R.string.settings_daily_notification_subtitle),
@@ -54,7 +57,7 @@ fun SettingsScreen(
             },
         )
         
-        Spacer(modifier = Modifier.width(SPACE_BETWEEN_TOGGLES.dp))
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
 
         ToggleRow(
             title = stringResource(R.string.settings_use_celsius),
@@ -69,7 +72,7 @@ fun SettingsScreen(
     }
 }
 
-private const val SPACE_BETWEEN_TOGGLES: Int = 8
+private const val SPACE_BETWEEN_TOGGLES: Int = 16
 
 @Preview
 @Composable

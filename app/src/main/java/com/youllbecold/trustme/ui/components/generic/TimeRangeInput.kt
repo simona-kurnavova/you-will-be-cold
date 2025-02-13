@@ -3,6 +3,7 @@ package com.youllbecold.trustme.ui.components.generic
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -34,7 +35,7 @@ fun TimeRangeInput(
             modifier = Modifier.align(Alignment.End)
         )
 
-        Spacer(modifier = Modifier.width(PADDING_BETWEEN_ITEMS.dp))
+        Spacer(modifier = Modifier.height(PADDING_BETWEEN_ITEMS.dp))
 
         LabeledClickableText(
             label = stringResource(R.string.time_range_to),

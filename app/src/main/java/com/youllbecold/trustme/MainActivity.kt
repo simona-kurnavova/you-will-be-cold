@@ -71,9 +71,7 @@ fun Main() {
             Box(modifier = Modifier.padding(innerPadding)) {
                 NavGraph(
                     navController,
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
+                    Modifier.padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
                 )
             }
         }
@@ -89,6 +87,8 @@ fun Main() {
         }
     }
 }
+
+private const val HORIZONTAL_SCREEN_PADDING = 12
 
 @Composable
 private fun NavController.currentRoute(): String? = currentBackStackEntryAsState().value?.destination?.route
@@ -107,7 +107,6 @@ private fun getFloatingButton(currentRoute: String?): FloatingAction? {
 
 @Composable
 private fun SetupFloatingButton(navController: NavController, action: FloatingAction) {
-    // Note: uses secondaryContainer color.
     ExtendedFloatingActionButton(
         onClick = { navController.navigate(action.floatingActionTo.route) },
         icon = {
@@ -117,12 +116,4 @@ private fun SetupFloatingButton(navController: NavController, action: FloatingAc
             Text(text = stringResource(id = action.floatingActionTitle))
          },
     )
-}
-
-@Preview
-@Composable
-fun MainPreview() {
-    YoullBeColdTheme {
-        Main()
-    }
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +28,7 @@ import com.youllbecold.trustme.ui.components.generic.IconRowData
 import com.youllbecold.trustme.ui.components.generic.IconText
 import com.youllbecold.trustme.ui.components.generic.IconTextRow
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
@@ -52,14 +52,15 @@ fun WeatherCard(
             )
 
             Column {
-                if (city != null) {
-                    CityView(
-                        city = city,
+                city?.let {
+                    IconText(
+                        text = city,
+                        icon = rememberVectorPainter(Icons.Default.LocationOn),
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                 }
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.width(SPACER_UNDER_CITY.dp))
 
                 CurrentTemperatureView(
                     temperature = weather.temperature,
@@ -70,8 +71,8 @@ fun WeatherCard(
 
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onBackground,
-                    thickness = 0.1.dp,
-                    modifier = Modifier.padding(8.dp),
+                    thickness = DIVIDER_THICKNESS.dp,
+                    modifier = Modifier.padding(DIVIDER_PADDING.dp),
                 )
 
                 WeatherParameters(
@@ -85,35 +86,9 @@ fun WeatherCard(
     }
 }
 
-@Composable
-fun CityView(
-    city: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(modifier = modifier) {
-        IconText(
-            text = city,
-            icon = rememberVectorPainter(Icons.Default.LocationOn),
-            modifier = Modifier.align(Alignment.CenterVertically),
-        )
-
-        Icon(
-            imageVector = Icons.Default.LocationOn,
-            contentDescription = null,
-            modifier = Modifier
-                .size(12.dp)
-                .align(Alignment.CenterVertically)
-        )
-
-        Spacer(modifier = Modifier.width(2.dp))
-
-        Text(
-            text = city,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-    }
-}
+private const val DIVIDER_THICKNESS = 0.1f
+private const val DIVIDER_PADDING = 8
+private const val SPACER_UNDER_CITY = 4
 
 @Composable
 fun CurrentTemperatureView(
@@ -122,32 +97,35 @@ fun CurrentTemperatureView(
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     Row(
         modifier = modifier,
     ) {
-        val temperatureWithUnits = context.getTemperatureString(temperature, useCelsius)
+        val temperatureWithUnits = LocalContext.current
+            .getTemperatureString(temperature, useCelsius)
 
         Text(
             text = temperatureWithUnits,
             style = MaterialTheme.typography.headlineLarge,
-            fontSize = 64.sp,
-            modifier = modifier
-                .align(Alignment.CenterVertically)
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = TEMPERATURE_FONT_SIZE.sp,
+            modifier = modifier.align(Alignment.CenterVertically)
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(SPACER_WIDTH.dp))
 
         Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
             modifier = Modifier
-                .size(48.dp)
+                .size(IconAttr.BIG_ICON_SIZE.dp)
                 .align(Alignment.CenterVertically),
             tint = MaterialTheme.colorScheme.primary
         )
     }
 }
+
+private const val TEMPERATURE_FONT_SIZE = 64
+private const val SPACER_WIDTH = 8
 
 @Composable
 fun WeatherParameters(

@@ -51,7 +51,7 @@ fun LabeledClickableText(
     }
 }
 
-private const val PADDING_UNDER_LABEL = 4
+private const val PADDING_UNDER_LABEL = 8
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

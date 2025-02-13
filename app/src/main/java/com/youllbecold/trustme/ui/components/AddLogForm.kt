@@ -141,10 +141,10 @@ fun AddLogForm(
                     // TODO: Use real ones and preselect
                     val items = category.getItems()
 
-                    ClothesSelect(
+                    SelectRowWithButton(
                         items = items,
-                        selected = emptyList(),
-                        onSave = { selected ->
+                        buttonText = stringResource(R.string.add_clothes),
+                        onButtonClick = { selected ->
                             val result = selected
                                 .map { items[it] }
                                 .toSet()
@@ -152,6 +152,7 @@ fun AddLogForm(
                             // TODO: onClothesCategoryChange
                             clothesBottomSheet = null
                         },
+                        selected = emptyList(),
                         modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
                     )
                 }

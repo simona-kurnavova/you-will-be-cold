@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -51,7 +52,7 @@ fun HistoryScreen(
             .padding(horizontal = CONTENT_PADDING.dp)
             .fillMaxSize()
     ) {
-        item { Spacer(modifier = Modifier.width(BETWEEN_ITEM_PADDING.dp)) }
+        item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
 
         items(state.logs.size) { index ->
             LogItem(
@@ -59,7 +60,7 @@ fun HistoryScreen(
                 Modifier.padding(BETWEEN_ITEM_PADDING.dp)
             )
 
-            Spacer(modifier = Modifier.width(BETWEEN_ITEM_PADDING.dp))
+            Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp))
         }
 
         if (state.logs.isEmpty()) {
@@ -76,7 +77,7 @@ fun HistoryScreen(
 }
 
 private const val CONTENT_PADDING = 12
-private const val BETWEEN_ITEM_PADDING = 8
+private const val BETWEEN_ITEM_PADDING = 16
 
 @Composable
 private fun LogItem(
