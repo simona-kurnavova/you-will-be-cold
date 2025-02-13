@@ -11,22 +11,41 @@ import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.weather.api.WeatherRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.time.LocalDate
+import java.time.LocalTime
 
 @KoinViewModel
 class AddLogViewModel(
     private val logRepository: LogRepository,
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
+    private val _state: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
+    val state: StateFlow<LogState> = _state
 
     /**
      * Handles [AddLogAction].
      */
     fun onAction(action: AddLogAction) {
         when (action) {
-            is AddLogAction.SaveLog -> saveLog(action.logData)
+            is AddLogAction.SaveProgress -> _state.value = action.state
+            is AddLogAction.SaveLog -> saveLog(state.value)
         }
+    }
+
+    private fun initialiseState(): LogState {
+        val currentTime = LocalTime.now()
+
+        return LogState(
+            data = ImmutableDate(LocalDate.now()),
+            timeFrom = ImmutableTime(currentTime.minusHours(1)),
+            timeTo = ImmutableTime(currentTime),
+            overallFeeling = null,
+            clothes = emptySet()
+        )
     }
 
     private fun saveLog(logData: LogState) {
@@ -60,7 +79,8 @@ class AddLogViewModel(
 }
 
 sealed class AddLogAction {
-    data class SaveLog(val logData: LogState) : AddLogAction()
+    data class SaveProgress(val state: LogState) : AddLogAction()
+    data object SaveLog : AddLogAction()
 }
 
 @Immutable
