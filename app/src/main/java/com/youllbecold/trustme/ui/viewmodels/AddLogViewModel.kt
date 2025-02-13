@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
@@ -7,11 +8,11 @@ import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
+import com.youllbecold.trustme.ui.components.utils.ImmutableDate
+import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.weather.api.WeatherRepository
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.time.LocalDateTime
-import java.time.LocalTime
 
 @KoinViewModel
 class AddLogViewModel(
@@ -43,12 +44,8 @@ class AddLogViewModel(
 
     private fun LogState.toLogData(weatherData: WeatherData): LogData =
         LogData(
-            dateFrom = LocalDateTime.now()
-                .withHour(timeFrom.hour)
-                .withMinute(timeFrom.minute),
-            dateTo = LocalDateTime.now()
-                .withHour(timeTo.hour)
-                .withMinute(timeTo.minute),
+            dateFrom = data.date.atTime(timeFrom.time),
+            dateTo = data.date.atTime(timeFrom.time),
             overallFeeling = when (overallFeeling) {
                 null,
                 FeelingState.NORMAL -> Feeling.NORMAL
@@ -66,9 +63,11 @@ sealed class AddLogAction {
     data class SaveLog(val logData: LogState) : AddLogAction()
 }
 
+@Immutable
 data class LogState(
-    val timeFrom: LocalTime,
-    val timeTo: LocalTime,
+    val data: ImmutableDate,
+    val timeFrom: ImmutableTime,
+    val timeTo: ImmutableTime,
     val overallFeeling: FeelingState?,
     val clothes: Set<Clothes>
 )

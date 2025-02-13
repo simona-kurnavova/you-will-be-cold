@@ -4,7 +4,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -25,48 +27,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.DateInput
 import com.youllbecold.trustme.ui.components.generic.Section
 import com.youllbecold.trustme.ui.components.generic.SelectRows
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
+import com.youllbecold.trustme.ui.components.utils.ImmutableDate
+import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
-import com.youllbecold.trustme.ui.viewmodels.LogState
+import java.time.LocalDate
 import java.time.LocalTime
-
-@Composable
-fun AddLogFormWrapper(
-    onSave: (LogState) -> Unit,
-    log: LogState,
-) {
-    val logState = remember {
-        mutableStateOf(log)
-    }
-
-    AddLogForm(
-        timeFrom = log.timeFrom,
-        timeTo = log.timeTo,
-        overallFeeling = log.overallFeeling,
-        clothes = log.clothes,
-        onTimeFromChange = { logState.value = logState.value.copy(timeFrom = it) },
-        onTimeToChange = { logState.value = logState.value.copy(timeTo = it) },
-        onOverallFeelingChange = { logState.value = logState.value.copy(overallFeeling = it) },
-        onClothesCategoryChange = { logState.value = logState.value.copy(clothes = logState.value.clothes + it) },
-        removeClothes = { logState.value = logState.value.copy(clothes = logState.value.clothes - it) },
-        onSave = { onSave(logState.value) },
-    )
-
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLogForm(
-    timeFrom: LocalTime,
-    timeTo: LocalTime,
+    date: ImmutableDate,
+    timeFrom: ImmutableTime,
+    timeTo: ImmutableTime,
     overallFeeling: FeelingState?,
     clothes: Set<Clothes>,
-    onTimeFromChange: (LocalTime) -> Unit,
-    onTimeToChange: (LocalTime) -> Unit,
+    onDateChanged: (ImmutableDate) -> Unit,
+    onTimeFromChange: (ImmutableTime) -> Unit,
+    onTimeToChange: (ImmutableTime) -> Unit,
     onOverallFeelingChange: (FeelingState?) -> Unit,
     onClothesCategoryChange: (Set<Clothes>) -> Unit,
     removeClothes: (Set<Clothes>) -> Unit,
@@ -86,11 +69,13 @@ fun AddLogForm(
                 .verticalScroll(formScrollState)
                 .padding(PADDING_AROUND_QUESTION.dp)
         ) {
-            TimeSection(
+            DateTimeSection(
+                date = date,
                 timeFrom = timeFrom,
                 timeTo = timeTo,
                 onFromTimeClick = { showTimePickerFrom = true },
                 onToTimeClick = { showTimePickerTo = true },
+                onDateChanged = { onDateChanged(it) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
@@ -162,9 +147,11 @@ fun AddLogForm(
 }
 
 @Composable
-private fun TimeSection(
-    timeFrom: LocalTime,
-    timeTo: LocalTime,
+private fun DateTimeSection(
+    date: ImmutableDate,
+    timeFrom: ImmutableTime,
+    timeTo: ImmutableTime,
+    onDateChanged: (ImmutableDate) -> Unit,
     onFromTimeClick: () -> Unit,
     onToTimeClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -173,14 +160,27 @@ private fun TimeSection(
         title = stringResource(R.string.add_log_form_when),
         modifier = modifier.fillMaxWidth()
     ) {
-        TimeRangeInput(
-            fromTime = timeFrom,
-            toTime = timeTo,
-            onFromTimeClick = onFromTimeClick,
-            onToTimeClick = onToTimeClick,
-        )
+        Column {
+            DateInput(
+                date = date,
+                onDateSelected = { onDateChanged(it) },
+                modifier = Modifier.align(Alignment.End)
+            )
+
+            Spacer(modifier = Modifier.height(PADDING_BETWEEN_DATETIME.dp))
+
+            TimeRangeInput(
+                fromTime = timeFrom,
+                toTime = timeTo,
+                onFromTimeClick = onFromTimeClick,
+                onToTimeClick = onToTimeClick,
+            )
+        }
+
     }
 }
+
+private const val PADDING_BETWEEN_DATETIME = 8
 
 @Composable
 private fun FeelingSection(
@@ -241,14 +241,19 @@ private const val BOTTOM_SHEET_PADDING = 12
 @Composable
 private fun AddLogFormPreview() {
     YoullBeColdTheme {
-        AddLogFormWrapper(
-            onSave = {},
-            log = LogState(
-                timeFrom = LocalTime.now(),
-                timeTo = LocalTime.now(),
-                overallFeeling = null,
-                clothes = emptySet()
-            )
+        AddLogForm(
+            date = ImmutableDate(LocalDate.now()),
+            timeFrom = ImmutableTime(LocalTime.now()),
+            timeTo = ImmutableTime(LocalTime.now()),
+            overallFeeling = null,
+            clothes = emptySet(),
+            onDateChanged = { },
+            onTimeFromChange = { },
+            onTimeToChange = { },
+            onOverallFeelingChange = { },
+            onClothesCategoryChange = { },
+            removeClothes = { },
+            onSave = { }
         )
     }
 }

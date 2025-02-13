@@ -60,5 +60,6 @@
     <string name="add_log_save">Save</string>
     <string name="time_range_from">from:</string>
     <string name="time_range_to">to:</string>
+    <string name="toast_select_date">Please select a date</string>
 
 </resources>

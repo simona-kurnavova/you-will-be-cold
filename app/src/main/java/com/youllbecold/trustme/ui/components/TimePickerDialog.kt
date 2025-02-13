@@ -10,20 +10,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePicker(
-    initial: LocalTime,
+    initial: ImmutableTime,
     onDismiss: () -> Unit,
-    onChange: (LocalTime) -> Unit,
+    onChange: (ImmutableTime) -> Unit,
     showPicker: Boolean,
 ) {
     val timePickerState = rememberTimePickerState(
-        initialHour = initial.hour,
-        initialMinute = initial.minute,
+        initialHour = initial.time.hour,
+        initialMinute = initial.time.minute,
     )
 
     if (showPicker) {
@@ -37,7 +38,11 @@ fun TimePicker(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onChange(LocalTime.of(timePickerState.hour, timePickerState.minute))
+                        onChange(
+                            ImmutableTime(
+                                LocalTime.of(timePickerState.hour, timePickerState.minute)
+                            )
+                        )
                     }
                 ) {
                     Text(stringResource(R.string.dialog_ok))
@@ -53,7 +58,7 @@ fun TimePicker(
 fun DialWithDialogExamplePreview() {
     YoullBeColdTheme {
         TimePicker(
-            initial = LocalTime.now(),
+            initial = ImmutableTime(LocalTime.now()),
             showPicker = true,
             onChange = {},
             onDismiss = {},

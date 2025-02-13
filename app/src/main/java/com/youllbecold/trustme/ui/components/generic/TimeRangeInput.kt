@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.components.utils.formatTime
 import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -20,8 +21,8 @@ import java.time.LocalTime
 
 @Composable
 fun TimeRangeInput(
-    fromTime: LocalTime,
-    toTime: LocalTime,
+    fromTime: ImmutableTime,
+    toTime: ImmutableTime,
     onFromTimeClick: () -> Unit,
     onToTimeClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -30,7 +31,7 @@ fun TimeRangeInput(
         LabeledClickableText(
             label = stringResource(R.string.time_range_from),
             painter = rememberVector(R.drawable.ic_clock),
-            text = fromTime.formatTime(),
+            text = fromTime.time.formatTime(),
             onClick = onFromTimeClick,
             modifier = Modifier.align(Alignment.End)
         )
@@ -40,7 +41,7 @@ fun TimeRangeInput(
         LabeledClickableText(
             label = stringResource(R.string.time_range_to),
             painter = rememberVector(R.drawable.ic_clock),
-            text = toTime.formatTime(),
+            text = toTime.time.formatTime(),
             onClick = onToTimeClick,
             modifier = Modifier.align(Alignment.End)
         )
@@ -55,8 +56,8 @@ private const val PADDING_BETWEEN_ITEMS = 8
 private fun TimeRangeInputPreview() {
     YoullBeColdTheme {
         TimeRangeInput(
-            fromTime = LocalTime.now(),
-            toTime = LocalTime.now(),
+            fromTime = ImmutableTime(LocalTime.now()),
+            toTime = ImmutableTime(LocalTime.now()),
             onFromTimeClick = {},
             onToTimeClick = {}
         )
