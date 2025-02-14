@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,10 +22,8 @@ import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.trustme.ui.viewmodels.WeatherStatus
-import com.youllbecold.weather.model.WeatherEvaluation
 import com.youllbecold.weather.model.Weather
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.youllbecold.weather.model.WeatherEvaluation
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
@@ -32,7 +32,7 @@ fun HomeScreenRoot(
     viewmodel: HomeViewModel = koinViewModel()
 ) {
     HomeScreen(
-        viewmodel.uiState,
+        viewmodel.uiState.collectAsStateWithLifecycle(),
         viewmodel::onAction,
     )
 }
@@ -42,10 +42,11 @@ fun HomeScreenRoot(
  */
 @Composable
 private fun HomeScreen(
-    uiState: StateFlow<HomeUiState>,
+    uiState: State<HomeUiState>,
     onAction: (HomeAction) -> Unit,
 ) {
-    val state by uiState.collectAsStateWithLifecycle(HomeUiState())
+    val state = uiState.value
+
     if (!state.hasPermission) {
         return
     }
@@ -123,15 +124,21 @@ fun HomeScreenPreview() {
         precipitationProbability = 2,
         uvIndex = 5.0,
     )
-
-    YoullBeColdTheme {
-        HomeScreen(
-            uiState = MutableStateFlow(HomeUiState(
+    
+    val state = remember {
+        mutableStateOf(
+            HomeUiState(
                 hasPermission = true,
                 status = WeatherStatus.Idle,
                 currentWeather = weather,
                 hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
-            )),
+            )
+        )
+    }
+
+    YoullBeColdTheme {
+        HomeScreen(
+            uiState = state,
             onAction = {},
         )
     }

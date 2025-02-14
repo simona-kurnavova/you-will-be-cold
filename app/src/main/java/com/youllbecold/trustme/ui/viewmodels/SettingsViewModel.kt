@@ -3,8 +3,10 @@ package com.youllbecold.trustme.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -17,7 +19,7 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
     /**
      * Flow of [SettingsUiState].
      */
-    val uiState: Flow<SettingsUiState> = combine(
+    val uiState: StateFlow<SettingsUiState> = combine(
         dataStore.allowDailyNotification,
         dataStore.useCelsiusUnits
     ) { allowDailyNotification, useCelsiusUnits ->
@@ -25,7 +27,7 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
             allowDailyNotification = allowDailyNotification,
             useCelsiusUnits = useCelsiusUnits
         )
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState())
 
     /**
      * Handles [SettingsAction]

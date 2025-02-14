@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +30,7 @@ fun SettingsScreenRoot(
     viewModel: SettingsViewModel = koinViewModel()
 ) {
     SettingsScreen(
-        uiState = viewModel.uiState,
+        uiState = viewModel.uiState.collectAsStateWithLifecycle(),
         onAction = viewModel::onAction
     )
 }
@@ -38,10 +40,10 @@ fun SettingsScreenRoot(
  */
 @Composable
 fun SettingsScreen(
-    uiState: Flow<SettingsUiState>,
+    uiState: State<SettingsUiState>,
     onAction: (SettingsAction) -> Unit,
 ) {
-    val state by uiState.collectAsStateWithLifecycle(SettingsUiState())
+    val state = uiState.value
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -79,7 +81,7 @@ private const val SPACE_BETWEEN_TOGGLES: Int = 16
 fun SettingsScreenPreview() {
     YoullBeColdTheme {
         SettingsScreen(
-            flow { emit(SettingsUiState()) },
+            remember { mutableStateOf(SettingsUiState()) },
             {},
         )
     }
