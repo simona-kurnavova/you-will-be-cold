@@ -34,6 +34,7 @@ import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import java.time.LocalDate
@@ -201,7 +202,7 @@ private fun ClothesSection(
 
                 Tile(
                     title = title,
-                    icon = icon,
+                    painter = rememberVector(icon),
                     onClick = { showBottomSheet(type) },
                     modifier = Modifier
                         .padding(4.dp)
