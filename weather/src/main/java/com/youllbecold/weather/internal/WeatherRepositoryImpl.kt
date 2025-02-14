@@ -10,7 +10,11 @@ import com.youllbecold.weather.model.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 /**
  * Repository for weather data.
@@ -25,15 +29,34 @@ internal class WeatherRepositoryImpl(
      */
     override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Weather> =
         withContext(dispatchers) {
-            weatherApi.getCurrent(latitude, longitude, temperatureUnit = getUnits(useCelsius))
+            weatherApi.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius))
                 .processResponse { responseBody ->  responseBody.toWeather() }
         }
 
-    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<List<Weather>> =
+    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<Weather>> =
         withContext(dispatchers) {
-            weatherApi.getForecast(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = 2)
+            weatherApi.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays)
                 .processResponse { responseBody -> responseBody.toWeatherList() }
         }
+
+    override suspend fun getDatedWeather(
+        latitude: Double,
+        longitude: Double,
+        useCelsius: Boolean,
+        date: LocalDate,
+    ): Result<List<Weather>> {
+        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+
+        return withContext(dispatchers) {
+            weatherApi.getHourlyWeatherForDateRange(
+                latitude,
+                longitude,
+                temperatureUnit = getUnits(useCelsius),
+                startDate = dateString,
+                endDate = dateString
+            ).processResponse { responseBody -> responseBody.toWeatherList() }
+        }
+    }
 
     private fun getUnits(useCelsius: Boolean): String =
         if (useCelsius) TemperatureUnitRequest.CELSIUS.value else TemperatureUnitRequest.FAHRENHEIT.value

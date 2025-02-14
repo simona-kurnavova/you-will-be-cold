@@ -1,5 +1,7 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +12,9 @@ import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
-import com.youllbecold.weather.api.WeatherRepository
+import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.utils.LocationHelper
+import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,8 +24,9 @@ import java.time.LocalTime
 
 @KoinViewModel
 class AddLogViewModel(
+    private val app: Application,
     private val logRepository: LogRepository,
-    private val weatherRepository: WeatherRepository
+    private val weatherUseCase: RangedWeatherUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
     val state: StateFlow<LogState> = _state
@@ -50,12 +55,13 @@ class AddLogViewModel(
 
     private fun saveLog(logData: LogState) {
         viewModelScope.launch {
-           // TODO: Get actual weather data from repository.
             val weatherData = WeatherData(
                 apparentTemperatureMin = 25.0,
                 apparentTemperatureMax = 25.0,
                 avgTemperature = 25.0
             )
+
+            // TODO: Obtain weather data.
 
             logRepository.addLog(logData.toLogData(weatherData))
         }
@@ -76,6 +82,32 @@ class AddLogViewModel(
             weatherData = weatherData,
             clothes = clothes.map { it }
         )
+
+    @SuppressLint("MissingPermission") // Permission is checked
+    private fun obtainWeather(
+        data: ImmutableDate,
+        timeFrom: ImmutableTime,
+        timeTo: ImmutableTime,
+    ) {
+        if (PermissionHelper.hasLocationPermission(app)) {
+            LocationHelper.refreshLocation(
+                app,
+                onSuccess = { location ->
+                    viewModelScope.launch {
+                        val result = weatherUseCase.obtainRangedWeather(
+                            location,
+                            data.date,
+                            timeFrom.time,
+                            timeTo.time
+                        )
+
+                        // TODO: Use result.
+                    }
+                },
+                onError = { }
+            )
+        }
+    }
 }
 
 sealed class AddLogAction {

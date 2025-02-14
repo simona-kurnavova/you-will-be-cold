@@ -54,7 +54,8 @@ class HourlyWeatherUseCase(
             val result = weatherRepository.getHourlyWeather(
                 location.latitude,
                 location.longitude,
-                dataStorePreferences.useCelsiusUnits.first()
+                dataStorePreferences.useCelsiusUnits.first(),
+                2 // Two forecast days to always get over 24 hours ahead.
             )
 
             _weatherState.update { it.copyWithNetworkResult(result, location) }

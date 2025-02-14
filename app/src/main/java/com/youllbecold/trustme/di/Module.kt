@@ -12,12 +12,14 @@ import com.youllbecold.trustme.ui.viewmodels.MainViewModel
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.WeatherProvider
 import com.youllbecold.weather.api.WeatherRepository
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -34,8 +36,9 @@ val appModule = module {
     single<WeatherRepository> { WeatherProvider.weatherRepository }
     
     // UseCases
-    singleOf(::CurrentWeatherUseCase)
-    singleOf(::HourlyWeatherUseCase)
+    factoryOf(::CurrentWeatherUseCase)
+    factoryOf(::HourlyWeatherUseCase)
+    factoryOf(::RangedWeatherUseCase)
 }
 
 val uiModule = module {
