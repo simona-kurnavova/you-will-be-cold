@@ -3,18 +3,21 @@ package com.youllbecold.trustme.ui.utils
 import android.content.Context
 import androidx.annotation.DrawableRes
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 
-@DrawableRes
-fun WeatherEvaluation.icon(): Int = when (this) {
-    WeatherEvaluation.SUNNY -> R.drawable.ic_sun
-    WeatherEvaluation.CLOUDY -> R.drawable.ic_cloud
-    WeatherEvaluation.RAINY -> R.drawable.ic_rain
-    WeatherEvaluation.SNOWY -> R.drawable.ic_snow
-    WeatherEvaluation.STORM -> R.drawable.ic_lightning
-    WeatherEvaluation.FOGGY -> R.drawable.ic_cloud
-    WeatherEvaluation.UNKNOWN -> R.drawable.ic_cloud
+/**
+ * Convert [WeatherEvaluation] to [IconType].
+ */
+fun WeatherEvaluation.toIcon(): IconType = when (this) {
+    WeatherEvaluation.SUNNY -> IconType.Sun
+    WeatherEvaluation.CLOUDY -> IconType.Cloud
+    WeatherEvaluation.RAINY -> IconType.Rain
+    WeatherEvaluation.SNOWY -> IconType.Snowflake
+    WeatherEvaluation.STORM -> IconType.Lightning
+    WeatherEvaluation.FOGGY -> IconType.Fog
+    WeatherEvaluation.UNKNOWN -> IconType.Cloud
 }
 
 @DrawableRes

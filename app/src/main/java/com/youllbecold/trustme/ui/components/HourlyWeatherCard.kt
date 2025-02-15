@@ -7,14 +7,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.trustme.ui.utils.toIcon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
@@ -36,7 +35,7 @@ fun HourlyWeatherCard(
                     R.string.temperature_degrees_short,
                     hourItem.roundedTemperature
                 ),
-                painter = painterResource(hourItem.weatherEvaluation.icon()),
+                iconType = hourItem.weatherEvaluation.toIcon(),
                 subtitle = hourItem.formattedTime,
             )
 

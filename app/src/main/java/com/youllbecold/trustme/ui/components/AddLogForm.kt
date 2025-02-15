@@ -34,7 +34,6 @@ import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
-import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import java.time.LocalDate
@@ -142,7 +141,6 @@ private fun DateTimeSection(
             DateInput(
                 date = date,
                 onDateSelected = { onDateChanged(it) },
-                modifier = Modifier.align(Alignment.End)
             )
 
             Spacer(modifier = Modifier.height(PADDING_BETWEEN_DATETIME.dp))
@@ -198,11 +196,11 @@ private fun ClothesSection(
             modifier = Modifier.horizontalScroll(clothesScrollState),
         ){
             Clothes.Category.entries.forEach { type ->
-                val (title, icon) = type.getUiData()
+                val (title, iconType) = type.getUiData()
 
                 Tile(
                     title = title,
-                    painter = rememberVector(icon),
+                    iconType = iconType,
                     onClick = { showBottomSheet(type) },
                     modifier = Modifier
                         .padding(4.dp)

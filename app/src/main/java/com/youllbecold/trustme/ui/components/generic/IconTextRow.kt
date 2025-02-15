@@ -3,12 +3,8 @@ package com.youllbecold.trustme.ui.components.generic
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
@@ -29,7 +25,7 @@ fun IconTextRow(
         items.forEach { (icon, text, textAttr, iconAttr) ->
             IconText(
                 text = text,
-                icon = icon,
+                iconType = icon,
                 textAttr = textAttr ?: defaultSmallTextAttr(),
                 iconAttr = iconAttr ?: defaultSmallIconAttr()
             )
@@ -40,7 +36,7 @@ fun IconTextRow(
 private const val SPACER_PADDING = 8
 
 data class IconRowData(
-    val painter: Painter,
+    val iconType: IconType,
     val text: String,
     val textAttr: TextAttr? = null,
     val iconAttr: IconAttr? = null
@@ -54,11 +50,11 @@ private fun IconTextRowPreview() {
          IconTextRow(
             items = listOf(
                 IconRowData(
-                    painter = rememberVectorPainter(Icons.Default.LocationOn),
+                    iconType = IconType.Location,
                     text = "Location",
                 ),
                 IconRowData(
-                    painter = rememberVectorPainter(Icons.Default.LocationOn),
+                    iconType = IconType.Lightning,
                     text = "Location",
                 )
             )

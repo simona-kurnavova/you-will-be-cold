@@ -1,6 +1,7 @@
 package com.youllbecold.trustme.ui.components.generic
 
 import android.content.res.Configuration
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +21,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 @Composable
 fun Tile(
     title: String,
-    painter: Painter,
+    iconType: IconType,
     modifier: Modifier = Modifier,
     iconAttr: IconAttr = defaultSmallIconAttr(),
     titleAttr: TextAttr = defaultMediumTextAttr(),
@@ -42,7 +43,7 @@ fun Tile(
     ) {
         IconTextVertical(
             title = title,
-            painter = painter,
+            iconType = iconType,
             subtitle = subtitle,
             iconAttr = iconAttr,
             titleAttr = titleAttr,
@@ -58,7 +59,7 @@ private fun TilePreview() {
     YoullBeColdTheme {
         Tile(
             title = "Title",
-            painter = rememberVector(R.drawable.ic_sun),
+            iconType = IconType.Sun,
             subtitle = "Subtitle",
             onClick = {}
         )

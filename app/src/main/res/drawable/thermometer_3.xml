@@ -5,23 +5,23 @@
     android:viewportHeight="39">
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M4,0h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M5,0h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M6,0h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M7,0h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,1h1v1h-1z" />
 
     <path
@@ -41,11 +41,11 @@
         android:pathData="M7,1h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,1h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,2h1v1h-1z" />
 
     <path
@@ -65,11 +65,11 @@
         android:pathData="M7,2h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,2h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,3h1v1h-1z" />
 
     <path
@@ -89,11 +89,11 @@
         android:pathData="M7,3h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,3h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,4h1v1h-1z" />
 
     <path
@@ -113,11 +113,11 @@
         android:pathData="M7,4h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,4h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,5h1v1h-1z" />
 
     <path
@@ -137,11 +137,11 @@
         android:pathData="M7,5h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,5h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,6h1v1h-1z" />
 
     <path
@@ -161,11 +161,11 @@
         android:pathData="M7,6h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,6h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,7h1v1h-1z" />
 
     <path
@@ -185,11 +185,11 @@
         android:pathData="M7,7h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,7h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,8h1v1h-1z" />
 
     <path
@@ -209,11 +209,11 @@
         android:pathData="M7,8h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,8h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,9h1v1h-1z" />
 
     <path
@@ -233,11 +233,11 @@
         android:pathData="M7,9h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,9h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,10h1v1h-1z" />
 
     <path
@@ -257,11 +257,11 @@
         android:pathData="M7,10h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,10h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,11h1v1h-1z" />
 
     <path
@@ -281,11 +281,11 @@
         android:pathData="M7,11h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,11h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,12h1v1h-1z" />
 
     <path
@@ -305,11 +305,11 @@
         android:pathData="M7,12h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,12h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,13h1v1h-1z" />
 
     <path
@@ -329,11 +329,11 @@
         android:pathData="M7,13h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,13h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,14h1v1h-1z" />
 
     <path
@@ -353,11 +353,11 @@
         android:pathData="M7,14h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,14h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,15h1v1h-1z" />
 
     <path
@@ -377,11 +377,11 @@
         android:pathData="M7,15h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,15h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,16h1v1h-1z" />
 
     <path
@@ -401,11 +401,11 @@
         android:pathData="M7,16h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,16h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,17h1v1h-1z" />
 
     <path
@@ -425,11 +425,11 @@
         android:pathData="M7,17h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,17h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,18h1v1h-1z" />
 
     <path
@@ -449,11 +449,11 @@
         android:pathData="M7,18h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,18h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,19h1v1h-1z" />
 
     <path
@@ -473,11 +473,11 @@
         android:pathData="M7,19h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,19h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,20h1v1h-1z" />
 
     <path
@@ -497,11 +497,11 @@
         android:pathData="M7,20h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,20h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,21h1v1h-1z" />
 
     <path
@@ -521,11 +521,11 @@
         android:pathData="M7,21h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,21h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,22h1v1h-1z" />
 
     <path
@@ -545,11 +545,11 @@
         android:pathData="M7,22h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,22h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,23h1v1h-1z" />
 
     <path
@@ -569,11 +569,11 @@
         android:pathData="M7,23h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,23h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,24h1v1h-1z" />
 
     <path
@@ -593,11 +593,11 @@
         android:pathData="M7,24h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,24h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,25h1v1h-1z" />
 
     <path
@@ -617,11 +617,11 @@
         android:pathData="M7,25h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,25h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,26h1v1h-1z" />
 
     <path
@@ -641,11 +641,11 @@
         android:pathData="M7,26h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,26h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,27h1v1h-1z" />
 
     <path
@@ -665,11 +665,11 @@
         android:pathData="M7,27h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,27h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M2,28h1v1h-1z" />
 
     <path
@@ -697,11 +697,11 @@
         android:pathData="M8,28h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M9,28h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M1,29h1v1h-1z" />
 
     <path
@@ -737,11 +737,11 @@
         android:pathData="M9,29h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M10,29h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,30h1v1h-1z" />
 
     <path
@@ -785,11 +785,11 @@
         android:pathData="M10,30h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,30h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,31h1v1h-1z" />
 
     <path
@@ -833,11 +833,11 @@
         android:pathData="M10,31h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,31h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,32h1v1h-1z" />
 
     <path
@@ -881,11 +881,11 @@
         android:pathData="M10,32h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,32h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,33h1v1h-1z" />
 
     <path
@@ -929,11 +929,11 @@
         android:pathData="M10,33h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,33h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,34h1v1h-1z" />
 
     <path
@@ -977,11 +977,11 @@
         android:pathData="M10,34h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,34h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M0,35h1v1h-1z" />
 
     <path
@@ -1025,11 +1025,11 @@
         android:pathData="M10,35h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M11,35h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M1,36h1v1h-1z" />
 
     <path
@@ -1065,11 +1065,11 @@
         android:pathData="M9,36h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M10,36h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M2,37h1v1h-1z" />
 
     <path
@@ -1097,31 +1097,31 @@
         android:pathData="M8,37h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M9,37h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M3,38h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M4,38h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M5,38h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M6,38h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M7,38h1v1h-1z" />
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/icon_default"
         android:pathData="M8,38h1v1h-1z" />
 
 </vector>

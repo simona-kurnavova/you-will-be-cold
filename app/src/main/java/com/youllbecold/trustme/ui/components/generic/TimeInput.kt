@@ -8,11 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.TimePicker
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.components.utils.formatTime
-import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import java.time.LocalTime
 
@@ -27,7 +25,7 @@ fun TimeInput(
     ClickableText(
         text = time.time.formatTime(),
         onClick = { showTimePicker = true },
-        painter = rememberVector(R.drawable.ic_clock),
+        iconType = IconType.Timer,
         modifier = modifier,
     )
 

@@ -44,7 +44,7 @@ fun OutlinedCard(
     }
 }
 
-private const val INSIDE_PADDING = 8
+private const val INSIDE_PADDING = 12
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

@@ -1,39 +1,34 @@
 package com.youllbecold.trustme.ui.components
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconRowData
 import com.youllbecold.trustme.ui.components.generic.IconText
 import com.youllbecold.trustme.ui.components.generic.IconTextRow
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
-import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
-import com.youllbecold.trustme.ui.components.utils.rememberVector
+import com.youllbecold.trustme.ui.components.generic.ThemedIcon
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultBigIconAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
-import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.thermometerImage
+import com.youllbecold.trustme.ui.utils.toIcon
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
@@ -55,17 +50,17 @@ fun WeatherCard(
                 city?.let {
                     IconText(
                         text = city,
-                        icon = rememberVectorPainter(Icons.Default.LocationOn),
+                        iconType = IconType.Location,
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                 }
 
-                Spacer(modifier = Modifier.width(SPACER_UNDER_CITY.dp))
+                Spacer(modifier = Modifier.height(SPACER_UNDER_CITY.dp))
 
                 CurrentTemperatureView(
                     temperature = weather.temperature,
                     useCelsius = weather.unitsCelsius,
-                    icon = weather.weatherEvaluation.icon(),
+                    iconType = weather.weatherEvaluation.toIcon(),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
@@ -79,6 +74,7 @@ fun WeatherCard(
                     windSpeed = weather.windSpeed,
                     precipitationProbability = weather.precipitationProbability,
                     uvIndex = weather.uvIndex,
+                    humidity = weather.relativeHumidity,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
@@ -88,13 +84,13 @@ fun WeatherCard(
 
 private const val DIVIDER_THICKNESS = 0.1f
 private const val DIVIDER_PADDING = 8
-private const val SPACER_UNDER_CITY = 4
+private const val SPACER_UNDER_CITY = 8
 
 @Composable
 fun CurrentTemperatureView(
     temperature: Double,
     useCelsius: Boolean,
-    @DrawableRes icon: Int,
+    iconType: IconType,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -113,13 +109,10 @@ fun CurrentTemperatureView(
 
         Spacer(modifier = Modifier.width(SPACER_WIDTH.dp))
 
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            modifier = Modifier
-                .size(IconAttr.BIG_ICON_SIZE.dp)
-                .align(Alignment.CenterVertically),
-            tint = MaterialTheme.colorScheme.primary
+        ThemedIcon(
+            iconType = iconType,
+            iconAttr = defaultBigIconAttr(),
+            modifier = Modifier.align(Alignment.CenterVertically),
         )
     }
 }
@@ -132,21 +125,26 @@ fun WeatherParameters(
     windSpeed: Double,
     precipitationProbability: Int,
     uvIndex: Double,
+    humidity: Int,
     modifier: Modifier = Modifier,
 ) {
     IconTextRow(
         items = listOf(
             IconRowData(
-                painter = rememberVector(R.drawable.ic_wind),
+                iconType = IconType.Wind,
                 text = windSpeed.toString(),
             ),
             IconRowData(
-                painter = rememberVector(R.drawable.ic_rain),
+                iconType = IconType.Rain,
                 text = precipitationProbability.toString(),
             ),
             IconRowData(
-                painter = rememberVector(R.drawable.ic_sun),
+                iconType = IconType.Sun,
                 text = uvIndex.toString(),
+            ),
+            IconRowData(
+                iconType = IconType.Droplet,
+                text = humidity.toString(),
             ),
         ),
         modifier = modifier

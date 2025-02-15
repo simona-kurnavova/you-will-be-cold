@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
@@ -27,7 +26,7 @@ fun ClickableText(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    painter: Painter? = null,
+    iconType: IconType? = null,
     iconAttr: IconAttr = defaultSmallIconAttr(),
     textAttr: TextAttr = defaultSmallTextAttr(),
     borderAttr: BorderAttr = fadedBorderAttr(),
@@ -51,14 +50,14 @@ fun ClickableText(
         IconText(
             text = text,
             textAttr = textAttr,
-            icon = painter,
-            iconAttr = iconAttr
+            iconType = iconType,
+            iconAttr = iconAttr,
         )
     }
 }
 
 private const val ITEM_CORNER_RADIUS = 12
-private const val INSIDE_PADDING = 8
+private const val INSIDE_PADDING = 12
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -67,7 +66,7 @@ private fun ClickableTextPreview() {
     YoullBeColdTheme {
         ClickableText(
             text = "Clickable text",
-            painter = rememberVector(R.drawable.ic_cloud),
+            iconType = IconType.Cloud,
             onClick = {},
             modifier = Modifier
         )

@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconTextVertical
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
-import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable
@@ -18,7 +18,7 @@ fun OfflineCard(modifier: Modifier = Modifier) {
     OutlinedCard(modifier = modifier) {
         IconTextVertical(
             title = stringResource(R.string.offline_state_message),
-            painter = rememberVector(R.drawable.ic_sad),
+            iconType = IconType.SadEmoji,
             modifier = Modifier.padding(vertical = INSIDE_PADDING.dp),
         )
     }

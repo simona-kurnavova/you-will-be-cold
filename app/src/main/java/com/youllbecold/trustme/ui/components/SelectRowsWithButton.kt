@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.SelectRows
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
@@ -59,9 +59,9 @@ private const val SPACE_BETWEEN_ITEMS = 12
 fun SelectRowWithButtonPreview() {
     SelectRowWithButton(
         items = listOf(
-                SelectableItemContent(R.drawable.ic_shirt, "T-shirt"),
-                SelectableItemContent(R.drawable.ic_shirt, "Long sleeve"),
-                SelectableItemContent(R.drawable.ic_shirt, "Sweater"),
+                SelectableItemContent(IconType.Hat, "T-shirt"),
+                SelectableItemContent(IconType.TShirt, "Long sleeve"),
+                SelectableItemContent(IconType.Dress, "Sweater"),
             ),
         buttonText = "Add clothes",
         onButtonClick = {},

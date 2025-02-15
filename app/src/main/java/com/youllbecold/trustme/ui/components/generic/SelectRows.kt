@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.ui.components.generic
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,9 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
-import com.youllbecold.trustme.ui.components.utils.rememberVector
 
 @Composable
 fun SelectRows(
@@ -68,7 +65,7 @@ fun SelectRows(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 bgDefinition = bgDefinition,
-                icon = selectableItem.icon,
+                iconType = selectableItem.iconType,
             )
 
             if (index < items.size - 1) {
@@ -87,12 +84,12 @@ private fun SelectableItem(
     onSelect: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     bgDefinition: BackgroundDefinition,
-    @DrawableRes icon: Int? = null,
+    iconType: IconType? = null,
 ) {
     Box(
         modifier = modifier
             .background(
-                color = if (isSelected) bgDefinition.selectedBgColor.copy(0.5f) else bgDefinition.bgColor,
+                color = if (isSelected) bgDefinition.selectedBgColor.copy(SELECT_BG_ALPHA) else bgDefinition.bgColor,
                 shape = bgDefinition.bgShape,
             )
             .then(
@@ -114,7 +111,7 @@ private fun SelectableItem(
             .padding(PADDING_BG_INSIDE_ITEM.dp)
     ) {
         IconText(
-            icon = icon?.let { rememberVector(it) },
+            iconType = iconType,
             text = title,
             textAttr = defaultMediumTextAttr(),
             paddingBeforeText = PADDING_ITEM_ICON_END,
@@ -125,9 +122,10 @@ private fun SelectableItem(
 private const val PADDING_BG_INSIDE_ITEM = 18
 private const val PADDING_ITEM_ICON_END = 12
 private const val ITEM_CORNER_RADIUS = 16
+private const val SELECT_BG_ALPHA = 0.8f
 
 data class SelectableItemContent(
-    @DrawableRes val icon: Int? = null,
+    val iconType: IconType? = null,
     val title: String,
 )
 
@@ -143,8 +141,8 @@ data class BackgroundDefinition(
 fun SelectRowsPreview() {
     SelectRows(
         items = listOf(
-            SelectableItemContent(title = "Item 1", icon = R.drawable.ic_sun),
-            SelectableItemContent(title = "Item 2", icon = R.drawable.ic_snow),
+            SelectableItemContent(title = "Item 1", iconType = IconType.Sun),
+            SelectableItemContent(title = "Item 2", iconType = IconType.Snowflake),
             SelectableItemContent(title = "Item 3"),
         ),
         preSelected = setOf(0),

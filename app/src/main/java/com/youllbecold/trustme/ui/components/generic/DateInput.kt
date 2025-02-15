@@ -40,7 +40,7 @@ fun DateInput(
 
     ClickableText(
         text = date.date.formatDate(),
-        painter = rememberVectorPainter(Icons.Default.DateRange),
+        iconType = IconType.Calendar,
         onClick = { showDatePicker = true },
         modifier = modifier,
     )
