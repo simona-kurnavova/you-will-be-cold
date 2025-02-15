@@ -7,8 +7,23 @@ data class LogData(
     val dateFrom: LocalDateTime,
     val dateTo: LocalDateTime,
     val weatherData: WeatherData,
-    val overallFeeling: Feeling,
+    val feelings: Feelings,
     val clothes: List<Clothes>
+)
+
+data class WeatherData(
+    val apparentTemperatureMin: Double,
+    val apparentTemperatureMax: Double,
+    val avgTemperature: Double
+)
+
+data class Feelings(
+    val head: Feeling,
+    val neck: Feeling,
+    val top: Feeling,
+    val bottom: Feeling,
+    val feet: Feeling,
+    val hand: Feeling
 )
 
 enum class Feeling {
@@ -18,9 +33,3 @@ enum class Feeling {
     WARM,
     VERY_WARM
 }
-
-data class WeatherData(
-    val apparentTemperatureMin: Double,
-    val apparentTemperatureMax: Double,
-    val avgTemperature: Double
-)

@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,14 +26,16 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.DateInput
+import com.youllbecold.trustme.ui.components.generic.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
-import com.youllbecold.trustme.ui.components.generic.SelectRows
+import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
+import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -45,12 +45,12 @@ fun AddLogForm(
     date: ImmutableDate,
     timeFrom: ImmutableTime,
     timeTo: ImmutableTime,
-    overallFeeling: FeelingState?,
+    feelings: FeelingsState,
     clothes: Set<Clothes>,
     onDateChanged: (ImmutableDate) -> Unit,
     onTimeFromChange: (ImmutableTime) -> Unit,
     onTimeToChange: (ImmutableTime) -> Unit,
-    onOverallFeelingChange: (FeelingState?) -> Unit,
+    onFeelingsChange: (FeelingsState) -> Unit,
     onClothesCategoryChange: (Set<Clothes>) -> Unit,
     removeClothes: (Set<Clothes>) -> Unit,
     onSave: () -> Unit,
@@ -76,21 +76,20 @@ fun AddLogForm(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            FeelingSection(
-                overallFeeling = overallFeeling,
-                onOverallFeelingChange = onOverallFeelingChange
-            )
-
             ClothesSection(
                 showBottomSheet = { clothesBottomSheet = it }
             )
 
-            Button(
+            FeelingSection(
+                feelings = feelings,
+                onFeelingsChange = onFeelingsChange
+            )
+
+            ThemedButton(
+                text = stringResource(R.string.add_log_save),
                 onClick = onSave,
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.add_log_save))
-            }
+            )
         }
 
         clothesBottomSheet?.let { category ->
@@ -160,26 +159,35 @@ private const val PADDING_BETWEEN_DATETIME = 8
 
 @Composable
 private fun FeelingSection(
-    overallFeeling: FeelingState?,
-    onOverallFeelingChange: (FeelingState?) -> Unit,
+    feelings: FeelingsState,
+    onFeelingsChange: (FeelingsState) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Section(
         title = stringResource(R.string.add_log_feeling),
         modifier = modifier
     ) {
-        SelectRows(
-            items = selectableFeelings(),
-            preSelected = overallFeeling?.let { setOf(it.ordinal) } ?: emptySet(),
-            onItemsSelected = { selectedItems ->
-                val result = FeelingState.entries.filter { selectedItems.contains(it.ordinal) }
+        val options = selectableFeelings().map { it.title }
 
-                // Note: Allowed just one option.
-                onOverallFeelingChange(result.firstOrNull())
-            },
-        )
+        feelings.getFeelingList(onFeelingsChange)
+            .forEach {
+                LabeledSlider(
+                    label = it.label,
+                    options = options,
+                    selected = it.feeling.ordinal,
+                    onSelected = { ordinal ->
+                        it.update(FeelingState.entries.first { it.ordinal == ordinal })
+                    },
+                    modifier = Modifier.padding(SLIDER_PADDING.dp)
+                )
+
+                Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
+            }
     }
 }
+
+private const val SPACER_BETWEEN_SLIDERS = 12
+private const val SLIDER_PADDING = 8
 
 @Composable
 private fun ClothesSection(
@@ -221,12 +229,12 @@ private fun AddLogFormPreview() {
             date = ImmutableDate(LocalDate.now()),
             timeFrom = ImmutableTime(LocalTime.now()),
             timeTo = ImmutableTime(LocalTime.now()),
-            overallFeeling = null,
+            feelings = FeelingsState(),
             clothes = emptySet(),
             onDateChanged = { },
             onTimeFromChange = { },
             onTimeToChange = { },
-            onOverallFeelingChange = { },
+            onFeelingsChange = { },
             onClothesCategoryChange = { },
             removeClothes = { },
             onSave = { }

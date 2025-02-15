@@ -1,14 +1,13 @@
 package com.youllbecold.trustme.ui.viewmodels
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.WeatherData
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -42,7 +41,14 @@ class HistoryViewModel(
                     id = null,
                     dateFrom = LocalDateTime.now(),
                     dateTo = LocalDateTime.now(),
-                    overallFeeling = Feeling.WARM,
+                    feelings = Feelings(
+                        head = Feeling.NORMAL,
+                        neck = Feeling.NORMAL,
+                        top = Feeling.NORMAL,
+                        bottom = Feeling.NORMAL,
+                        feet = Feeling.NORMAL,
+                        hand = Feeling.NORMAL
+                    ),
                     weatherData = WeatherData(
                         apparentTemperatureMin = 25.0,
                         apparentTemperatureMax = 25.0,

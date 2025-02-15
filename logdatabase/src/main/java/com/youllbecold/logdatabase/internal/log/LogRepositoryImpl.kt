@@ -6,6 +6,7 @@ import com.youllbecold.logdatabase.internal.log.entity.FeelingEntity
 import com.youllbecold.logdatabase.internal.log.entity.LogEntity
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +49,14 @@ internal class LogRepositoryImpl(
             apparentTemperatureMax = apparentTemperatureMax,
             avgTemperature = avgTemperature
         ),
-        overallFeeling = overallFeeling.toLogFeeling(),
+        feelings = Feelings(
+            head = headFeeling.toLogFeeling(),
+            neck = neckFeeling.toLogFeeling(),
+            top = topFeeling.toLogFeeling(),
+            bottom = bottomFeeling.toLogFeeling(),
+            feet = feetFeeling.toLogFeeling(),
+            hand = handFeeling.toLogFeeling()
+        ),
         clothes = clothes.map { it.toClothes() }
     )
 
@@ -58,7 +66,12 @@ internal class LogRepositoryImpl(
         avgTemperature = weatherData.avgTemperature,
         apparentTemperatureMin = weatherData.apparentTemperatureMin,
         apparentTemperatureMax = weatherData.apparentTemperatureMax,
-        overallFeeling = overallFeeling.toFeelingEntity(),
+        headFeeling = feelings.head.toFeelingEntity(),
+        neckFeeling = feelings.neck.toFeelingEntity(),
+        topFeeling = feelings.top.toFeelingEntity(),
+        bottomFeeling = feelings.bottom.toFeelingEntity(),
+        feetFeeling = feelings.feet.toFeelingEntity(),
+        handFeeling = feelings.hand.toFeelingEntity(),
         clothes = clothes.map { it.toClothesId() },
     )
 

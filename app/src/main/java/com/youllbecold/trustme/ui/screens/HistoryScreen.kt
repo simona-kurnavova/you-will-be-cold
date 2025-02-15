@@ -21,9 +21,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -109,7 +111,7 @@ fun HistoryScreenPreview() {
             LocalDateTime.now(),
             LocalDateTime.now(),
             WeatherData(0.0, 0.0, 0.0),
-            Feeling.WARM,
+            Feelings(Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL),
             emptyList()
         )
 

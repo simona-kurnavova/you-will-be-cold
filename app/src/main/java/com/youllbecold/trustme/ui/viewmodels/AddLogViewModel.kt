@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
+import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
@@ -44,11 +45,12 @@ class AddLogViewModel(
     private fun initialiseState(): LogState {
         val currentTime = LocalTime.now()
 
+        // Create initial log with default values.
         return LogState(
             data = ImmutableDate(LocalDate.now()),
             timeFrom = ImmutableTime(currentTime.minusHours(1)),
             timeTo = ImmutableTime(currentTime),
-            overallFeeling = null,
+            feelings = FeelingsState(),
             clothes = emptySet()
         )
     }
@@ -71,17 +73,25 @@ class AddLogViewModel(
         LogData(
             dateFrom = data.date.atTime(timeFrom.time),
             dateTo = data.date.atTime(timeFrom.time),
-            overallFeeling = when (overallFeeling) {
-                null,
-                FeelingState.NORMAL -> Feeling.NORMAL
-                FeelingState.COLD -> Feeling.COLD
-                FeelingState.VERY_COLD -> Feeling.VERY_COLD
-                FeelingState.WARM -> Feeling.WARM
-                FeelingState.VERY_WARM -> Feeling.VERY_WARM
-            },
+            feelings = Feelings(
+                head = feelings.head.toFeeling(),
+                neck = feelings.neck.toFeeling(),
+                top = feelings.top.toFeeling(),
+                bottom = feelings.bottom.toFeeling(),
+                feet = feelings.feet.toFeeling(),
+                hand = feelings.hand.toFeeling()
+            ),
             weatherData = weatherData,
             clothes = clothes.map { it }
         )
+
+    private fun FeelingState.toFeeling(): Feeling = when (this) {
+        FeelingState.NORMAL -> Feeling.NORMAL
+        FeelingState.COLD -> Feeling.COLD
+        FeelingState.VERY_COLD -> Feeling.VERY_COLD
+        FeelingState.WARM -> Feeling.WARM
+        FeelingState.VERY_WARM -> Feeling.VERY_WARM
+    }
 
     @SuppressLint("MissingPermission") // Permission is checked
     private fun obtainWeather(
@@ -120,7 +130,7 @@ data class LogState(
     val data: ImmutableDate,
     val timeFrom: ImmutableTime,
     val timeTo: ImmutableTime,
-    val overallFeeling: FeelingState?,
+    val feelings: FeelingsState,
     val clothes: Set<Clothes>
 )
 
@@ -131,3 +141,12 @@ enum class FeelingState {
     COLD,
     VERY_COLD,
 }
+
+data class FeelingsState(
+    val head: FeelingState = FeelingState.NORMAL,
+    val neck: FeelingState = FeelingState.NORMAL,
+    val top: FeelingState = FeelingState.NORMAL,
+    val bottom: FeelingState = FeelingState.NORMAL,
+    val feet: FeelingState = FeelingState.NORMAL,
+    val hand: FeelingState = FeelingState.NORMAL,
+)

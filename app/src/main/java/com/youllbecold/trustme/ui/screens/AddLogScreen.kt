@@ -12,6 +12,7 @@ import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.AddLogAction
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
+import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.LogState
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
@@ -48,12 +49,12 @@ private fun AddLogScreen(
         date = logState.data,
         timeFrom = logState.timeFrom,
         timeTo = logState.timeTo,
-        overallFeeling = logState.overallFeeling,
+        feelings = logState.feelings,
         clothes = logState.clothes,
         onDateChanged = { update(logState.copy(data = it)) },
         onTimeFromChange = { update(logState.copy(timeFrom = it)) },
         onTimeToChange = { update(logState.copy(timeTo = it)) },
-        onOverallFeelingChange = { update(logState.copy(overallFeeling = it)) },
+        onFeelingsChange = { update(logState.copy(feelings = it)) },
         onClothesCategoryChange = { update(logState.copy(clothes = logState.clothes + it)) },
         removeClothes = { update(logState.copy(clothes = logState.clothes - it)) },
         onSave = { onAction(AddLogAction.SaveLog) },
@@ -69,7 +70,7 @@ fun AdLogScreenPreview() {
                 data = ImmutableDate(LocalDate.now()),
                 timeFrom = ImmutableTime(LocalTime.now()),
                 timeTo = ImmutableTime(LocalTime.now()),
-                overallFeeling = null,
+                feelings = FeelingsState(),
                 clothes = emptySet()
             )
         )

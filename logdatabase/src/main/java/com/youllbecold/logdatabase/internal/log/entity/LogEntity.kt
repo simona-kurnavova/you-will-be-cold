@@ -27,8 +27,23 @@ internal data class LogEntity(
     @SerializedName("avg_temperature")
     val avgTemperature: Double,
 
-    @ColumnInfo(name = "overall_feeling")
-    val overallFeeling: FeelingEntity,
+    @ColumnInfo(name = "head_feeling")
+    val headFeeling: FeelingEntity,
+
+    @ColumnInfo(name = "neck_feeling")
+    val neckFeeling: FeelingEntity,
+
+    @ColumnInfo(name = "top_feeling")
+    val topFeeling: FeelingEntity,
+
+    @ColumnInfo(name = "bottom_feeling")
+    val bottomFeeling: FeelingEntity,
+
+    @ColumnInfo(name = "feet_feeling")
+    val feetFeeling: FeelingEntity,
+
+    @ColumnInfo(name = "hand_feeling")
+    val handFeeling: FeelingEntity,
 
     @ColumnInfo(name = "clothes")
     val clothes: List<ClothesId>

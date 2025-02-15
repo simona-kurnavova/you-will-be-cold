@@ -7,6 +7,7 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
+import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 
 fun Clothes.Category.getUiData(): Pair<String, IconType> =
     when (this) {
@@ -58,3 +59,36 @@ fun selectableFeelings(): List<SelectableItemContent> =
             )
         }
     }
+
+data class FeelingWithLabel(
+    val feeling: FeelingState,
+    val label: String,
+    val update: (FeelingState) -> Unit
+)
+
+fun FeelingsState.getFeelingList(onChange: (FeelingsState) -> Unit): List<FeelingWithLabel> =
+    listOf(
+        FeelingWithLabel(
+            neck,
+            "Neck:",
+            { onChange(this.copy(neck = it)) }),
+        FeelingWithLabel(
+            head,
+            "Head:",
+            { onChange(this.copy(head = it)) }),
+        FeelingWithLabel(
+            top,
+            "Top:",
+            { onChange(this.copy(top = it)) }),
+        FeelingWithLabel(
+            bottom,
+            "Bottom:",
+            { onChange(this.copy(bottom = it)) }),
+        FeelingWithLabel(
+            feet,
+            "Feet:",
+            { onChange(this.copy(feet = it)) }),
+        FeelingWithLabel(
+            hand, "Hands:", { onChange(this.copy(hand = it)) },
+        )
+    )
