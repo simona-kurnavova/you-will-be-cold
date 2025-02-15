@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface LogDao {
-    @Query("SELECT * FROM log LIMIT :limit")
+    @Query("SELECT * FROM log ORDER BY datetime(date_from) DESC LIMIT :limit")
     fun getAll(limit: Int = DEFAULT_LIMIT): Flow<List<LogEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
