@@ -2,7 +2,6 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
@@ -10,16 +9,17 @@ import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
 import com.youllbecold.trustme.utils.Location
 import com.youllbecold.trustme.utils.LocationHelper
+import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -29,29 +29,33 @@ import kotlin.math.roundToInt
 /**
  * ViewModel for the home screen.
  */
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission") // Not missing, handled by the permission helper.
 @KoinViewModel
 class HomeViewModel(
     private val app: Application,
     private val currentWeatherUseCase: CurrentWeatherUseCase,
     private val hourlyWeatherUseCase: HourlyWeatherUseCase,
+    private val networkHelper: NetworkHelper,
     permissionHelper: PermissionHelper,
 ) : ViewModel() {
 
-    private val locationError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val locationStatus: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
 
     val uiState: StateFlow<HomeUiState> =
         combine(
             permissionHelper.hasLocationPermission,
-            locationError,
+            networkHelper.isConnected,
+            locationStatus.asStateFlow(),
             currentWeatherUseCase.weatherState,
-            hourlyWeatherUseCase.weatherState
-        ) { hasPermission, locationError, weatherState, hourlyWeatherState ->
-            Log.d("HomeViewModel", "hasPermission=$hasPermission, weatherState=$weatherState")
-
+            hourlyWeatherUseCase.weatherState,
+        ) { hasPermission, hasInternet, locationStatus, weatherState, hourlyWeatherState ->
             HomeUiState(
                 hasPermission = hasPermission,
-                status = if (locationError) WeatherStatus.Error else weatherState.status.toWeatherStatus(),
+                status = when {
+                    !hasInternet -> LoadingStatus.NoInternet
+                    !locationStatus.isIdle() -> locationStatus
+                    else -> weatherState.status.toWeatherStatus()
+                },
                 currentWeather = weatherState.weather,
                 hourlyTemperatures = hourlyWeatherState.weather.toHourlyTemperature(),
                 city = weatherState.city
@@ -59,15 +63,15 @@ class HomeViewModel(
         }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
 
     init {
-        viewModelScope.launch {
-            permissionHelper.hasLocationPermission.collectLatest { hasPermission ->
-                Log.d("HomeViewModel", "Location permission state: $hasPermission")
-
-                if (hasPermission) {
-                    refreshWeather()
-                }
+        // Wait for permission and internet connection to fetch the weather.
+        combine(
+            permissionHelper.hasLocationPermission,
+            networkHelper.isConnected
+        ) { hasPermission, hasInternet ->
+            if (hasPermission && hasInternet) {
+                refreshWeather()
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun onAction(action: HomeAction) {
@@ -77,17 +81,23 @@ class HomeViewModel(
     }
 
     private fun refreshWeather() {
+        if (uiState.value.status == LoadingStatus.Loading) {
+            return // Already in progress, do not call again.
+        }
+
         if (PermissionHelper.hasLocationPermission(app)) {
+            locationStatus.value = LoadingStatus.Loading
+
             LocationHelper.refreshLocation(
                 app,
                 onSuccess = ::onLocationObtained,
-                onError = { locationError.value = true }
+                onError = { locationStatus.value = LoadingStatus.GenericError }
             )
         }
     }
 
     private fun onLocationObtained(location: Location) {
-        locationError.value = false
+        locationStatus.value = LoadingStatus.Idle
         currentWeatherUseCase.refreshCurrentWeather(location)
         hourlyWeatherUseCase.refreshHourlyWeather(location)
     }
@@ -103,11 +113,11 @@ class HomeViewModel(
                 )
             }
 
-    private fun WeatherUseCaseStatus.toWeatherStatus(): WeatherStatus = when (this) {
+    private fun WeatherUseCaseStatus.toWeatherStatus(): LoadingStatus = when (this) {
         WeatherUseCaseStatus.Idle,
-        WeatherUseCaseStatus.Success -> WeatherStatus.Idle
-        WeatherUseCaseStatus.Loading -> WeatherStatus.Loading
-        is WeatherUseCaseStatus.Error -> WeatherStatus.Error
+        WeatherUseCaseStatus.Success -> LoadingStatus.Idle
+        WeatherUseCaseStatus.Loading -> LoadingStatus.Loading
+        is WeatherUseCaseStatus.Error -> LoadingStatus.GenericError
     }
 }
 
@@ -116,26 +126,38 @@ class HomeViewModel(
  */
 private const val FORECAST_HOURS_LIMIT = 24
 
+/**
+ * UI state for the home screen.
+ *
+ * @param hasPermission Whether the app has location permission.
+ * @param status The current status of the weather fetching, location refreshing, etc.
+ * @param currentWeather The current weather.
+ * @param hourlyTemperatures The hourly temperatures forecast.
+ * @param city The city name.
+ */
 data class HomeUiState(
     val hasPermission: Boolean = false,
-    val status: WeatherStatus = WeatherStatus.Idle,
+    val status: LoadingStatus = LoadingStatus.Idle,
     val currentWeather: Weather? = null,
     val hourlyTemperatures: List<HourlyTemperature> = emptyList(),
     val city: String? = null,
 ) {
-    fun isRefreshing() = status == WeatherStatus.Loading && currentWeather != null
+    /**
+     * Whether the screen is refreshing - does not account for the initial loading.
+     */
+    fun isRefreshing() = status == LoadingStatus.Loading && currentWeather != null
 }
 
-enum class WeatherStatus {
-    Idle,
-    Loading,
-    Error
-}
-
+/**
+ * The actions that can be performed on the home screen.
+ */
 sealed class HomeAction {
     data object RefreshWeather : HomeAction()
 }
 
+/**
+ * The hourly temperature forecast for next few hours.
+ */
 data class HourlyTemperature(
     val time: LocalDateTime,
     val temperature: Double,

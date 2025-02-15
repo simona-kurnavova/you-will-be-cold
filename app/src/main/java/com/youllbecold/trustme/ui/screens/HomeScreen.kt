@@ -1,8 +1,10 @@
 package com.youllbecold.trustme.ui.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +16,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.youllbecold.trustme.ui.components.HourlyWeatherCard
+import com.youllbecold.trustme.ui.components.ErrorCard
+import com.youllbecold.trustme.ui.components.ErrorCardType
 import com.youllbecold.trustme.ui.components.WeatherCard
 import com.youllbecold.trustme.ui.components.generic.FadingItem
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -21,7 +25,8 @@ import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
-import com.youllbecold.trustme.ui.viewmodels.WeatherStatus
+import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
+import com.youllbecold.trustme.ui.viewmodels.isError
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import org.koin.androidx.compose.koinViewModel
@@ -59,44 +64,48 @@ private fun HomeScreen(
         swipeEnabled = true,
         onRefresh = { onAction(HomeAction.RefreshWeather) }
     ) {
-        // SwipeRefresh needs scrollable content to function
-        LazyColumn(
+        val scrollState = rememberScrollState()
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(CONTENT_PADDING.dp)
+                .verticalScroll(scrollState)  // Note: SwipeRefresh needs scrollable content to function
         ) {
+            FadingItem(visible = state.status.isError()) {
+                ErrorCard(
+                    errorCardType = when (state.status) {
+                        LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
+                        else -> ErrorCardType.GENERIC
+                    },
+                    modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                )
+            }
+
             val showWeather = state.currentWeather != null
 
-            item {
-                FadingItem(visible = showWeather) {
-                    state.currentWeather?.let {
-                        WeatherCard(
-                            weather = it,
-                            city = state.city,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                        )
-                    }
+            FadingItem(visible = showWeather) {
+                state.currentWeather?.let {
+                    WeatherCard(
+                        weather = it,
+                        city = state.city,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                    )
                 }
             }
 
-            item {
-                FadingItem(visible = showWeather) {
-                    state.currentWeather?.let {
-                        HourlyWeatherCard(
-                            hourlyTemperatures = state.hourlyTemperatures,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                        )
-                    }
+            FadingItem(visible = showWeather) {
+                state.currentWeather?.let {
+                    HourlyWeatherCard(
+                        hourlyTemperatures = state.hourlyTemperatures,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                    )
                 }
             }
-        }
-
-        if (state.status == WeatherStatus.Error) {
-            // TODO: Some error states
         }
     }
 }
@@ -129,7 +138,7 @@ fun HomeScreenPreview() {
         mutableStateOf(
             HomeUiState(
                 hasPermission = true,
-                status = WeatherStatus.Idle,
+                status = LoadingStatus.NoInternet,
                 currentWeather = weather,
                 hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
             )

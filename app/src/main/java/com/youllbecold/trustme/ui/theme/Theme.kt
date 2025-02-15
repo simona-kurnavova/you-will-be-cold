@@ -24,6 +24,9 @@ private val DarkColorScheme = darkColorScheme(
     // Menu highlight
     secondaryContainer = PastelBlue,
     onSecondaryContainer = Black,
+
+    errorContainer = FadedRed,
+    onErrorContainer = White,
 )
 
 private val LightColorScheme = lightColorScheme(

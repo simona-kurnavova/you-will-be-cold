@@ -11,6 +11,7 @@
 
     <!-- Needed for network requests to check if the device is connected to the internet. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".App"

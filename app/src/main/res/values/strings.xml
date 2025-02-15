@@ -61,6 +61,7 @@
     <string name="time_range_from">from:</string>
     <string name="time_range_to">to:</string>
     <string name="toast_select_date">Please select a date</string>
-    <string name="offline_state_message">You are offline. Pretty please connect to the internet</string>
+    <string name="offline_state_message">You are offline.</string>
+    <string name="generic_error_message">Ooops, something gone aloof.</string>
 
 </resources>

@@ -52,6 +52,11 @@ class NetworkHelper(private val app: Application) {
             .build()
 
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+        // Check initial network status
+        val activeNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        _isConnected.value = networkCapabilities?.hasInternet() ?: false
     }
 
     /**

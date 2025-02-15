@@ -1,7 +1,9 @@
 package com.youllbecold.trustme.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -11,27 +13,49 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconTextVertical
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable
-fun OfflineCard(modifier: Modifier = Modifier) {
-    OutlinedCard(modifier = modifier) {
+fun ErrorCard(
+    errorCardType: ErrorCardType,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        containerColor = MaterialTheme.colorScheme.errorContainer,
+        modifier = modifier
+    ) {
+        val text = when(errorCardType) {
+            ErrorCardType.OFFLINE -> stringResource(R.string.offline_state_message)
+            ErrorCardType.GENERIC -> stringResource(R.string.generic_error_message)
+        }
         IconTextVertical(
             title = stringResource(R.string.offline_state_message),
             iconType = IconType.SadEmoji,
-            modifier = Modifier.padding(vertical = INSIDE_PADDING.dp),
+            titleAttr = defaultSmallTextAttr().copy(
+                color = MaterialTheme.colorScheme.onErrorContainer
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = INSIDE_PADDING.dp),
         )
     }
 }
 
 private const val INSIDE_PADDING = 24
 
+enum class ErrorCardType {
+    OFFLINE,
+    GENERIC
+}
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun OfflineCardPreview() {
     YoullBeColdTheme {
-        OfflineCard()
+        ErrorCard(
+            errorCardType = ErrorCardType.OFFLINE
+        )
     }
 }
