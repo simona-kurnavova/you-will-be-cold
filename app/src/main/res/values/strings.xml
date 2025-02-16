@@ -63,5 +63,6 @@
     <string name="toast_select_date">Please select a date</string>
     <string name="offline_state_message">You are offline.</string>
     <string name="generic_error_message">Ooops, something gone aloof.</string>
+    <string name="content_desc_x_remove">Remove</string>
 
 </resources>

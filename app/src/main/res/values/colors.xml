@@ -12,7 +12,9 @@
     <color name="icon_gray">#78909C</color>
     <color name="icon_orange">#FFA500</color>
     <color name="icon_red">#FF0000</color>
-    <color name="icon_blue">#87CEFA</color>
-    <color name="icon_snow">#87CEEB</color>
-    <color name="icon_pink">#FF69B4</color>
+    <color name="icon_blue">#61A2F6</color>
+    <color name="icon_snow">#69B1D0</color>
+    <color name="icon_pink">#8E344C</color>
+
+    <color name="icon_bg">#CBC3F2</color>
 </resources>

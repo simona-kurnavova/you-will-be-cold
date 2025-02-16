@@ -30,7 +30,11 @@ fun ThemedIcon(
     )
 }
 
-enum class IconType(@DrawableRes val resource: Int, @ColorRes val color: Int) {
+enum class IconType(
+    @DrawableRes val resource: Int,
+    @ColorRes val color: Int,
+    @ColorRes val bgColor: Int = R.color.icon_bg,
+) {
     // Weather
     Sun(R.drawable.ic_sun, R.color.icon_orange),
     Cloud(R.drawable.ic_cloud, R.color.icon_gray),

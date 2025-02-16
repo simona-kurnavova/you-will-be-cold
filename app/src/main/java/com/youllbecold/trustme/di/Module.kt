@@ -20,7 +20,6 @@ import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.WeatherProvider
 import com.youllbecold.weather.api.WeatherRepository
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf

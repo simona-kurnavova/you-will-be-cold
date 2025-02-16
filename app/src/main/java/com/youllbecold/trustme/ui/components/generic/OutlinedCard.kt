@@ -37,7 +37,6 @@ fun OutlinedCard(
             modifier = Modifier
                 .padding(INSIDE_PADDING.dp)
                 .fillMaxWidth(),
-            contentAlignment = Alignment.Center
         ) {
             content()
         }

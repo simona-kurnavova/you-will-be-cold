@@ -23,13 +23,15 @@ fun Section(
             text = title,
         )
 
-        content()
+        OutlinedCard {
+            content()
+        }
 
         Spacer(modifier = Modifier.height(PADDING_BETWEEN_SECTIONS.dp))
     }
 }
 
-private const val PADDING_BETWEEN_SECTIONS = 16
+private const val PADDING_BETWEEN_SECTIONS = 18
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

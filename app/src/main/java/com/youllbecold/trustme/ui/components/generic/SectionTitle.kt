@@ -25,9 +25,8 @@ fun SectionTitle(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.secondary
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.primary
             ),
             modifier = modifier
         )
@@ -36,7 +35,7 @@ fun SectionTitle(
     }
 }
 
-private const val PADDING_UNDER_TITLE = 12
+private const val PADDING_UNDER_TITLE = 18
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

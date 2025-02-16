@@ -2,8 +2,6 @@ package com.youllbecold.trustme.ui.components.generic
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api

@@ -3,6 +3,8 @@ package com.youllbecold.trustme.ui.components
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.DateInput
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
+import com.youllbecold.trustme.ui.components.generic.ThemedChip
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
@@ -39,7 +43,6 @@ import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import java.time.LocalDate
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLogForm(
     date: ImmutableDate,
@@ -55,9 +58,6 @@ fun AddLogForm(
     removeClothes: (Set<Clothes>) -> Unit,
     onSave: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    var clothesBottomSheet by remember { mutableStateOf<Clothes.Category?>(null) }
-
     val formScrollState = rememberScrollState()
 
     Box {
@@ -77,7 +77,9 @@ fun AddLogForm(
             )
 
             ClothesSection(
-                showBottomSheet = { clothesBottomSheet = it }
+                clothes = clothes,
+                onClothesCategoryChange = onClothesCategoryChange,
+                removeClothes = removeClothes,
             )
 
             FeelingSection(
@@ -89,34 +91,6 @@ fun AddLogForm(
                 text = stringResource(R.string.add_log_save),
                 onClick = onSave,
                 modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        clothesBottomSheet?.let { category ->
-            ModalBottomSheet(
-                sheetState = sheetState,
-                onDismissRequest = { clothesBottomSheet = null },
-                content = {
-                    val preSelected = clothes.filter { it.category == category }
-
-                    // TODO: Use real ones and preselect
-                    val items = category.getItems()
-
-                    SelectRowWithButton(
-                        items = items,
-                        buttonText = stringResource(R.string.add_clothes),
-                        onButtonClick = { selected ->
-                            val result = selected
-                                .map { items[it] }
-                                .toSet()
-
-                            // TODO: onClothesCategoryChange
-                            clothesBottomSheet = null
-                        },
-                        selected = emptyList(),
-                        modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
-                    )
-                }
             )
         }
     }
@@ -169,52 +143,103 @@ private fun FeelingSection(
     ) {
         val options = selectableFeelings().map { it.title }
 
-        feelings.getFeelingList(onFeelingsChange)
-            .forEach {
-                LabeledSlider(
-                    label = it.label,
-                    options = options,
-                    selected = it.feeling.ordinal,
-                    onSelected = { ordinal ->
-                        it.update(FeelingState.entries.first { it.ordinal == ordinal })
-                    },
-                    modifier = Modifier.padding(SLIDER_PADDING.dp)
-                )
+        Column {
+            feelings.getFeelingList(onFeelingsChange)
+                .forEach {
+                    LabeledSlider(
+                        label = it.label,
+                        options = options,
+                        selected = it.feeling.ordinal,
+                        onSelected = { ordinal ->
+                            it.update(FeelingState.entries.first { it.ordinal == ordinal })
+                        },
+                        modifier = Modifier.padding(SLIDER_PADDING.dp)
+                    )
 
-                Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
-            }
+                    Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
+                }
+        }
     }
 }
 
 private const val SPACER_BETWEEN_SLIDERS = 12
 private const val SLIDER_PADDING = 8
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun ClothesSection(
-    showBottomSheet: (Clothes.Category?) -> Unit,
+    clothes: Set<Clothes>,
+    onClothesCategoryChange: (Set<Clothes>) -> Unit,
+    removeClothes: (Set<Clothes>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val clothesScrollState = rememberScrollState()
+    var clothesBottomSheet by remember { mutableStateOf<Clothes.Category?>(null) }
+    val sheetState = rememberModalBottomSheetState()
 
     Section(
         title = stringResource(R.string.add_log_wearing),
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier.horizontalScroll(clothesScrollState),
-        ){
-            Clothes.Category.entries.forEach { type ->
-                val (title, iconType) = type.getUiData()
+        Column {
+            FlowRow {
+                setOf(Clothes.JEANS, Clothes.DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT).forEachIndexed { index, item ->
+                    ThemedChip(
+                        text = item.name,
+                        iconType = IconType.Dress,
+                        onRemove = { removeClothes(clothes - item) },
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
+            }
 
-                Tile(
-                    title = title,
-                    iconType = iconType,
-                    onClick = { showBottomSheet(type) },
-                    modifier = Modifier
-                        .padding(4.dp)
-                )
+            if (clothes.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
+            }
+
+            Row(
+                modifier = Modifier.horizontalScroll(clothesScrollState),
+            ){
+                Clothes.Category.entries.forEach { type ->
+                    val (title, iconType) = type.getUiData()
+
+                    Tile(
+                        title = title,
+                        iconType = iconType,
+                        onClick = { clothesBottomSheet = type },
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
         }
+    }
+
+    clothesBottomSheet?.let { category ->
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { clothesBottomSheet = null },
+            content = {
+                val preSelected = clothes.filter { it.category == category }
+
+                // TODO: Use real ones and preselect
+                val items = category.getItems()
+
+                SelectRowWithButton(
+                    items = items,
+                    buttonText = stringResource(R.string.add_clothes),
+                    onButtonClick = { selected ->
+                        val result = selected
+                            .map { items[it] }
+                            .toSet()
+
+                        // TODO: onClothesCategoryChange
+                        clothesBottomSheet = null
+                    },
+                    selected = emptyList(),
+                    modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
+                )
+            }
+        )
     }
 }
 
@@ -230,7 +255,7 @@ private fun AddLogFormPreview() {
             timeFrom = ImmutableTime(LocalTime.now()),
             timeTo = ImmutableTime(LocalTime.now()),
             feelings = FeelingsState(),
-            clothes = emptySet(),
+            clothes = setOf(Clothes.JEANS, Clothes.DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
             onDateChanged = { },
             onTimeFromChange = { },
             onTimeToChange = { },
