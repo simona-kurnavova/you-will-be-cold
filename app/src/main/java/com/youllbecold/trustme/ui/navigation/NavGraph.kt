@@ -11,6 +11,7 @@ import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
 import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
+import com.youllbecold.trustme.utils.popAllAndNavigate
 
 /**
  * Navigation graph for the application.
@@ -27,10 +28,13 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             )
         }
         composable(NavRoute.Welcome.route) {
-            WelcomeScreenRoot { navController.popBackStack() }
+            WelcomeScreenRoot(
+                onNavigateToDashboard = { navController.popAllAndNavigate(NavRoute.Home.route) },
+                onNavigateToLocation = { navController.popAllAndNavigate(NavRoute.LocationPermission.route) }
+            )
         }
         composable(NavRoute.LocationPermission.route) {
-            LocationPermissionRoot() { navController.popBackStack() }
+            LocationPermissionRoot { navController.popAllAndNavigate(NavRoute.Home.route) }
         }
     }
 }

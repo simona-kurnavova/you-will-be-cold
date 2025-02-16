@@ -1,8 +1,10 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -11,8 +13,12 @@ import org.koin.android.annotation.KoinViewModel
  */
 @KoinViewModel
 class WelcomeViewModel(
-    private val dataStorePreferences: DataStorePreferences
+    private val app: Application,
+    private val dataStorePreferences: DataStorePreferences,
 ) : ViewModel() {
+
+    val hasLocationPermission: Boolean
+        get() = PermissionHelper.hasLocationPermission(app)
 
     /**
      * Handles [WelcomeAction].

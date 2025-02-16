@@ -12,13 +12,18 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun WelcomeScreenRoot(
     viewModel: WelcomeViewModel = koinViewModel(),
-    onBackNavigation: () -> Unit
+    onNavigateToDashboard: () -> Unit,
+    onNavigateToLocation: () -> Unit
 ) {
     WelcomeScreen { action ->
         when(action) {
             WelcomeAction.PassWelcomeScreen -> {
                 viewModel.onAction(action)
-                //onBackNavigation()
+                if (viewModel.hasLocationPermission) {
+                    onNavigateToDashboard()
+                } else {
+                    onNavigateToLocation()
+                }
             }
         }
     }

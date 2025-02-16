@@ -21,11 +21,11 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LocationPermissionRoot(
     viewModel: LocationPermissionViewModel = koinViewModel(),
-    onBackNavigation: () -> Unit
+    navigateToDashboard: () -> Unit
 ) {
     LocationPermissionScreen { action ->
         when (action) {
-            is LocationPermissionAction.LocationPermissionGranted -> Unit //onBackNavigation()
+            is LocationPermissionAction.LocationPermissionGranted -> navigateToDashboard()
             else -> viewModel.onAction(action)
         }
     }

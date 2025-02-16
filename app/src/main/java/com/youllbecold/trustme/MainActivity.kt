@@ -63,7 +63,7 @@ fun Main() {
             OverlayState.NEW_USER -> navController.popAllAndNavigate(NavRoute.Welcome.route)
             OverlayState.LOCATION_PERM_MISSING ->
                 navController.popAllAndNavigate(NavRoute.LocationPermission.route)
-            else -> navController.popAllAndNavigate(NavRoute.Home.route)
+            else -> Unit // Do nothing
         }
     }
 
