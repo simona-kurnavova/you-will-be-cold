@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.screens.overlays
+package com.youllbecold.trustme.ui.screens
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -12,27 +12,35 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.OverlaySkeleton
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.LocationPermissionAction
+import com.youllbecold.trustme.ui.viewmodels.LocationPermissionViewModel
 import com.youllbecold.trustme.utils.IntentUtils
 import com.youllbecold.trustme.utils.PermissionHelper
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun LocationPermissionRoot(
+    viewModel: LocationPermissionViewModel = koinViewModel(),
+    onBackNavigation: () -> Unit
+) {
+    LocationPermissionScreen { action ->
+        when (action) {
+            is LocationPermissionAction.LocationPermissionGranted -> Unit //onBackNavigation()
+            else -> viewModel.onAction(action)
+        }
+    }
+}
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocationPermissionScreen(
-    updatePermissionState: () -> Unit
+private fun LocationPermissionScreen(
+    onAction: (LocationPermissionAction) -> Unit,
 ) {
+    val context = LocalContext.current
+
     val locationPermissionState = rememberMultiplePermissionsState(
         PermissionHelper.locationPermissions.toList()
     )
-
-    LaunchedEffect(locationPermissionState.allPermissionsGranted) {
-        updatePermissionState()
-    }
-
-    if (locationPermissionState.allPermissionsGranted) {
-        return
-    }
-
-    val context = LocalContext.current
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -41,7 +49,7 @@ fun LocationPermissionScreen(
                 acc && isPermissionGranted
             }
 
-           if (!permissionsGranted) {
+            if (!permissionsGranted) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.location_permission_deny_toast), Toast.LENGTH_SHORT
@@ -49,6 +57,14 @@ fun LocationPermissionScreen(
             }
         }
     )
+
+    LaunchedEffect(locationPermissionState.allPermissionsGranted) {
+        onAction(LocationPermissionAction.RefreshLocationPermissionState)
+
+        if (locationPermissionState.allPermissionsGranted) {
+            onAction(LocationPermissionAction.LocationPermissionGranted)
+        }
+    }
 
     val action = {
         if (!locationPermissionState.shouldShowRationale) {

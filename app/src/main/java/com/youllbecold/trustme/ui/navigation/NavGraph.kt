@@ -9,6 +9,8 @@ import com.youllbecold.trustme.ui.screens.AddLogRoot
 import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
 import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
+import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
+import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
 
 /**
  * Navigation graph for the application.
@@ -23,6 +25,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             AddLogRoot(
                 navigateToHistory = { navController.navigate(NavRoute.History.route) }
             )
+        }
+        composable(NavRoute.Welcome.route) {
+            WelcomeScreenRoot { navController.popBackStack() }
+        }
+        composable(NavRoute.LocationPermission.route) {
+            LocationPermissionRoot() { navController.popBackStack() }
         }
     }
 }

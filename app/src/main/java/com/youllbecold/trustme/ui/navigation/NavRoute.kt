@@ -32,11 +32,19 @@ sealed class NavRoute(val route: String) {
      * Add log screen.
      */
     data object AddLog : NavRoute("add_log")
+
+    /**
+     * Welcome screen.
+     */
+    data object Welcome : NavRoute("welcome")
+
+    /**
+     * Location permission screen.
+     */
+    data object LocationPermission : NavRoute("location_permission")
 }
 
-sealed class NavRouteItem(
-    val navRoute: NavRoute
-) {
+sealed class NavRouteItem(val navRoute: NavRoute) {
     data object HomeItem : NavRouteItem(
         navRoute = NavRoute.Home
     ), MenuItem, FloatingAction {
@@ -70,6 +78,14 @@ sealed class NavRouteItem(
         navRoute = NavRoute.AddLog
     )
 
+    data object WelcomeItem : NavRouteItem(
+        navRoute = NavRoute.Welcome
+    )
+
+    data object LocationPermissionItem : NavRouteItem(
+        navRoute = NavRoute.LocationPermission
+    )
+
     fun isMenuItem(): Boolean = this is MenuItem
 
     fun getFloatingAction(): FloatingAction? = if (this is FloatingAction) this else null
@@ -80,6 +96,8 @@ sealed class NavRouteItem(
             NavRoute.History.route -> HistoryItem
             NavRoute.Settings.route -> SettingsItem
             NavRoute.AddLog.route -> AddLogItem
+            NavRoute.Welcome.route -> WelcomeItem
+            NavRoute.LocationPermission.route -> LocationPermissionItem
             else -> throw IllegalArgumentException("Route $route not found")
         }
 
@@ -87,7 +105,9 @@ sealed class NavRouteItem(
             HomeItem,
             HistoryItem,
             SettingsItem,
-            AddLogItem
+            AddLogItem,
+            WelcomeItem,
+            LocationPermissionItem
         )
     }
 }

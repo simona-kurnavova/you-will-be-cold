@@ -9,13 +9,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class MainViewModel(
-    private val permissionHelper: PermissionHelper,
-    private val dataStorePreferences: DataStorePreferences
+    permissionHelper: PermissionHelper,
+    dataStorePreferences: DataStorePreferences
 ) : ViewModel() {
 
     /**
@@ -34,23 +33,7 @@ class MainViewModel(
     }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, OverlayState.IDLE)
 
     init {
-        refreshLocationPermissionState()
-    }
-
-    /**
-     * Refreshes location permission state.
-     */
-    fun refreshLocationPermissionState() {
         permissionHelper.refreshLocationPermissionState()
-    }
-
-    /**
-     * Called when welcome screen is seen and passed by user.
-     */
-    fun onWelcomeScreenPass() {
-        viewModelScope.launch {
-            dataStorePreferences.setWelcomeScreenShown(true)
-        }
     }
 }
 

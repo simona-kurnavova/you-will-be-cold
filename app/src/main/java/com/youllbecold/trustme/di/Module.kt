@@ -8,8 +8,10 @@ import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
+import com.youllbecold.trustme.ui.viewmodels.LocationPermissionViewModel
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
+import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
@@ -18,6 +20,7 @@ import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.WeatherProvider
 import com.youllbecold.weather.api.WeatherRepository
 import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -47,4 +50,6 @@ val uiModule = module {
     viewModelOf(::HistoryViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::AddLogViewModel)
+    viewModelOf(::WelcomeViewModel)
+    viewModelOf(::LocationPermissionViewModel)
 }

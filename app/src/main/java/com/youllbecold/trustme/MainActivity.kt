@@ -1,6 +1,7 @@
 package com.youllbecold.trustme
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,25 +13,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.youllbecold.trustme.ui.components.Toolbar
 import com.youllbecold.trustme.ui.navigation.FloatingAction
 import com.youllbecold.trustme.ui.navigation.NavGraph
+import com.youllbecold.trustme.ui.navigation.NavRoute
 import com.youllbecold.trustme.ui.navigation.NavRouteItem
 import com.youllbecold.trustme.ui.navigation.NavigationBar
-import com.youllbecold.trustme.ui.screens.overlays.LocationPermissionScreen
-import com.youllbecold.trustme.ui.screens.overlays.WelcomeScreen
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
 import com.youllbecold.trustme.ui.viewmodels.OverlayState
+import com.youllbecold.trustme.utils.currentRoute
+import com.youllbecold.trustme.utils.popAllAndNavigate
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +52,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val navController: NavHostController = rememberNavController()
+
     val viewModel: MainViewModel = koinViewModel<MainViewModel>()
+
+    val overlayState by viewModel.overlayState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(overlayState) {
+        Log.d("MainActivity", "Overlay state: $overlayState")
+        when(overlayState) {
+            OverlayState.NEW_USER -> navController.popAllAndNavigate(NavRoute.Welcome.route)
+            OverlayState.LOCATION_PERM_MISSING ->
+                navController.popAllAndNavigate(NavRoute.LocationPermission.route)
+            else -> navController.popAllAndNavigate(NavRoute.Home.route)
+        }
+    }
 
     Box {
         // Setup main navigation structure
@@ -75,23 +90,10 @@ fun Main() {
                 )
             }
         }
-
-        val overlayState = viewModel.overlayState.collectAsStateWithLifecycle()
-
-        when(overlayState.value) {
-            OverlayState.NEW_USER ->
-                WelcomeScreen(viewModel::onWelcomeScreenPass)
-            OverlayState.LOCATION_PERM_MISSING ->
-                LocationPermissionScreen(viewModel::refreshLocationPermissionState)
-            else -> Unit
-        }
     }
 }
 
 private const val HORIZONTAL_SCREEN_PADDING = 12
-
-@Composable
-private fun NavController.currentRoute(): String? = currentBackStackEntryAsState().value?.destination?.route
 
 @Composable
 private fun showBottomBar(currentRoute: String?): Boolean {
