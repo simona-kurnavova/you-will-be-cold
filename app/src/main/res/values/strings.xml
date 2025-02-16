@@ -46,9 +46,9 @@
     <string name="add_log_action">Log</string>
 
     <string name="add_log_action_history">Add log</string>
-    <string name="feeling_very_cold">Freezing my balls off</string>
+    <string name="feeling_very_cold">Freezing</string>
     <string name="feeling_cold">A little cold</string>
-    <string name="feeling_normal">Perfect</string>
+    <string name="feeling_normal">Just Perfect</string>
     <string name="feeling_hot">A little warm</string>
     <string name="feeling_very_hot">Too hot</string>
     <string name="dialog_dismiss">Dismiss</string>
@@ -64,5 +64,6 @@
     <string name="offline_state_message">You are offline.</string>
     <string name="generic_error_message">Ooops, something gone aloof.</string>
     <string name="content_desc_x_remove">Remove</string>
+    <string name="toast_saved_log">Your log was saved</string>
 
 </resources>

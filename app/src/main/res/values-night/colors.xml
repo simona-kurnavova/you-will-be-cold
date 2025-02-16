@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="icon_default">#FFFFFF</color>
-    <color name="icon_gray">#B0BEC5</color>
-    <color name="icon_orange">#FBDB79</color>
-    <color name="icon_red">#F87A7A</color>
+    <color name="icon_gray">#BAC4C8</color>
+    <color name="icon_orange">#F6DD8F</color>
+    <color name="icon_red">#F68686</color>
     <color name="icon_blue">#42A5F5</color>
     <color name="icon_snow">#B2EBF2</color>
     <color name="icon_pink">#FFC0CB</color>
 
-    <color name="icon_bg">#454545</color>
+    <color name="icon_bg">#282828</color>
 </resources>

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.Tile
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.utils.toIcon
+import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
@@ -35,7 +35,7 @@ fun HourlyWeatherCard(
                     R.string.temperature_degrees_short,
                     hourItem.roundedTemperature
                 ),
-                iconType = hourItem.weatherEvaluation.toIcon(),
+                iconType = hourItem.weatherEvaluation.icon,
                 subtitle = hourItem.formattedTime,
             )
 

@@ -31,8 +31,8 @@ import com.youllbecold.trustme.ui.navigation.NavigationBar
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
 import com.youllbecold.trustme.ui.viewmodels.OverlayState
-import com.youllbecold.trustme.utils.currentRoute
-import com.youllbecold.trustme.utils.popAllAndNavigate
+import com.youllbecold.trustme.ui.utils.currentRoute
+import com.youllbecold.trustme.ui.utils.popAllAndNavigate
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {

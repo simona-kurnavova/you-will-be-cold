@@ -11,7 +11,7 @@ import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
 import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
-import com.youllbecold.trustme.utils.popAllAndNavigate
+import com.youllbecold.trustme.ui.utils.popAllAndNavigate
 
 /**
  * Navigation graph for the application.
@@ -24,7 +24,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(NavRoute.Settings.route) { SettingsScreenRoot() }
         composable(NavRoute.AddLog.route) {
             AddLogRoot(
-                navigateToHistory = { navController.navigate(NavRoute.History.route) }
+                navigateBack = { navController.popBackStack() }
             )
         }
         composable(NavRoute.Welcome.route) {

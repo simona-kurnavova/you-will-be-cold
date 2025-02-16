@@ -63,7 +63,7 @@ fun SelectRowWithButtonPreview() {
                 SelectableItemContent(IconType.TShirt, "Long sleeve"),
                 SelectableItemContent(IconType.Dress, "Sweater"),
             ),
-        buttonText = "Add clothes",
+        buttonText = "Choose clothes",
         onButtonClick = {},
     )
 }

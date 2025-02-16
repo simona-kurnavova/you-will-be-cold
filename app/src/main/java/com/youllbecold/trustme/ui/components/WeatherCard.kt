@@ -27,8 +27,8 @@ import com.youllbecold.trustme.ui.components.generic.ThemedIcon
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultBigIconAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
-import com.youllbecold.trustme.ui.utils.thermometerImage
-import com.youllbecold.trustme.ui.utils.toIcon
+import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.trustme.ui.utils.thermometer
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
@@ -42,7 +42,7 @@ fun WeatherCard(
     OutlinedCard(modifier = modifier) {
         Row {
             Image(
-                painter = painterResource(id = weather.thermometerImage()),
+                painter = painterResource(id = weather.thermometer),
                 contentDescription = null,
             )
 
@@ -60,7 +60,7 @@ fun WeatherCard(
                 CurrentTemperatureView(
                     temperature = weather.temperature,
                     useCelsius = weather.unitsCelsius,
-                    iconType = weather.weatherEvaluation.toIcon(),
+                    iconType = weather.weatherEvaluation.icon,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 

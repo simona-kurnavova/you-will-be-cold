@@ -26,7 +26,7 @@ fun ThemedIcon(
         painter = rememberVector(iconType.resource),
         contentDescription = iconAttr.contentDescription,
         tint = colorResource(iconType.color),
-        modifier = modifier.size(iconAttr.size.dp)
+        modifier = modifier.size(iconAttr.size)
     )
 }
 

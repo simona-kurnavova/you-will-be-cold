@@ -122,7 +122,7 @@ private fun SelectableItem(
 private const val PADDING_BG_INSIDE_ITEM = 18
 private const val PADDING_ITEM_ICON_END = 12
 private const val ITEM_CORNER_RADIUS = 16
-private const val SELECT_BG_ALPHA = 0.8f
+private const val SELECT_BG_ALPHA = 0.25f
 
 data class SelectableItemContent(
     val iconType: IconType? = null,

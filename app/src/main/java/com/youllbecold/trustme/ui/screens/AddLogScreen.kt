@@ -20,7 +20,7 @@ import java.time.LocalTime
 
 @Composable
 fun AddLogRoot(
-    navigateToHistory: () -> Unit,
+    navigateBack: () -> Unit,
     viewModel: AddLogViewModel = koinViewModel(),
 ) {
     AddLogScreen(
@@ -29,7 +29,7 @@ fun AddLogRoot(
             when (action) {
                 is AddLogAction.SaveLog -> {
                     viewModel.onAction(action)
-                    navigateToHistory()
+                    navigateBack()
                 }
                 else -> viewModel.onAction(action)
             }
@@ -55,8 +55,7 @@ private fun AddLogScreen(
         onTimeFromChange = { update(logState.copy(timeFrom = it)) },
         onTimeToChange = { update(logState.copy(timeTo = it)) },
         onFeelingsChange = { update(logState.copy(feelings = it)) },
-        onClothesCategoryChange = { update(logState.copy(clothes = logState.clothes + it)) },
-        removeClothes = { update(logState.copy(clothes = logState.clothes - it)) },
+        onClothesCategoryChange = { update(logState.copy(clothes = it)) },
         onSave = { onAction(AddLogAction.SaveLog) },
     )
 }

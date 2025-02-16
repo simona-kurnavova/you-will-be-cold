@@ -1,5 +1,8 @@
 package com.youllbecold.trustme.ui.components
 
+import android.annotation.SuppressLint
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,18 +20,19 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.DateInput
-import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
@@ -38,6 +42,12 @@ import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.utils.getFeelingList
+import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.trustme.ui.utils.items
+import com.youllbecold.trustme.ui.utils.title
+import com.youllbecold.trustme.ui.utils.toSelectableItemContent
+import com.youllbecold.trustme.ui.utils.withCategory
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import java.time.LocalDate
@@ -55,9 +65,9 @@ fun AddLogForm(
     onTimeToChange: (ImmutableTime) -> Unit,
     onFeelingsChange: (FeelingsState) -> Unit,
     onClothesCategoryChange: (Set<Clothes>) -> Unit,
-    removeClothes: (Set<Clothes>) -> Unit,
     onSave: () -> Unit,
 ) {
+    val context = LocalContext.current
     val formScrollState = rememberScrollState()
 
     Box {
@@ -79,7 +89,6 @@ fun AddLogForm(
             ClothesSection(
                 clothes = clothes,
                 onClothesCategoryChange = onClothesCategoryChange,
-                removeClothes = removeClothes,
             )
 
             FeelingSection(
@@ -89,9 +98,17 @@ fun AddLogForm(
 
             ThemedButton(
                 text = stringResource(R.string.add_log_save),
-                onClick = onSave,
+                onClick = {
+                    onSave()
+                    Toast.makeText(context, context.getString(R.string.toast_saved_log), Toast.LENGTH_SHORT)
+                        .show()
+                },
                 modifier = Modifier.fillMaxWidth()
             )
+            
+            BackHandler {
+                // TODO: Show dialog to confirm exit
+            }
         }
     }
 }
@@ -141,7 +158,7 @@ private fun FeelingSection(
         title = stringResource(R.string.add_log_feeling),
         modifier = modifier
     ) {
-        val options = selectableFeelings().map { it.title }
+        val options = FeelingState.entries.toSelectableItemContent().map { it.title }
 
         Column {
             feelings.getFeelingList(onFeelingsChange)
@@ -170,7 +187,6 @@ private const val SLIDER_PADDING = 8
 private fun ClothesSection(
     clothes: Set<Clothes>,
     onClothesCategoryChange: (Set<Clothes>) -> Unit,
-    removeClothes: (Set<Clothes>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val clothesScrollState = rememberScrollState()
@@ -183,13 +199,18 @@ private fun ClothesSection(
     ) {
         Column {
             FlowRow {
-                setOf(Clothes.JEANS, Clothes.DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT).forEachIndexed { index, item ->
-                    ThemedChip(
-                        text = item.name,
-                        iconType = IconType.Dress,
-                        onRemove = { removeClothes(clothes - item) },
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
+                // Selected clothes chips
+                clothes.forEach { item ->
+                    key(item) {
+                        ThemedChip(
+                            text = item.title,
+                            iconType = item.icon,
+                            onRemove = {
+                                onClothesCategoryChange(clothes - item)
+                            },
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -200,12 +221,11 @@ private fun ClothesSection(
             Row(
                 modifier = Modifier.horizontalScroll(clothesScrollState),
             ){
+                // All categories
                 Clothes.Category.entries.forEach { type ->
-                    val (title, iconType) = type.getUiData()
-
                     Tile(
-                        title = title,
-                        iconType = iconType,
+                        title = type.title,
+                        iconType = type.icon,
                         onClick = { clothesBottomSheet = type },
                         modifier = Modifier.padding(4.dp)
                     )
@@ -219,23 +239,23 @@ private fun ClothesSection(
             sheetState = sheetState,
             onDismissRequest = { clothesBottomSheet = null },
             content = {
-                val preSelected = clothes.filter { it.category == category }
+                val allClothesInCategory = category.items
 
-                // TODO: Use real ones and preselect
-                val items = category.getItems()
+                val preSelected = clothes
+                    .withCategory(category)
+                    .map { allClothesInCategory.indexOf(it) }
 
                 SelectRowWithButton(
-                    items = items,
+                    items = allClothesInCategory.toSelectableItemContent(),
                     buttonText = stringResource(R.string.add_clothes),
                     onButtonClick = { selected ->
-                        val result = selected
-                            .map { items[it] }
-                            .toSet()
-
-                        // TODO: onClothesCategoryChange
+                        val newSelection = selected.map { allClothesInCategory[it] }
+                        onClothesCategoryChange(
+                            clothes - allClothesInCategory.toSet() + newSelection
+                        )
                         clothesBottomSheet = null
                     },
-                    selected = emptyList(),
+                    selected = preSelected,
                     modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
                 )
             }
@@ -261,7 +281,6 @@ private fun AddLogFormPreview() {
             onTimeToChange = { },
             onFeelingsChange = { },
             onClothesCategoryChange = { },
-            removeClothes = { },
             onSave = { }
         )
     }

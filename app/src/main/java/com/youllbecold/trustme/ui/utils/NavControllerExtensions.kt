@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.utils
+package com.youllbecold.trustme.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController

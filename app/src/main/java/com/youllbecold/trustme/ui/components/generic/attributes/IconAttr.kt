@@ -1,9 +1,11 @@
 package com.youllbecold.trustme.ui.components.generic.attributes
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 data class IconAttr(
-    val size: Int,
+    val size: Dp,
     val contentDescription: String? = null
 ) {
     companion object {
@@ -14,10 +16,10 @@ data class IconAttr(
 
 @Composable
 fun defaultSmallIconAttr(): IconAttr = IconAttr(
-    size = IconAttr.SMALL_ICON_SIZE,
+    size = IconAttr.SMALL_ICON_SIZE.dp,
 )
 
 @Composable
 fun defaultBigIconAttr(): IconAttr = IconAttr(
-    size = IconAttr.BIG_ICON_SIZE,
+    size = IconAttr.BIG_ICON_SIZE.dp,
 )

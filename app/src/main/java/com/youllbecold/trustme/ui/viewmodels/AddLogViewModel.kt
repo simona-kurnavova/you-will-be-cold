@@ -3,6 +3,7 @@ package com.youllbecold.trustme.ui.viewmodels
 import android.annotation.SuppressLint
 import android.app.Application
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
@@ -125,7 +126,7 @@ sealed class AddLogAction {
     data object SaveLog : AddLogAction()
 }
 
-@Immutable
+@Stable
 data class LogState(
     val data: ImmutableDate,
     val timeFrom: ImmutableTime,
