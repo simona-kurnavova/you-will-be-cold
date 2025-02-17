@@ -92,14 +92,15 @@ private const val SLIDER_HEIGHT = 7
 private const val SPACE_BETWEEN_TEXT = 12
 
 private fun calculateColor(sliderValue: Float, options: Int): Color {
-    val fraction = sliderValue / (options - 1)
+    val fraction = 1.0f - (sliderValue / (options - 1)) // Reverse the fraction
 
     return Color(
-        red = 1.0f - (0.4f * fraction), // Starts at 1.0 (red), decreases
-        green = 0.7f,  // Softened green component for nicer shades
-        blue = 0.6f + (0.4f * fraction) // Starts at 0.6, increases to 1.0 (pastel blue/purple)
+        red = 1.0f - (0.4f * fraction), // Now starts at 0.6 (blue) and increases to 1.0 (red)
+        green = 0.7f,  // Keeping green constant for nice shades
+        blue = 0.6f + (0.4f * fraction) // Now starts at 1.0 (red) and decreases to 0.6 (blue)
     )
 }
+
 
 @Preview
 @Composable
@@ -108,7 +109,7 @@ private fun LabeledSliderPreview() {
         LabeledSlider(
             label = "Label",
             options = listOf("Option 1", "Option 2", "Option 3"),
-            selected = 1,
+            selected = 2,
             onSelected = {},
         )
     }

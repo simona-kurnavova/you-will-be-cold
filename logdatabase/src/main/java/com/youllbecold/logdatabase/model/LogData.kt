@@ -27,9 +27,9 @@ data class Feelings(
 )
 
 enum class Feeling {
-    NORMAL,
-    COLD,
     VERY_COLD,
+    COLD,
+    NORMAL,
     WARM,
     VERY_WARM
 }
