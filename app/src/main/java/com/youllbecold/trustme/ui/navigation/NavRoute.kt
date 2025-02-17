@@ -62,7 +62,7 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
         override val menuTitle: Int = R.string.menu_history
         override val menuIcon: ImageVector = Icons.AutoMirrored.Filled.List
 
-        override val floatingActionTitle: Int = R.string.add_log_action_history
+        override val floatingActionTitle: Int = R.string.add_log_action
         override val floatingActionIcon: ImageVector = Icons.Filled.Add
         override val floatingActionTo: NavRoute = NavRoute.AddLog
     }

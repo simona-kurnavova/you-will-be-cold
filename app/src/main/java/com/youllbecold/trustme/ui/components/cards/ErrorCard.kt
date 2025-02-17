@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.cards
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.IconTextVertical
+import com.youllbecold.trustme.ui.components.generic.icontext.IconTextVertical
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr

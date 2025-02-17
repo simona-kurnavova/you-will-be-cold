@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.cards
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.Tile
+import com.youllbecold.trustme.ui.components.generic.icontext.Tile
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature

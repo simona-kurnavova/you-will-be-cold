@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.inputs
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.interaction.MutableInteractionSource

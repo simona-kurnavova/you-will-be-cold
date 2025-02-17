@@ -61,6 +61,7 @@ internal class LogRepositoryImpl(
     )
 
     private fun LogData.toEntity(): LogEntity = LogEntity(
+        id = id,
         dateFrom = dateFrom,
         dateTo = dateTo,
         avgTemperature = weatherData.avgTemperature,

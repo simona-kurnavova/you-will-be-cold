@@ -4,39 +4,77 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
+import com.youllbecold.trustme.ui.components.generic.inputs.SelectableItemContent
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 
+/**
+ * Returns the title associated with the feeling state.
+ */
+@Composable
+fun FeelingState.getTitle(): String = when (this) {
+    FeelingState.VERY_WARM -> stringResource(id = R.string.feeling_very_hot)
+    FeelingState.WARM -> stringResource(id = R.string.feeling_hot)
+    FeelingState.NORMAL -> stringResource(id = R.string.feeling_normal)
+    FeelingState.COLD -> stringResource(id = R.string.feeling_cold)
+    FeelingState.VERY_COLD -> stringResource(id = R.string.feeling_very_cold)
+}
+
+/**
+ * Returns the icon associated with the feeling state.
+ */
+val FeelingState.icon: IconType
+    get() = when (this) {
+        FeelingState.VERY_WARM -> IconType.Fire
+        FeelingState.WARM -> IconType.Sun
+        FeelingState.NORMAL -> IconType.SmileEmoji
+        FeelingState.COLD -> IconType.Snowflake
+        FeelingState.VERY_COLD -> IconType.Popsicle
+    }
+
+/**
+ * Returns a list of [SelectableItemContent] for the feelings state.
+ */
 @Composable
 fun List<FeelingState>.toSelectableItemContent(): List<SelectableItemContent> = map { feeling ->
-    when (feeling) {
-        FeelingState.VERY_WARM -> SelectableItemContent(
-            IconType.Fire,
-            stringResource(id = R.string.feeling_very_hot)
-        )
-
-        FeelingState.WARM -> SelectableItemContent(
-            IconType.Sun,
-            stringResource(id = R.string.feeling_hot)
-        )
-
-        FeelingState.NORMAL -> SelectableItemContent(
-            IconType.SmileEmoji,
-            stringResource(id = R.string.feeling_normal)
-        )
-
-        FeelingState.COLD -> SelectableItemContent(
-            IconType.Snowflake,
-            stringResource(id = R.string.feeling_cold)
-        )
-
-        FeelingState.VERY_COLD -> SelectableItemContent(
-            IconType.Popsicle,
-            stringResource(id = R.string.feeling_very_cold)
-        )
-    }
+    SelectableItemContent(
+        iconType = feeling.icon,
+        title = feeling.getTitle(),
+    )
 }
+
+/**
+ * Returns a list of [FeelingWithLabel] for the feelings state.
+ */
+@Composable
+fun FeelingsState.getFeelingWithLabel(onChange: (FeelingsState) -> Unit): List<FeelingWithLabel> =
+    listOf(
+        FeelingWithLabel(
+            neck,
+            stringResource(R.string.label_neck),
+            { onChange(this.copy(neck = it)) }),
+        FeelingWithLabel(
+            head,
+            stringResource(R.string.label_head),
+            { onChange(this.copy(head = it)) }),
+        FeelingWithLabel(
+            top,
+            stringResource(R.string.label_top),
+            { onChange(this.copy(top = it)) }),
+        FeelingWithLabel(
+            bottom,
+            stringResource(R.string.label_bottom),
+            { onChange(this.copy(bottom = it)) }),
+        FeelingWithLabel(
+            feet,
+            stringResource(R.string.label_feet),
+            { onChange(this.copy(feet = it)) }),
+        FeelingWithLabel(
+            hand,
+            stringResource(R.string.label_hands),
+            { onChange(this.copy(hand = it)) },
+        )
+    )
 
 data class FeelingWithLabel(
     val feeling: FeelingState,
@@ -44,29 +82,22 @@ data class FeelingWithLabel(
     val update: (FeelingState) -> Unit
 )
 
-fun FeelingsState.getFeelingList(onChange: (FeelingsState) -> Unit): List<FeelingWithLabel> =
-    listOf(
-        FeelingWithLabel(
-            neck,
-            "Neck:",
-            { onChange(this.copy(neck = it)) }),
-        FeelingWithLabel(
-            head,
-            "Head:",
-            { onChange(this.copy(head = it)) }),
-        FeelingWithLabel(
-            top,
-            "Top:",
-            { onChange(this.copy(top = it)) }),
-        FeelingWithLabel(
-            bottom,
-            "Bottom:",
-            { onChange(this.copy(bottom = it)) }),
-        FeelingWithLabel(
-            feet,
-            "Feet:",
-            { onChange(this.copy(feet = it)) }),
-        FeelingWithLabel(
-            hand, "Hands:", { onChange(this.copy(hand = it)) },
-        )
-    )
+
+/**
+ * Returns a list of pairs of strings representing the feelings state.
+ */
+@Composable
+fun FeelingsState.labeled(): List<Pair<String, FeelingState>> = listOf(
+    stringResource(R.string.label_neck) to neck,
+    stringResource(R.string.label_head) to head,
+    stringResource(R.string.label_top) to top,
+    stringResource(R.string.label_bottom) to bottom,
+    stringResource(R.string.label_feet) to feet,
+    stringResource(R.string.label_hands) to hand
+)
+
+@Composable
+fun FeelingsState.worstFeeling(): FeelingState = labeled()
+    .filter { it.second != FeelingState.NORMAL }
+    .minByOrNull { it.second.ordinal }?.second // Consider cold worst than hot.
+    ?: FeelingState.NORMAL

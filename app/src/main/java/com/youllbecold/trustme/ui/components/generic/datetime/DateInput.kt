@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.datetime
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -12,11 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.icontext.ClickableText
+import com.youllbecold.trustme.ui.components.generic.IconType
+import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.formatDate
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme

@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.animation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

@@ -47,12 +47,12 @@ private fun AddLogScreen(
     val update: (LogState) -> Unit = { onAction(AddLogAction.SaveProgress(it)) }
 
     AddLogForm(
-        date = logState.data,
+        date = logState.date,
         timeFrom = logState.timeFrom,
         timeTo = logState.timeTo,
         feelings = logState.feelings,
         clothes = logState.clothes,
-        onDateChanged = { update(logState.copy(data = it)) },
+        onDateChanged = { update(logState.copy(date = it)) },
         onTimeFromChange = { update(logState.copy(timeFrom = it)) },
         onTimeToChange = { update(logState.copy(timeTo = it)) },
         onFeelingsChange = { update(logState.copy(feelings = it)) },
@@ -67,7 +67,7 @@ fun AdLogScreenPreview() {
     val logState = remember {
         mutableStateOf(
             LogState(
-                data = ImmutableDate(LocalDate.now()),
+                date = ImmutableDate(LocalDate.now()),
                 timeFrom = ImmutableTime(LocalTime.now()),
                 timeTo = ImmutableTime(LocalTime.now()),
                 feelings = FeelingsState(),

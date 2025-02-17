@@ -65,5 +65,31 @@
     <string name="generic_error_message">Ooops, something gone aloof.</string>
     <string name="content_desc_x_remove">Remove</string>
     <string name="toast_saved_log">Your log was saved</string>
+    <string name="label_neck">Neck:</string>
+    <string name="label_head">Head:</string>
+    <string name="label_top">Top:</string>
+    <string name="label_bottom">Bottom:</string>
+    <string name="label_feet">Feet:</string>
+    <string name="label_hands">Hands:</string>
 
+    <string name="log_item_label">You were \'%s\'</string>
+    <string name="expand_card_action">Expand card</string>
+    <string name="clothes_short_sleeve">Short sleeve</string>
+    <string name="clothes_long_sleeve">Long sleeve</string>
+    <string name="clothes_short_skirt">Short skirt</string>
+    <string name="clothes_shorts">Shorts</string>
+    <string name="clothes_jeans">Jeans</string>
+    <string name="clothes_sandals">Sandals</string>
+    <string name="clothes_tennis_shoes">Tennis shoes</string>
+    <string name="clothes_dress">Dress</string>
+    <string name="clothes_category_tops">Tops</string>
+    <string name="clothes_category_jackets">Jackets</string>
+    <string name="clothes_category_pants">Pants</string>
+    <string name="clothes_category_shoes">Shoes</string>
+    <string name="clothes_category_hats">Hats</string>
+    <string name="clothes_category_accessories">Accessories</string>
+    <string name="clothes_category_dresses_and_overalls">Dresses and overalls</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="message_no_logs_available">No logs available</string>
 </resources>

@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.youllbecold.trustme.ui.components.HourlyWeatherCard
-import com.youllbecold.trustme.ui.components.ErrorCard
-import com.youllbecold.trustme.ui.components.ErrorCardType
-import com.youllbecold.trustme.ui.components.WeatherCard
-import com.youllbecold.trustme.ui.components.generic.FadingItem
+import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
+import com.youllbecold.trustme.ui.components.cards.ErrorCard
+import com.youllbecold.trustme.ui.components.cards.ErrorCardType
+import com.youllbecold.trustme.ui.components.cards.WeatherCard
+import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState

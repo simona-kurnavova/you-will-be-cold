@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.generic.inputs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.SelectRows
-import com.youllbecold.trustme.ui.components.generic.SelectableItemContent
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
 
 @Composable

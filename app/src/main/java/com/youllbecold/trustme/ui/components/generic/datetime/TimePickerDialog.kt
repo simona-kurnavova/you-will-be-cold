@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.generic.datetime
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api

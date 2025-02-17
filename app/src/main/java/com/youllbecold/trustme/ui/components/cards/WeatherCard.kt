@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components
+package com.youllbecold.trustme.ui.components.cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -18,9 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.youllbecold.trustme.ui.components.generic.IconRowData
-import com.youllbecold.trustme.ui.components.generic.IconText
-import com.youllbecold.trustme.ui.components.generic.IconTextRow
+import com.youllbecold.trustme.ui.components.generic.icontext.IconRowData
+import com.youllbecold.trustme.ui.components.generic.icontext.IconText
+import com.youllbecold.trustme.ui.components.generic.icontext.IconTextRow
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedIcon

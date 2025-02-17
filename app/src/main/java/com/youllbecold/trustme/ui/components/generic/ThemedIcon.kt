@@ -65,6 +65,7 @@ enum class IconType(
     Location(R.drawable.ic_location, R.color.icon_default),
     Calendar(R.drawable.ic_calendar, R.color.icon_default),
     Timer(R.drawable.ic_time, R.color.icon_default),
+    Pencil(R.drawable.ic_pencil, R.color.icon_default),
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)

@@ -31,20 +31,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.DateInput
-import com.youllbecold.trustme.ui.components.generic.LabeledSlider
+import com.youllbecold.trustme.ui.components.generic.datetime.DateInput
+import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
+import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.generic.ThemedChip
-import com.youllbecold.trustme.ui.components.generic.Tile
-import com.youllbecold.trustme.ui.components.generic.TimeRangeInput
+import com.youllbecold.trustme.ui.components.generic.icontext.Tile
+import com.youllbecold.trustme.ui.components.generic.datetime.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.utils.getFeelingList
+import com.youllbecold.trustme.ui.utils.getFeelingWithLabel
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.items
-import com.youllbecold.trustme.ui.utils.title
+import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.toSelectableItemContent
 import com.youllbecold.trustme.ui.utils.withCategory
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
@@ -162,7 +163,7 @@ private fun FeelingSection(
         val options = FeelingState.entries.toSelectableItemContent().map { it.title }
 
         Column {
-            feelings.getFeelingList(onFeelingsChange)
+            feelings.getFeelingWithLabel(onFeelingsChange)
                 .forEach {
                     LabeledSlider(
                         label = it.label,
@@ -204,7 +205,7 @@ private fun ClothesSection(
                 clothes.forEach { item ->
                     key(item) {
                         ThemedChip(
-                            text = item.title,
+                            text = item.getTitle(),
                             iconType = item.icon,
                             onRemove = { onClothesCategoryChange(clothes.remove(item)) },
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -223,7 +224,7 @@ private fun ClothesSection(
                 // All categories
                 Clothes.Category.entries.forEach { type ->
                     Tile(
-                        title = type.title,
+                        title = type.getTitle(),
                         iconType = type.icon,
                         onClick = { clothesBottomSheet = type },
                         modifier = Modifier.padding(4.dp)

@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.icontext
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.fadedBorderAttr
-import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable

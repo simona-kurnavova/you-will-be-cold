@@ -2,22 +2,14 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.model.Clothes
-import com.youllbecold.logdatabase.model.Feeling
-import com.youllbecold.logdatabase.model.Feelings
-import com.youllbecold.logdatabase.model.LogData
-import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
-import kotlinx.collections.immutable.PersistentSet
-import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -49,17 +41,15 @@ class AddLogViewModel(
 
         // Create initial log with default values.
         return LogState(
-            data = ImmutableDate(LocalDate.now()),
+            date = ImmutableDate(LocalDate.now()),
             timeFrom = ImmutableTime(currentTime.minusHours(1)),
-            timeTo = ImmutableTime(currentTime),
-            feelings = FeelingsState(),
-            clothes = persistentSetOf()
+            timeTo = ImmutableTime(currentTime)
         )
     }
 
     private fun saveLog(logData: LogState) {
         viewModelScope.launch {
-            val weatherData = WeatherData(
+            val weatherState = WeatherState(
                 apparentTemperatureMin = 25.0,
                 apparentTemperatureMax = 25.0,
                 avgTemperature = 25.0
@@ -67,32 +57,9 @@ class AddLogViewModel(
 
             // TODO: Obtain weather data.
 
-            logRepository.addLog(logData.toLogData(weatherData))
+            val logWithWeather = logData.copy(weather = weatherState)
+            logRepository.addLog(logWithWeather.toLogData())
         }
-    }
-
-    private fun LogState.toLogData(weatherData: WeatherData): LogData =
-        LogData(
-            dateFrom = data.date.atTime(timeFrom.time),
-            dateTo = data.date.atTime(timeFrom.time),
-            feelings = Feelings(
-                head = feelings.head.toFeeling(),
-                neck = feelings.neck.toFeeling(),
-                top = feelings.top.toFeeling(),
-                bottom = feelings.bottom.toFeeling(),
-                feet = feelings.feet.toFeeling(),
-                hand = feelings.hand.toFeeling()
-            ),
-            weatherData = weatherData,
-            clothes = clothes.map { it }
-        )
-
-    private fun FeelingState.toFeeling(): Feeling = when (this) {
-        FeelingState.NORMAL -> Feeling.NORMAL
-        FeelingState.COLD -> Feeling.COLD
-        FeelingState.VERY_COLD -> Feeling.VERY_COLD
-        FeelingState.WARM -> Feeling.WARM
-        FeelingState.VERY_WARM -> Feeling.VERY_WARM
     }
 
     @SuppressLint("MissingPermission") // Permission is checked
@@ -126,29 +93,3 @@ sealed class AddLogAction {
     data class SaveProgress(val state: LogState) : AddLogAction()
     data object SaveLog : AddLogAction()
 }
-
-@Stable
-data class LogState(
-    val data: ImmutableDate,
-    val timeFrom: ImmutableTime,
-    val timeTo: ImmutableTime,
-    val feelings: FeelingsState,
-    val clothes: PersistentSet<Clothes>
-)
-
-enum class FeelingState {
-    VERY_COLD,
-    COLD,
-    NORMAL,
-    WARM,
-    VERY_WARM,
-}
-
-data class FeelingsState(
-    val head: FeelingState = FeelingState.NORMAL,
-    val neck: FeelingState = FeelingState.NORMAL,
-    val top: FeelingState = FeelingState.NORMAL,
-    val bottom: FeelingState = FeelingState.NORMAL,
-    val feet: FeelingState = FeelingState.NORMAL,
-    val hand: FeelingState = FeelingState.NORMAL,
-)

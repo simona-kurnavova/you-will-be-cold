@@ -20,7 +20,13 @@ import com.youllbecold.trustme.ui.utils.popAllAndNavigate
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = NavRoute.Home.route, modifier = modifier) {
         composable(NavRoute.Home.route) { HomeScreenRoot() }
-        composable(NavRoute.History.route) { HistoryScreenRoot() }
+        composable(NavRoute.History.route) {
+            HistoryScreenRoot(
+                navigateToEdit = {
+                    // TODO: navigate to edit screen
+                }
+            )
+        }
         composable(NavRoute.Settings.route) { SettingsScreenRoot() }
         composable(NavRoute.AddLog.route) {
             AddLogRoot(

@@ -1,42 +1,48 @@
 package com.youllbecold.trustme.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youllbecold.logdatabase.model.Feeling
-import com.youllbecold.logdatabase.model.Feelings
-import com.youllbecold.logdatabase.model.LogData
-import com.youllbecold.logdatabase.model.WeatherData
+import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.cards.LogCard
+import com.youllbecold.trustme.ui.components.utils.ImmutableDate
+import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.HistoryAction
 import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
+import com.youllbecold.trustme.ui.viewmodels.LogState
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun HistoryScreenRoot(
-    viewModel: HistoryViewModel = koinViewModel()
+    viewModel: HistoryViewModel = koinViewModel(),
+    navigateToEdit: (LogState) -> Unit
 ) {
     HistoryScreen(
         uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+        onAction = { action ->
+            when(action) {
+                is HistoryAction.Edit -> navigateToEdit(action.state)
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 /**
@@ -45,6 +51,7 @@ fun HistoryScreenRoot(
 @Composable
 private fun HistoryScreen(
     uiState: State<HistoryUiState>,
+    onAction: (HistoryAction) -> Unit
 ) {
     val state = uiState.value
 
@@ -56,71 +63,62 @@ private fun HistoryScreen(
         item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
 
         items(state.logs.size) { index ->
-            LogItem(
-                state.logs[index],
-                Modifier.padding(BETWEEN_ITEM_PADDING.dp)
-            )
+            key(state.logs[index].id) {
+                LogCard(
+                    log = state.logs[index],
+                    modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp),
+                    editAction = {
+                        onAction(HistoryAction.Edit(state.logs[index]))
+                    },
+                    deleteAction = {
+                        onAction(HistoryAction.Delete(state.logs[index]))
+                    },
+                )
 
-            Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp))
+                Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp))
+            }
         }
 
         if (state.logs.isEmpty()) {
             item {
                 Text(
-                    text = "No logs available",
+                    text = stringResource(R.string.message_no_logs_available),
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(EMPTY_PADDING.dp),
                     textAlign = TextAlign.Center
                 )
             }
         }
+
+        item { Spacer(modifier = Modifier.height(END_SPACE.dp)) }
     }
 }
 
 private const val CONTENT_PADDING = 12
-private const val BETWEEN_ITEM_PADDING = 16
-
-@Composable
-private fun LogItem(
-    log: LogData,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(INSIDE_ITEM_PADDING.dp)
-        ) {
-            Row(modifier = modifier) {
-                Text(text = log.toString())
-            }
-        }
-    }
-}
-
-private const val INSIDE_ITEM_PADDING = 4
+private const val BETWEEN_ITEM_PADDING = 4
+private const val END_SPACE = 48
+private const val EMPTY_PADDING = 24
 
 @Preview(showBackground = true)
 @Composable
 fun HistoryScreenPreview() {
     YoullBeColdTheme {
-        val logEntityItem = LogData(
-            1,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            WeatherData(0.0, 0.0, 0.0),
-            Feelings(Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL, Feeling.NORMAL),
-            emptyList()
+        val log = LogState(
+            id = null,
+            ImmutableDate(LocalDate.now()),
+            ImmutableTime(LocalTime.now()),
+            ImmutableTime(LocalTime.now()),
         )
-
         val state = remember {
-            mutableStateOf(HistoryUiState(listOf(logEntityItem)))
+            mutableStateOf(HistoryUiState(
+                listOf(log, log, log)
+            ))
         }
 
         HistoryScreen(
             uiState = state,
+            onAction = {}
         )
     }
 }
@@ -131,9 +129,11 @@ fun HistoryScreenEmptyPreview() {
     val state = remember {
         mutableStateOf(HistoryUiState(emptyList()))
     }
+
     YoullBeColdTheme {
         HistoryScreen(
             uiState = state,
+            onAction = {}
         )
     }
 }
