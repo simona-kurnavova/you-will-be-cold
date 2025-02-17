@@ -56,6 +56,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
 
+    // Immutable collections
+    implementation(libs.kotlin.collections.immutable)
+
     // Navigation component
     implementation(libs.androidx.navigation.runtime.ktx)
 

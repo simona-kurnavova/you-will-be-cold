@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.ui.components
 
-import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
@@ -50,6 +49,8 @@ import com.youllbecold.trustme.ui.utils.toSelectableItemContent
 import com.youllbecold.trustme.ui.utils.withCategory
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -59,12 +60,12 @@ fun AddLogForm(
     timeFrom: ImmutableTime,
     timeTo: ImmutableTime,
     feelings: FeelingsState,
-    clothes: Set<Clothes>,
+    clothes: PersistentSet<Clothes>,
     onDateChanged: (ImmutableDate) -> Unit,
     onTimeFromChange: (ImmutableTime) -> Unit,
     onTimeToChange: (ImmutableTime) -> Unit,
     onFeelingsChange: (FeelingsState) -> Unit,
-    onClothesCategoryChange: (Set<Clothes>) -> Unit,
+    onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -185,8 +186,8 @@ private const val SLIDER_PADDING = 8
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun ClothesSection(
-    clothes: Set<Clothes>,
-    onClothesCategoryChange: (Set<Clothes>) -> Unit,
+    clothes: PersistentSet<Clothes>,
+    onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val clothesScrollState = rememberScrollState()
@@ -205,9 +206,7 @@ private fun ClothesSection(
                         ThemedChip(
                             text = item.title,
                             iconType = item.icon,
-                            onRemove = {
-                                onClothesCategoryChange(clothes - item)
-                            },
+                            onRemove = { onClothesCategoryChange(clothes.remove(item)) },
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
@@ -251,7 +250,9 @@ private fun ClothesSection(
                     onButtonClick = { selected ->
                         val newSelection = selected.map { allClothesInCategory[it] }
                         onClothesCategoryChange(
-                            clothes - allClothesInCategory.toSet() + newSelection
+                            clothes
+                                .removeAll(allClothesInCategory)
+                                .addAll(newSelection)
                         )
                         clothesBottomSheet = null
                     },
@@ -275,7 +276,7 @@ private fun AddLogFormPreview() {
             timeFrom = ImmutableTime(LocalTime.now()),
             timeTo = ImmutableTime(LocalTime.now()),
             feelings = FeelingsState(),
-            clothes = setOf(Clothes.JEANS, Clothes.DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
+            clothes = persistentSetOf(Clothes.JEANS, Clothes.DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
             onDateChanged = { },
             onTimeFromChange = { },
             onTimeToChange = { },

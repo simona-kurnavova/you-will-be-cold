@@ -2,7 +2,6 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +16,8 @@ import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -52,7 +53,7 @@ class AddLogViewModel(
             timeFrom = ImmutableTime(currentTime.minusHours(1)),
             timeTo = ImmutableTime(currentTime),
             feelings = FeelingsState(),
-            clothes = emptySet()
+            clothes = persistentSetOf()
         )
     }
 
@@ -132,15 +133,15 @@ data class LogState(
     val timeFrom: ImmutableTime,
     val timeTo: ImmutableTime,
     val feelings: FeelingsState,
-    val clothes: Set<Clothes>
+    val clothes: PersistentSet<Clothes>
 )
 
 enum class FeelingState {
-    VERY_WARM,
-    WARM,
-    NORMAL,
-    COLD,
     VERY_COLD,
+    COLD,
+    NORMAL,
+    WARM,
+    VERY_WARM,
 }
 
 data class FeelingsState(

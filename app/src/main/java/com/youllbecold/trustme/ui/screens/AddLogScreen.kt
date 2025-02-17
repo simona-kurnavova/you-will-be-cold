@@ -14,6 +14,7 @@ import com.youllbecold.trustme.ui.viewmodels.AddLogAction
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.LogState
+import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -70,7 +71,7 @@ fun AdLogScreenPreview() {
                 timeFrom = ImmutableTime(LocalTime.now()),
                 timeTo = ImmutableTime(LocalTime.now()),
                 feelings = FeelingsState(),
-                clothes = emptySet()
+                clothes = persistentSetOf()
             )
         )
     }
