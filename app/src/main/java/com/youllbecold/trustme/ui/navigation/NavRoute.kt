@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
@@ -47,7 +48,9 @@ sealed class NavRoute(val route: String) {
 sealed class NavRouteItem(val navRoute: NavRoute) {
     data object HomeItem : NavRouteItem(
         navRoute = NavRoute.Home
-    ), MenuItem, FloatingAction {
+    ), MenuItem, FloatingAction, Toolbar {
+        override val title: Int = R.string.toolbar_title_home
+
         override val menuTitle: Int = R.string.menu_home
         override val menuIcon: ImageVector = Icons.Filled.Home
 
@@ -58,7 +61,9 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
 
     data object HistoryItem : NavRouteItem(
         navRoute = NavRoute.History
-    ), MenuItem, FloatingAction {
+    ), MenuItem, FloatingAction, Toolbar {
+        override val title: Int = R.string.toolbar_title_log_history
+
         override val menuTitle: Int = R.string.menu_history
         override val menuIcon: ImageVector = Icons.AutoMirrored.Filled.List
 
@@ -69,14 +74,18 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
 
     data object SettingsItem : NavRouteItem(
         navRoute = NavRoute.Settings
-    ), MenuItem {
+    ), MenuItem, Toolbar {
+        override val title: Int = R.string.toolbar_title_settings
+
         override val menuTitle: Int = R.string.menu_settings
         override val menuIcon: ImageVector = Icons.Filled.Settings
     }
 
     data object AddLogItem : NavRouteItem(
         navRoute = NavRoute.AddLog
-    )
+    ), Toolbar {
+        override val title: Int = R.string.toolbar_title_add_log
+    }
 
     data object WelcomeItem : NavRouteItem(
         navRoute = NavRoute.Welcome
@@ -88,7 +97,9 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
 
     fun isMenuItem(): Boolean = this is MenuItem
 
-    fun getFloatingAction(): FloatingAction? = if (this is FloatingAction) this else null
+    fun getToolbar(): Toolbar? = this as? Toolbar
+
+    fun getFloatingAction(): FloatingAction? = this as? FloatingAction
 
     companion object {
         fun fromRoute(route: String): NavRouteItem = when (route) {
@@ -121,4 +132,9 @@ interface FloatingAction {
     val floatingActionTitle: Int
     val floatingActionIcon: ImageVector
     val floatingActionTo: NavRoute
+}
+
+interface Toolbar {
+    @get:StringRes
+    val title: Int
 }

@@ -92,4 +92,8 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="message_no_logs_available">No logs available</string>
+    <string name="toolbar_title_add_log">Create new log</string>
+    <string name="toolbar_title_settings">Settings</string>
+    <string name="toolbar_title_home">Will you be cold today?</string>
+    <string name="toolbar_title_log_history">Your logs</string>
 </resources>

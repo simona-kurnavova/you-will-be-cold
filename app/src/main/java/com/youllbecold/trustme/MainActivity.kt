@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main() {
+private fun Main() {
     val navController: NavHostController = rememberNavController()
 
     val viewModel: MainViewModel = koinViewModel<MainViewModel>()
@@ -58,7 +58,6 @@ fun Main() {
     val overlayState by viewModel.overlayState.collectAsStateWithLifecycle()
 
     LaunchedEffect(overlayState) {
-        Log.d("MainActivity", "Overlay state: $overlayState")
         when(overlayState) {
             OverlayState.NEW_USER -> navController.popAllAndNavigate(NavRoute.Welcome.route)
             OverlayState.LOCATION_PERM_MISSING ->
@@ -71,7 +70,12 @@ fun Main() {
         // Setup main navigation structure
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { Toolbar() },
+            topBar = {
+                navController.currentRoute()?.let { route ->
+                    val toolbar = NavRouteItem.fromRoute(route).getToolbar()
+                    toolbar?.let { Toolbar(title = stringResource(it.title)) }
+                }
+            },
             bottomBar = {
                 if (showBottomBar(navController.currentRoute())) {
                     NavigationBar(navController)
