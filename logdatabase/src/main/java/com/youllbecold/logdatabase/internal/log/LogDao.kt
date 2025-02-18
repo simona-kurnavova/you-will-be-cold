@@ -14,6 +14,9 @@ internal interface LogDao {
     @Query("SELECT * FROM log ORDER BY datetime(date_from) DESC LIMIT :limit")
     fun getAll(limit: Int = DEFAULT_LIMIT): Flow<List<LogEntity>>
 
+    @Query("SELECT * FROM log WHERE id = :id LIMIT 1")
+    fun getById(id: Int): Flow<LogEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(logEntity: LogEntity)
 

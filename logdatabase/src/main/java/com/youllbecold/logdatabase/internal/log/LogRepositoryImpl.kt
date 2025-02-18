@@ -10,6 +10,7 @@ import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -20,6 +21,12 @@ internal class LogRepositoryImpl(
 
     override val logs = logDao.getAll().map { logs ->
         logs.map { it.toModel() }
+    }
+
+    override suspend fun getLog(id: Int): LogData? {
+        return withContext(dispatchers) {
+            logDao.getById(id).first()?.toModel()
+        }
     }
 
     override suspend fun addLog(log: LogData) {

@@ -13,6 +13,11 @@ interface LogRepository {
     val logs: Flow<List<LogData>>
 
     /**
+     * Returns a log by its ID.
+     */
+    suspend fun getLog(id: Int): LogData?
+
+    /**
      * Adds a new log.
      */
     suspend fun addLog(log: LogData)

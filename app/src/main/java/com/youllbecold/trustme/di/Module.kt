@@ -6,6 +6,7 @@ import com.youllbecold.recomendation.RecommendRepositoryProvider
 import com.youllbecold.recomendation.api.RecommendRepository
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
+import com.youllbecold.trustme.ui.viewmodels.EditLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.LocationPermissionViewModel
@@ -51,4 +52,5 @@ val uiModule = module {
     viewModelOf(::AddLogViewModel)
     viewModelOf(::WelcomeViewModel)
     viewModelOf(::LocationPermissionViewModel)
+    viewModelOf(::EditLogViewModel)
 }

@@ -4,13 +4,6 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.model.LogData
-import com.youllbecold.logdatabase.model.Feeling
-import com.youllbecold.logdatabase.model.Feelings
-import com.youllbecold.logdatabase.model.WeatherData
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
-import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -45,39 +38,6 @@ class HistoryViewModel(
             is HistoryAction.Edit -> Unit // Do nothing, will be handled by the navigation
         }
     }
-
-    private fun LogData.toLogState(): LogState = LogState(
-        id = id,
-        date = ImmutableDate(dateFrom.toLocalDate()),
-        timeFrom = ImmutableTime(dateFrom.toLocalTime()),
-        timeTo = ImmutableTime(dateTo.toLocalTime()),
-        feelings = feelings.toFeelingsState(),
-        clothes = clothes.toPersistentSet(),
-        weather = weatherData?.toWeatherState()
-    )
-
-    private fun Feelings.toFeelingsState(): FeelingsState = FeelingsState(
-        head = head.toFeelingState(),
-        neck = neck.toFeelingState(),
-        top = top.toFeelingState(),
-        bottom = bottom.toFeelingState(),
-        feet = feet.toFeelingState(),
-        hand = hand.toFeelingState()
-    )
-
-    private fun Feeling.toFeelingState(): FeelingState = when (this) {
-        Feeling.VERY_COLD -> FeelingState.VERY_COLD
-        Feeling.COLD -> FeelingState.COLD
-        Feeling.NORMAL -> FeelingState.NORMAL
-        Feeling.WARM -> FeelingState.WARM
-        Feeling.VERY_WARM -> FeelingState.VERY_WARM
-    }
-
-    private fun WeatherData.toWeatherState(): WeatherState = WeatherState(
-        apparentTemperatureMin = apparentTemperatureMin,
-        apparentTemperatureMax = apparentTemperatureMax,
-        avgTemperature = avgTemperature
-    )
 }
 
 /**

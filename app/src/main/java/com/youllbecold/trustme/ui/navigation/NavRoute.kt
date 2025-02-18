@@ -13,7 +13,7 @@ import com.youllbecold.trustme.ui.components.generic.IconType
 /**
  * Represents navigation routes/destinations.
  */
-sealed class NavRoute(val route: String) {
+sealed class NavRoute(val baseRoot: String, val route: String = baseRoot) {
 
     /**
      * Home screen - default screen.
@@ -34,6 +34,15 @@ sealed class NavRoute(val route: String) {
      * Add log screen.
      */
     data object AddLog : NavRoute("add_log")
+
+    /**
+     * Edit log screen.
+     */
+    data object EditLog : NavRoute(baseRoot = "edit_log", route = "edit_log/{id}") {
+        fun createRoute(id: Int) = "edit_log/$id"
+
+        const val ARG_ID = "id"
+    }
 
     /**
      * Welcome screen.
@@ -98,6 +107,11 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
         override val toolbarTitle: Int = R.string.toolbar_title_add_log
     }
 
+    data object EditLogItem : NavRouteItem(
+        navRoute = NavRoute.EditLog
+    ), Toolbar {
+        override val toolbarTitle: Int = R.string.toolbar_title_edit_log
+    }
     data object WelcomeItem : NavRouteItem(
         navRoute = NavRoute.Welcome
     )
@@ -113,13 +127,14 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     fun getFloatingAction(): FloatingAction? = this as? FloatingAction
 
     companion object {
-        fun fromRoute(route: String): NavRouteItem = when (route) {
-            NavRoute.Home.route -> HomeItem
-            NavRoute.History.route -> HistoryItem
-            NavRoute.Settings.route -> SettingsItem
-            NavRoute.AddLog.route -> AddLogItem
-            NavRoute.Welcome.route -> WelcomeItem
-            NavRoute.LocationPermission.route -> LocationPermissionItem
+        fun fromRoute(route: String): NavRouteItem = when (route.split("/").first()) {
+            NavRoute.Home.baseRoot -> HomeItem
+            NavRoute.History.baseRoot -> HistoryItem
+            NavRoute.Settings.baseRoot -> SettingsItem
+            NavRoute.AddLog.baseRoot -> AddLogItem
+            NavRoute.EditLog.baseRoot -> EditLogItem
+            NavRoute.Welcome.baseRoot -> WelcomeItem
+            NavRoute.LocationPermission.baseRoot -> LocationPermissionItem
             else -> throw IllegalArgumentException("Route $route not found")
         }
 
@@ -128,6 +143,7 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
             HistoryItem,
             SettingsItem,
             AddLogItem,
+            EditLogItem,
             WelcomeItem,
             LocationPermissionItem
         )
@@ -150,6 +166,8 @@ interface Toolbar {
     val toolbarTitle: Int
     val toolbarIcon: IconType?
         get() = null
+
+    // TODO: Setup menu
     val toolbarMenu: List<ToolbarMenuItem>
         get() = emptyList()
 }

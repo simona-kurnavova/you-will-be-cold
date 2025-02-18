@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,13 +35,20 @@ import java.time.LocalTime
 @Composable
 fun HistoryScreenRoot(
     viewModel: HistoryViewModel = koinViewModel(),
-    navigateToEdit: (LogState) -> Unit
+    navigateToEdit: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+
     HistoryScreen(
         uiState = viewModel.uiState.collectAsStateWithLifecycle(),
         onAction = { action ->
             when(action) {
-                is HistoryAction.Edit -> navigateToEdit(action.state)
+                is HistoryAction.Edit -> action.state.id?.let { navigateToEdit(it) }
+                    ?: Toast.makeText(
+                        context,
+                        context.getString(R.string.message_error_editing_log),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 else -> viewModel.onAction(action)
             }
         }

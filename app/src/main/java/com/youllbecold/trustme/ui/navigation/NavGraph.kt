@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.youllbecold.trustme.ui.screens.AddLogRoot
+import com.youllbecold.trustme.ui.screens.EditLogRoot
 import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
 import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
@@ -22,8 +23,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(NavRoute.Home.route) { HomeScreenRoot() }
         composable(NavRoute.History.route) {
             HistoryScreenRoot(
-                navigateToEdit = {
-                    // TODO: navigate to edit screen
+                navigateToEdit = { id ->
+                    navController.navigate(NavRoute.EditLog.createRoute(id))
                 }
             )
         }
@@ -41,6 +42,14 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable(NavRoute.LocationPermission.route) {
             LocationPermissionRoot { navController.popAllAndNavigate(NavRoute.Home.route) }
+        }
+
+        composable(NavRoute.EditLog.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString(NavRoute.EditLog.ARG_ID)?.toIntOrNull() ?: 0
+            EditLogRoot(
+                id = id,
+                navigateBack = { navController.popBackStack() },
+            )
         }
     }
 }

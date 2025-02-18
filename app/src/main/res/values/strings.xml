@@ -96,4 +96,6 @@
     <string name="toolbar_title_settings">Settings</string>
     <string name="toolbar_title_home">Will you be cold today?</string>
     <string name="toolbar_title_log_history">Your logs</string>
+    <string name="toolbar_title_edit_log">Edit your log</string>
+    <string name="message_error_editing_log">There was an unexpected error</string>
 </resources>
