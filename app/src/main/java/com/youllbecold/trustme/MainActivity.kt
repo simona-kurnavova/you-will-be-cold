@@ -1,7 +1,6 @@
 package com.youllbecold.trustme
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -73,7 +72,12 @@ private fun Main() {
             topBar = {
                 navController.currentRoute()?.let { route ->
                     val toolbar = NavRouteItem.fromRoute(route).getToolbar()
-                    toolbar?.let { Toolbar(title = stringResource(it.title)) }
+                    toolbar?.let {
+                        Toolbar(
+                            title = stringResource(it.toolbarTitle),
+                            iconType = it.toolbarIcon
+                        )
+                    }
                 }
             },
             bottomBar = {

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
 
 /**
  * Represents navigation routes/destinations.
@@ -49,7 +50,15 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     data object HomeItem : NavRouteItem(
         navRoute = NavRoute.Home
     ), MenuItem, FloatingAction, Toolbar {
-        override val title: Int = R.string.toolbar_title_home
+        override val toolbarTitle: Int = R.string.toolbar_title_home
+        override val toolbarIcon: IconType?
+            get() = listOf(
+                IconType.Cloud,
+                IconType.Popsicle,
+                IconType.Fog,
+                IconType.Wind,
+                IconType.Snowflake
+            ).random()
 
         override val menuTitle: Int = R.string.menu_home
         override val menuIcon: ImageVector = Icons.Filled.Home
@@ -62,7 +71,8 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     data object HistoryItem : NavRouteItem(
         navRoute = NavRoute.History
     ), MenuItem, FloatingAction, Toolbar {
-        override val title: Int = R.string.toolbar_title_log_history
+        override val toolbarTitle: Int = R.string.toolbar_title_log_history
+        override val toolbarIcon: IconType? = IconType.Book
 
         override val menuTitle: Int = R.string.menu_history
         override val menuIcon: ImageVector = Icons.AutoMirrored.Filled.List
@@ -75,7 +85,8 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     data object SettingsItem : NavRouteItem(
         navRoute = NavRoute.Settings
     ), MenuItem, Toolbar {
-        override val title: Int = R.string.toolbar_title_settings
+        override val toolbarTitle: Int = R.string.toolbar_title_settings
+        override val toolbarIcon: IconType? = IconType.Tool
 
         override val menuTitle: Int = R.string.menu_settings
         override val menuIcon: ImageVector = Icons.Filled.Settings
@@ -84,7 +95,7 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     data object AddLogItem : NavRouteItem(
         navRoute = NavRoute.AddLog
     ), Toolbar {
-        override val title: Int = R.string.toolbar_title_add_log
+        override val toolbarTitle: Int = R.string.toolbar_title_add_log
     }
 
     data object WelcomeItem : NavRouteItem(
@@ -136,5 +147,15 @@ interface FloatingAction {
 
 interface Toolbar {
     @get:StringRes
-    val title: Int
+    val toolbarTitle: Int
+    val toolbarIcon: IconType?
+        get() = null
+    val toolbarMenu: List<ToolbarMenuItem>
+        get() = emptyList()
 }
+
+data class ToolbarMenuItem(
+    val title: Int,
+    val icon: IconType?,
+    val actionTo: NavRoute
+)

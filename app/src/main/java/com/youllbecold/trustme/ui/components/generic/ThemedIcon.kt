@@ -66,6 +66,9 @@ enum class IconType(
     Calendar(R.drawable.ic_calendar, R.color.icon_default),
     Timer(R.drawable.ic_time, R.color.icon_default),
     Pencil(R.drawable.ic_pencil, R.color.icon_default),
+    Book(R.drawable.ic_book, R.color.icon_default),
+    Tool(R.drawable.ic_tool, R.color.icon_default),
+    Plus(R.drawable.ic_plus, R.color.icon_default),
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
