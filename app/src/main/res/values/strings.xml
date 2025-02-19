@@ -37,7 +37,7 @@
     <!-- Title of the welcome screen. -->
     <string name="welcome_screen_title">Welcome to You\'ll Be Cold, trust me!</string>
     <!-- Description of the welcome screen. -->
-    <string name="welcome_screen_description">Where, ironically, if everything goes well, you won\'t be cold.</string>
+    <string name="welcome_screen_description">Where, ironically, if everything goes well, you won\'t be cold.\n\nHow it works?\nThe app suggests what to wear and bring based on the weather. The more you log what you wore and how you felt, the better the recommendations get—helping you stay comfortable no matter the forecast!</string>
     <!-- Button text of the welcome screen. -->
     <string name="welcome_screen_button_text">Get Started</string>
     <string name="menu_home">Home</string>
