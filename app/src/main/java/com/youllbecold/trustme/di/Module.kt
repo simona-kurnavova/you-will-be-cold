@@ -16,6 +16,7 @@ import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.WeatherProvider
@@ -32,6 +33,7 @@ val appModule = module {
     // Helpers
     singleOf(::PermissionHelper)
     singleOf(::NetworkHelper)
+    singleOf(::LocationHelper)
 
     // Repositories
     single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }

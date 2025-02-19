@@ -45,6 +45,7 @@ import com.youllbecold.trustme.ui.utils.labeled
 import com.youllbecold.trustme.ui.utils.worstFeeling
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.LogState
+import com.youllbecold.trustme.ui.viewmodels.WeatherState
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate
 import java.time.LocalTime
@@ -125,11 +126,6 @@ private fun ExpandedCardContent(
         log.weather?.let {
             val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, true)
             val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
-
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onBackground,
-                thickness = DIVIDER_THICKNESS.dp
-            )
 
             Text(
                 text = weatherInfo,
@@ -228,6 +224,11 @@ private fun LogCardPreview() {
                 feelings = FeelingsState(),
                 clothes = persistentSetOf(
                     Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES
+                ),
+                weather = WeatherState(
+                    avgTemperature = 20.0,
+                    apparentTemperatureMin = 15.0,
+                    apparentTemperatureMax = 25.0
                 )
             ),
             editAction = {},

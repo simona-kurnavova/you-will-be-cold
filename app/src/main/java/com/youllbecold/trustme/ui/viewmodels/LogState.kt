@@ -1,11 +1,14 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import kotlinx.collections.immutable.PersistentSet
@@ -50,7 +53,7 @@ fun LogState.toLogData(): LogData =
     LogData(
         id = id,
         dateFrom = date.date.atTime(timeFrom.time),
-        dateTo = date.date.atTime(timeFrom.time),
+        dateTo = date.date.atTime(timeTo.time),
         feelings = Feelings(
             head = feelings.head.toFeeling(),
             neck = feelings.neck.toFeeling(),
@@ -110,3 +113,28 @@ private fun WeatherData.toWeatherState(): WeatherState = WeatherState(
     apparentTemperatureMax = apparentTemperatureMaxC,
     avgTemperature = avgTemperatureC,
 )
+
+/**
+ * Validates the log state and shows a toast if the state is invalid.
+ */
+fun LogState.validate(context: Context): Boolean {
+    if (timeTo.time.isBefore(timeFrom.time) || timeTo.time == timeFrom.time) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.toast_invalid_time_range),
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
+
+    if (clothes.isEmpty()) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.toast_no_clothes_selected),
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
+
+    return true
+}

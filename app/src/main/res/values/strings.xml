@@ -99,4 +99,8 @@
     <string name="toolbar_title_edit_log">Edit your log</string>
     <string name="message_error_editing_log">There was an unexpected error</string>
     <string name="log_detail_weather_info">Average temperature: %s</string>
+    <string name="toast_error_saving_log">There was an unexpected error saving the log.</string>
+    <string name="toast_invalid_time_range">Please specify correct time range.</string>
+    <string name="toast_no_clothes_selected">Please select some clothes.</string>
+    <string name="toast_error_editing_log">There was an unexpected error while editing log.</string>
 </resources>

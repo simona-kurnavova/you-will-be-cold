@@ -1,21 +1,43 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
+import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.utils.LocationHelper
+import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class EditLogViewModel(
+    private val app: Application,
     private val logRepository: LogRepository,
+    private val locationHelper: LocationHelper,
+    private val weatherUseCase: RangedWeatherUseCase
 ) : ViewModel() {
     private var oldLogState: LogState? = null
 
-    private val _state: MutableStateFlow<LogState?> = MutableStateFlow(null)
-    val state: StateFlow<LogState?> = _state
+    private val editState: MutableStateFlow<EditingState> = MutableStateFlow(EditingState.None)
+    private val logState: MutableStateFlow<LogState?> = MutableStateFlow(null)
+
+    val state: StateFlow<EditLogUiState> = combine(
+        logState,
+        editState
+    ) { log, editState ->
+        EditLogUiState(
+            logState = log,
+            editState = editState
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditLogUiState(logState.value))
 
     /**
      * Handles [EditLogAction].
@@ -23,8 +45,8 @@ class EditLogViewModel(
     fun onAction(action: EditLogAction) {
         when (action) {
             is EditLogAction.StartEdit -> startEdit(action.id)
-            is EditLogAction.SaveProgress -> _state.value = action.state
-            is EditLogAction.SaveLog -> state.value?.let { saveLog(it) }
+            is EditLogAction.SaveProgress -> logState.value = action.state
+            is EditLogAction.SaveLog -> logState.value?.let { saveLog(it) }
         }
     }
 
@@ -32,19 +54,49 @@ class EditLogViewModel(
         viewModelScope.launch {
             val log = logRepository.getLog(id)
             oldLogState = log?.toLogState()
-            _state.value = oldLogState
+            logState.value = oldLogState
         }
     }
 
-    private fun saveLog(logData: LogState) {
-        if (oldLogState?.date != logData.date ||
-            oldLogState?.timeFrom != logData.timeFrom ||
-            oldLogState?.timeTo != logData.timeTo) {
-            // TODO: update weather
+    @SuppressLint("MissingPermission") // Permission is checked
+    private fun saveLog(logState: LogState) {
+        if (!PermissionHelper.hasLocationPermission(app)) {
+            editState.value = EditingState.Error
+            return
         }
 
         viewModelScope.launch {
-            logRepository.updateLog(logData.toLogData())
+            var log = logState
+
+            if (oldLogState?.date != logState.date ||
+                oldLogState?.timeFrom != logState.timeFrom ||
+                oldLogState?.timeTo != logState.timeTo
+            ) {
+                val location = locationHelper.cachedLocation.value
+                if (location == null) {
+                    editState.value = EditingState.Error
+                    return@launch
+                }
+
+                val weatherState = weatherUseCase.obtainRangedWeather(
+                    location,
+                    logState.date.date,
+                    logState.timeFrom.time,
+                    logState.timeTo.time
+                )
+
+                val weather = weatherState.getOrNull()
+
+                if (weather == null) {
+                    Log.d("AddLogViewModel", "Failed to get weather data")
+                    editState.value = EditingState.Error
+                    return@launch
+                }
+                log = logState.copy(weather = weather)
+            }
+
+            logRepository.updateLog(log.toLogData())
+            editState.value = EditingState.Updated
         }
     }
 }
@@ -53,4 +105,18 @@ sealed class EditLogAction {
     data class StartEdit(val id: Int) : EditLogAction()
     data class SaveProgress(val state: LogState) : EditLogAction()
     data object SaveLog : EditLogAction()
+}
+
+/**
+ * UI state for the add log screen.
+ */
+data class EditLogUiState(
+    val logState: LogState?,
+    val editState: EditingState = EditingState.None,
+)
+
+enum class EditingState {
+    None,
+    Updated,
+    Error
 }

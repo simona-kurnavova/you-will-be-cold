@@ -1,20 +1,27 @@
 package com.youllbecold.trustme.ui.screens
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.AddLogForm
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.EditLogAction
+import com.youllbecold.trustme.ui.viewmodels.EditLogUiState
 import com.youllbecold.trustme.ui.viewmodels.EditLogViewModel
+import com.youllbecold.trustme.ui.viewmodels.EditingState
 import com.youllbecold.trustme.ui.viewmodels.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.LogState
+import com.youllbecold.trustme.ui.viewmodels.validate
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
@@ -46,12 +53,21 @@ fun EditLogRoot(
 
 @Composable
 private fun EditLogScreen(
-    state: State<LogState?>,
+    state: State<EditLogUiState>,
     onAction: (EditLogAction) -> Unit
 ) {
     val update: (LogState) -> Unit = { onAction(EditLogAction.SaveProgress(it)) }
+    val context = LocalContext.current
 
-    state.value?.let { logState ->
+    if (state.value.editState == EditingState.Error) {
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(R.string.toast_error_editing_log),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    state.value.logState?.let { logState ->
         AddLogForm(
             date = logState.date,
             timeFrom = logState.timeFrom,
@@ -63,7 +79,23 @@ private fun EditLogScreen(
             onTimeToChange = { update(logState.copy(timeTo = it)) },
             onFeelingsChange = { update(logState.copy(feelings = it)) },
             onClothesCategoryChange = { update(logState.copy(clothes = it)) },
-            onSave = { onAction(EditLogAction.SaveLog) },
+            onSave = {
+                if (!logState.validate(context)) {
+                    return@AddLogForm
+                }
+
+                onAction(EditLogAction.SaveLog)
+
+                // TODO: load until result is received, this is a temporary solution, hehe.
+
+                if (state.value.editState != EditingState.Error) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.toast_saved_log),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         )
     }
 }
@@ -73,12 +105,15 @@ private fun EditLogScreen(
 private fun EditLogScreenPreview() {
     val logState = remember {
         mutableStateOf(
-            LogState(
-                date = ImmutableDate(LocalDate.now()),
-                timeFrom = ImmutableTime(LocalTime.now()),
-                timeTo = ImmutableTime(LocalTime.now()),
-                feelings = FeelingsState(),
-                clothes = persistentSetOf()
+            EditLogUiState(
+                logState =
+                    LogState(
+                        date = ImmutableDate(LocalDate.now()),
+                        timeFrom = ImmutableTime(LocalTime.now()),
+                        timeTo = ImmutableTime(LocalTime.now()),
+                        feelings = FeelingsState(),
+                        clothes = persistentSetOf()
+                    )
             )
         )
     }

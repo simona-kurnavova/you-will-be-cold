@@ -36,6 +36,7 @@ class HomeViewModel(
     private val currentWeatherUseCase: CurrentWeatherUseCase,
     private val hourlyWeatherUseCase: HourlyWeatherUseCase,
     private val networkHelper: NetworkHelper,
+    private val locationHelper: LocationHelper,
     permissionHelper: PermissionHelper,
 ) : ViewModel() {
 
@@ -88,7 +89,7 @@ class HomeViewModel(
         if (PermissionHelper.hasLocationPermission(app)) {
             locationStatus.value = LoadingStatus.Loading
 
-            LocationHelper.refreshLocation(
+            locationHelper.refreshLocation(
                 app,
                 onSuccess = ::onLocationObtained,
                 onError = { locationStatus.value = LoadingStatus.GenericError }

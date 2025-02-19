@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.youllbecold.logdatabase.internal.log.entity.LogEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,7 +18,7 @@ internal interface LogDao {
     @Query("SELECT * FROM log WHERE id = :id LIMIT 1")
     fun getById(id: Int): Flow<LogEntity?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     fun insert(logEntity: LogEntity)
 
     @Update

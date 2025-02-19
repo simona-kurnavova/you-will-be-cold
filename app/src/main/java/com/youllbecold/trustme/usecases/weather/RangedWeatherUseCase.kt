@@ -1,13 +1,15 @@
 package com.youllbecold.trustme.usecases.weather
 
 import android.Manifest
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.ui.viewmodels.WeatherState
 import com.youllbecold.trustme.utils.Location
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
-import com.youllbecold.weather.model.Weather
+import java.time.Duration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -27,7 +29,9 @@ class RangedWeatherUseCase(
         date: LocalDate,
         timeFrom: LocalTime,
         timeTo: LocalTime
-    ): Result<List<Weather>> = withContext(Dispatchers.IO) {
+    ): Result<WeatherState> = withContext(Dispatchers.IO) {
+        Log.d("RangedWeatherUseCase", "Obtaining ranged weather")
+
         if (!networkHelper.hasInternet()) {
             return@withContext Result.failure(Exception("No internet connection"))
         }
@@ -40,15 +44,43 @@ class RangedWeatherUseCase(
         )
 
         return@withContext when {
-            result.isSuccessful -> result.getOrNull()
-                ?.filter { weather ->
-                    val time = weather.time.toLocalTime()
-                    time.isAfter(timeFrom) && time.isBefore(timeTo)
+            result.isSuccessful -> {
+                val data = result.getOrNull()
+
+                if (data.isNullOrEmpty()) {
+                    return@withContext Result.failure(Exception("No weather data"))
                 }
-                ?.let { Result.success(it) }
-                ?: Result.failure(Exception("No weather data"))
+
+                val adjustedTimeRange = adjustTimeRange(timeFrom, timeTo)
+
+                val range = data.filter { weather ->
+                    val time = weather.time.toLocalTime()
+                    time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second)
+                }
+
+                return@withContext WeatherState(
+                    apparentTemperatureMin = range.minOf { it.apparentTemperature },
+                    apparentTemperatureMax = range.maxOf { it.apparentTemperature },
+                    avgTemperature = range.sumOf { it.temperature } / range.size.toDouble()
+                ).let { Result.success(it) }
+            }
 
             else -> Result.failure(Exception("Error fetching weather data"))
         }
     }
+
+
+    private fun adjustTimeRange(timeFrom: LocalTime, timeTo: LocalTime): Pair<LocalTime, LocalTime> {
+        val duration = Duration.between(timeFrom, timeTo)
+
+        return if (duration.toMinutes() <= MINUTES_IN_HOUR) {
+            val expandedTimeFrom = timeFrom.minusMinutes(30)  // 30 minutes before
+            val expandedTimeTo = timeTo.plusMinutes(30)      // 30 minutes after
+            Pair(expandedTimeFrom, expandedTimeTo)
+        } else {
+            Pair(timeFrom, timeTo)
+        }
+    }
 }
+
+private const val MINUTES_IN_HOUR = 60

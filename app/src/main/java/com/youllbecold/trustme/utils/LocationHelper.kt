@@ -15,15 +15,22 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Singleton
 import java.util.Locale
 
 /**
  * Helper class for fetching the device's location.
  */
-object LocationHelper {
+@Singleton
+class LocationHelper {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private val _cachedLocation: MutableStateFlow<Location?> = MutableStateFlow(null)
+    val cachedLocation: StateFlow<Location?> = _cachedLocation
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun refreshLocation(context: Context, onSuccess: (Location) -> Unit, onError: (String?) -> Unit) {
@@ -38,7 +45,10 @@ object LocationHelper {
                     obtainAddress(context, location.latitude, location.longitude) { address ->
                         // City might be null, but that's fine.
                         val city = address?.locality ?: address?.adminArea ?: address?.countryName
-                        onSuccess(Location(location.latitude, location.longitude, city))
+                        val location = Location(location.latitude, location.longitude, city)
+
+                        onSuccess(location)
+                        _cachedLocation.value = location
                     }
 
                 } else {

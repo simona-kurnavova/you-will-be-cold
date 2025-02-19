@@ -1,5 +1,6 @@
 package com.youllbecold.logdatabase.internal.log
 
+import android.util.Log
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.internal.log.entity.ClothesId
 import com.youllbecold.logdatabase.internal.log.entity.FeelingEntity
@@ -31,6 +32,8 @@ internal class LogRepositoryImpl(
 
     override suspend fun addLog(log: LogData) {
         withContext(dispatchers) {
+            val entity = log.toEntity()
+            Log.d("LogRepositoryImpl", "Adding log: $entity")
             logDao.insert(log.toEntity())
         }
     }

@@ -2,6 +2,7 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
@@ -11,7 +12,10 @@ import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
@@ -22,17 +26,32 @@ class AddLogViewModel(
     private val app: Application,
     private val logRepository: LogRepository,
     private val weatherUseCase: RangedWeatherUseCase,
+    private val locationHelper: LocationHelper
 ) : ViewModel() {
-    private val _state: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
-    val state: StateFlow<LogState> = _state
+
+    private val saveState: MutableStateFlow<SavingState> = MutableStateFlow(SavingState.None)
+    private val logState: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
+
+    /**
+     * UI state for the add log screen.
+     */
+    val state: StateFlow<AddLogUiState> = combine(
+        logState,
+        saveState
+    ) { log, saveState ->
+        AddLogUiState(
+            logState = log,
+            saveState = saveState
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AddLogUiState(logState.value))
 
     /**
      * Handles [AddLogAction].
      */
     fun onAction(action: AddLogAction) {
         when (action) {
-            is AddLogAction.SaveProgress -> _state.value = action.state
-            is AddLogAction.SaveLog -> saveLog(state.value)
+            is AddLogAction.SaveProgress -> logState.value = action.state
+            is AddLogAction.SaveLog -> saveLogWithWeather(logState.value)
         }
     }
 
@@ -47,49 +66,62 @@ class AddLogViewModel(
         )
     }
 
-    private fun saveLog(logData: LogState) {
-        viewModelScope.launch {
-            val weatherState = WeatherState(
-                apparentTemperatureMin = 25.0,
-                apparentTemperatureMax = 25.0,
-                avgTemperature = 25.0
-            )
-
-            // TODO: Obtain weather data.
-
-            val logWithWeather = logData.copy(weather = weatherState)
-            logRepository.addLog(logWithWeather.toLogData())
-        }
-    }
-
     @SuppressLint("MissingPermission") // Permission is checked
-    private fun obtainWeather(
-        data: ImmutableDate,
-        timeFrom: ImmutableTime,
-        timeTo: ImmutableTime,
-    ) {
-        if (PermissionHelper.hasLocationPermission(app)) {
-            LocationHelper.refreshLocation(
-                app,
-                onSuccess = { location ->
-                    viewModelScope.launch {
-                        val result = weatherUseCase.obtainRangedWeather(
-                            location,
-                            data.date,
-                            timeFrom.time,
-                            timeTo.time
-                        )
+    private fun saveLogWithWeather(logState: LogState) {
+        if (!PermissionHelper.hasLocationPermission(app)) {
+            saveState.value = SavingState.Error
+            return
+        }
 
-                        // TODO: Use result.
-                    }
-                },
-                onError = { }
+        viewModelScope.launch {
+            val location = locationHelper.cachedLocation.value
+            if (location == null) {
+                saveState.value = SavingState.Error
+                return@launch
+            }
+
+            val weatherState = weatherUseCase.obtainRangedWeather(
+                location,
+                logState.date.date,
+                logState.timeFrom.time,
+                logState.timeTo.time
             )
+
+            val weather = weatherState.getOrNull()
+
+            if(weather == null) {
+                Log.d("AddLogViewModel", "Failed to get weather data")
+                saveState.value = SavingState.Error
+                return@launch
+            }
+
+            logRepository.addLog(
+                logState.copy(weather = weather).toLogData()
+            )
+
+            saveState.value = SavingState.Saved
         }
     }
 }
 
+/**
+ * Actions that can be performed on the add log screen.
+ */
 sealed class AddLogAction {
     data class SaveProgress(val state: LogState) : AddLogAction()
     data object SaveLog : AddLogAction()
+}
+
+/**
+ * UI state for the add log screen.
+ */
+data class AddLogUiState(
+    val logState: LogState,
+    val saveState: SavingState = SavingState.None,
+)
+
+enum class SavingState {
+    None,
+    Saved,
+    Error
 }
