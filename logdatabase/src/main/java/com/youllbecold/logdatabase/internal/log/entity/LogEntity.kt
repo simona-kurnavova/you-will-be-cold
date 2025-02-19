@@ -19,13 +19,13 @@ internal data class LogEntity(
     val dateTo: LocalDateTime,
 
     @SerializedName("apparent_temperature_min")
-    val apparentTemperatureMin: Double,
+    val apparentTemperatureMinC: Double,
 
     @SerializedName("apparent_temperature_max")
-    val apparentTemperatureMax: Double,
+    val apparentTemperatureMaxC: Double,
 
     @SerializedName("avg_temperature")
-    val avgTemperature: Double,
+    val avgTemperatureC: Double,
 
     @ColumnInfo(name = "head_feeling")
     val headFeeling: FeelingEntity,

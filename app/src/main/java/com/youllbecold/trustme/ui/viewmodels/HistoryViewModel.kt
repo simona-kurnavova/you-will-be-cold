@@ -1,9 +1,12 @@
 package com.youllbecold.trustme.ui.viewmodels
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -24,7 +27,9 @@ class HistoryViewModel(
      */
     val uiState: StateFlow<HistoryUiState> = logRepository.logs.map { logs ->
         HistoryUiState(
-            logs = logs.map { it.toLogState() }
+            logs = logs
+                .map { it.toLogState() }
+                .toPersistentList()
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, HistoryUiState())
 
@@ -43,9 +48,9 @@ class HistoryViewModel(
 /**
  * UI state for the history screen.
  */
-@Immutable
+@Stable
 data class HistoryUiState(
-    val logs: List<LogState> = emptyList()
+    val logs: PersistentList<LogState> = persistentListOf()
 )
 
 /**

@@ -28,6 +28,7 @@ import com.youllbecold.trustme.ui.viewmodels.HistoryAction
 import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.LogState
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -121,7 +122,7 @@ fun HistoryScreenPreview() {
         )
         val state = remember {
             mutableStateOf(HistoryUiState(
-                listOf(log, log, log)
+                persistentListOf(log, log, log)
             ))
         }
 
@@ -136,7 +137,7 @@ fun HistoryScreenPreview() {
 @Composable
 fun HistoryScreenEmptyPreview() {
     val state = remember {
-        mutableStateOf(HistoryUiState(emptyList()))
+        mutableStateOf(HistoryUiState(persistentListOf()))
     }
 
     YoullBeColdTheme {

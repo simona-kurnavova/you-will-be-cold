@@ -1,7 +1,6 @@
 package com.youllbecold.trustme.ui.components
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -107,10 +106,6 @@ fun AddLogForm(
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-            
-            BackHandler {
-                // TODO: Show dialog to confirm exit
-            }
         }
     }
 }

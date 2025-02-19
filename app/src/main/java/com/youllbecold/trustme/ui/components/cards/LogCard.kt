@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.components.utils.formatDate
 import com.youllbecold.trustme.ui.components.utils.formatTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.utils.getTemperatureString
 import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.labeled
@@ -54,7 +56,7 @@ fun LogCard(
     deleteAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     Card(
         modifier = modifier.clickable(onClick = { expanded = !expanded }),
@@ -120,18 +122,36 @@ private fun ExpandedCardContent(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = DATE_ALPHA)
         )
 
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.onBackground,
-            thickness = DIVIDER_THICKNESS.dp
-        )
+        log.weather?.let {
+            val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, true)
+            val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
 
-        Column{
-            log.clothes.forEach {
-                IconText(
-                    text = it.getTitle(),
-                    iconType = it.icon,
-                    modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
-                )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onBackground,
+                thickness = DIVIDER_THICKNESS.dp
+            )
+
+            Text(
+                text = weatherInfo,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = DATE_ALPHA)
+            )
+        }
+
+        if (log.clothes.isNotEmpty()) {
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onBackground,
+                thickness = DIVIDER_THICKNESS.dp
+            )
+
+            Column{
+                log.clothes.forEach {
+                    IconText(
+                        text = it.getTitle(),
+                        iconType = it.icon,
+                        modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
+                    )
+                }
             }
         }
 

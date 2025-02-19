@@ -52,9 +52,9 @@ internal class LogRepositoryImpl(
         dateFrom = dateFrom,
         dateTo = dateTo,
         weatherData = WeatherData(
-            apparentTemperatureMin = apparentTemperatureMin,
-            apparentTemperatureMax = apparentTemperatureMax,
-            avgTemperature = avgTemperature
+            apparentTemperatureMinC = apparentTemperatureMinC,
+            apparentTemperatureMaxC = apparentTemperatureMaxC,
+            avgTemperatureC = avgTemperatureC
         ),
         feelings = Feelings(
             head = headFeeling.toLogFeeling(),
@@ -71,9 +71,9 @@ internal class LogRepositoryImpl(
         id = id,
         dateFrom = dateFrom,
         dateTo = dateTo,
-        avgTemperature = weatherData.avgTemperature,
-        apparentTemperatureMin = weatherData.apparentTemperatureMin,
-        apparentTemperatureMax = weatherData.apparentTemperatureMax,
+        avgTemperatureC = weatherData.avgTemperatureC,
+        apparentTemperatureMinC = weatherData.apparentTemperatureMinC,
+        apparentTemperatureMaxC = weatherData.apparentTemperatureMaxC,
         headFeeling = feelings.head.toFeelingEntity(),
         neckFeeling = feelings.neck.toFeelingEntity(),
         topFeeling = feelings.top.toFeelingEntity(),

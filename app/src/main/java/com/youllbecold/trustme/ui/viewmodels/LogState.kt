@@ -73,9 +73,9 @@ private fun FeelingState.toFeeling(): Feeling = when (this) {
 }
 
 fun WeatherState.toWeatherData(): WeatherData = WeatherData(
-    apparentTemperatureMin = apparentTemperatureMin,
-    apparentTemperatureMax = apparentTemperatureMax,
-    avgTemperature = avgTemperature
+    apparentTemperatureMinC = apparentTemperatureMin,
+    apparentTemperatureMaxC = apparentTemperatureMax,
+    avgTemperatureC = avgTemperature
 )
 
 fun LogData.toLogState(): LogState = LogState(
@@ -106,7 +106,7 @@ private fun Feeling.toFeelingState(): FeelingState = when (this) {
 }
 
 private fun WeatherData.toWeatherState(): WeatherState = WeatherState(
-    apparentTemperatureMin = apparentTemperatureMin,
-    apparentTemperatureMax = apparentTemperatureMax,
-    avgTemperature = avgTemperature
+    apparentTemperatureMin = apparentTemperatureMinC,
+    apparentTemperatureMax = apparentTemperatureMaxC,
+    avgTemperature = avgTemperatureC,
 )

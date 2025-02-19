@@ -12,9 +12,9 @@ data class LogData(
 )
 
 data class WeatherData(
-    val apparentTemperatureMin: Double,
-    val apparentTemperatureMax: Double,
-    val avgTemperature: Double
+    val apparentTemperatureMinC: Double,
+    val apparentTemperatureMaxC: Double,
+    val avgTemperatureC: Double
 )
 
 data class Feelings(
