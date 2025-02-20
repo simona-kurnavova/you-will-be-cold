@@ -151,6 +151,11 @@ data class HomeUiState(
      * Whether the screen is loading for the first time.
      */
     fun isInitialLoading() = status == LoadingStatus.Loading && currentWeather == null
+
+    /**
+     * Whether the screen is in an error state.
+     */
+    fun isError() = status == LoadingStatus.GenericError || status == LoadingStatus.NoInternet
 }
 
 /**

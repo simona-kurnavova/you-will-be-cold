@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +28,6 @@ import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
-import com.youllbecold.trustme.ui.viewmodels.isError
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import org.koin.androidx.compose.koinViewModel
@@ -72,7 +73,15 @@ private fun HomeScreen(
                 .padding(CONTENT_PADDING.dp)
                 .verticalScroll(scrollState)  // Note: SwipeRefresh needs scrollable content to function
         ) {
-            FadingItem(visible = state.status.isError()) {
+            if (state.isInitialLoading()) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = PROGRESS_INDICATOR_PADDING.dp)
+                )
+            }
+
+            FadingItem(visible = state.isError()) {
                 ErrorCard(
                     errorCardType = when (state.status) {
                         LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
@@ -112,6 +121,7 @@ private fun HomeScreen(
 
 private const val CONTENT_PADDING = 8
 private const val PADDING_BETWEEN_ITEMS = 8
+private const val PROGRESS_INDICATOR_PADDING = 32
 
 @Preview
 @Composable
@@ -138,7 +148,7 @@ fun HomeScreenPreview() {
         mutableStateOf(
             HomeUiState(
                 hasPermission = true,
-                status = LoadingStatus.NoInternet,
+                status = LoadingStatus.Loading,
                 currentWeather = weather,
                 hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
             )
