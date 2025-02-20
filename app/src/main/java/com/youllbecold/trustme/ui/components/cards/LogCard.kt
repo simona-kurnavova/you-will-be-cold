@@ -57,7 +57,7 @@ fun LogCard(
     deleteAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(true) }
+    var expanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier.clickable(onClick = { expanded = !expanded }),
