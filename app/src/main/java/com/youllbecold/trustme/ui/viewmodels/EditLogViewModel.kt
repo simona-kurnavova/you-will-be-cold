@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -72,14 +73,14 @@ class EditLogViewModel(
                 oldLogState?.timeFrom != logState.timeFrom ||
                 oldLogState?.timeTo != logState.timeTo
             ) {
-                val location = locationHelper.cachedLocation.value
-                if (location == null) {
+                val geoLocationState = locationHelper.geoLocationState.firstOrNull()
+                if (geoLocationState?.location == null) {
                     editState.value = EditingState.Error
                     return@launch
                 }
 
                 val weatherState = weatherUseCase.obtainRangedWeather(
-                    location,
+                    geoLocationState.location,
                     logState.date.date,
                     logState.timeFrom.time,
                     logState.timeTo.time

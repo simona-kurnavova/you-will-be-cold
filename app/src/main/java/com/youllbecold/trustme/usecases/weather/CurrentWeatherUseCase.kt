@@ -7,7 +7,7 @@ import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
 import com.youllbecold.trustme.usecases.weather.state.copyWithError
 import com.youllbecold.trustme.usecases.weather.state.copyWithLoading
 import com.youllbecold.trustme.usecases.weather.state.copyWithNetworkResult
-import com.youllbecold.trustme.utils.Location
+import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.model.Weather
@@ -42,7 +42,7 @@ class CurrentWeatherUseCase(
 
     val weatherState: StateFlow<WeatherState<Weather?>> = _weatherState
 
-    fun refreshCurrentWeather(location: Location) {
+    fun refreshCurrentWeather(location: GeoLocation) {
         _weatherState.update { it.copyWithLoading()  }
 
         if (!networkHelper.hasInternet()) {
@@ -57,7 +57,7 @@ class CurrentWeatherUseCase(
                 dataStorePreferences.useCelsiusUnits.first()
             )
 
-            _weatherState.update { it.copyWithNetworkResult(result, location) }
+            _weatherState.update { it.copyWithNetworkResult(result) }
         }
     }
 }

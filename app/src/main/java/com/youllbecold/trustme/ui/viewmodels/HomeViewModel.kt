@@ -7,19 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
-import com.youllbecold.trustme.utils.Location
+import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -40,67 +40,66 @@ class HomeViewModel(
     permissionHelper: PermissionHelper,
 ) : ViewModel() {
 
-    private val locationStatus: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
-
     val uiState: StateFlow<HomeUiState> =
         combine(
             permissionHelper.hasLocationPermission,
+            locationHelper.geoLocationState,
             networkHelper.isConnected,
-            locationStatus.asStateFlow(),
             currentWeatherUseCase.weatherState,
             hourlyWeatherUseCase.weatherState,
-        ) { hasPermission, hasInternet, locationStatus, weatherState, hourlyWeatherState ->
+        ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
             HomeUiState(
                 hasPermission = hasPermission,
                 status = when {
                     !hasInternet -> LoadingStatus.NoInternet
-                    !locationStatus.isIdle() -> locationStatus
+                    !locationState.status.isIdle() -> locationState.status
                     else -> weatherState.status.toWeatherStatus()
                 },
                 currentWeather = weatherState.weather,
                 hourlyTemperatures = hourlyWeatherState.weather.toHourlyTemperature(),
-                city = weatherState.city
+                city = locationState.city
             )
         }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
 
     init {
+        refreshLocation()
+
         // Wait for permission and internet connection to fetch the weather.
         combine(
             permissionHelper.hasLocationPermission,
-            networkHelper.isConnected
-        ) { hasPermission, hasInternet ->
+            networkHelper.isConnected,
+            locationHelper.geoLocationState,
+        ) { hasPermission, hasInternet, geoLocation ->
             if (hasPermission && hasInternet) {
-                refreshWeather()
+                geoLocation.location?.let { refreshWeather(it) }
             }
         }.launchIn(viewModelScope)
     }
 
+    private fun refreshLocation() {
+        locationHelper.refresh()
+    }
+
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.RefreshWeather -> refreshWeather()
+            HomeAction.RefreshWeather -> {
+                viewModelScope.launch {
+                    val location = locationHelper.geoLocationState.firstOrNull()?.location
+                    location?.let { refreshWeather(it) }
+                }
+            }
         }
     }
 
-    private fun refreshWeather() {
+    private fun refreshWeather(location: GeoLocation) {
         if (uiState.value.status == LoadingStatus.Loading) {
             return // Already in progress, do not call again.
         }
 
         if (PermissionHelper.hasLocationPermission(app)) {
-            locationStatus.value = LoadingStatus.Loading
-
-            locationHelper.refreshLocation(
-                app,
-                onSuccess = ::onLocationObtained,
-                onError = { locationStatus.value = LoadingStatus.GenericError }
-            )
+            currentWeatherUseCase.refreshCurrentWeather(location)
+            hourlyWeatherUseCase.refreshHourlyWeather(location)
         }
-    }
-
-    private fun onLocationObtained(location: Location) {
-        locationStatus.value = LoadingStatus.Idle
-        currentWeatherUseCase.refreshCurrentWeather(location)
-        hourlyWeatherUseCase.refreshHourlyWeather(location)
     }
 
     private fun List<Weather>.toHourlyTemperature(): List<HourlyTemperature> =
@@ -147,6 +146,11 @@ data class HomeUiState(
      * Whether the screen is refreshing - does not account for the initial loading.
      */
     fun isRefreshing() = status == LoadingStatus.Loading && currentWeather != null
+
+    /**
+     * Whether the screen is loading for the first time.
+     */
+    fun isInitialLoading() = status == LoadingStatus.Loading && currentWeather == null
 }
 
 /**

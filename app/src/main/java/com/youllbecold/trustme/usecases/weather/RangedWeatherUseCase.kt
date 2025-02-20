@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.WeatherState
-import com.youllbecold.trustme.utils.Location
+import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
@@ -25,7 +25,7 @@ class RangedWeatherUseCase(
 ) {
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     suspend fun obtainRangedWeather(
-        location: Location,
+        location: GeoLocation,
         date: LocalDate,
         timeFrom: LocalTime,
         timeTo: LocalTime

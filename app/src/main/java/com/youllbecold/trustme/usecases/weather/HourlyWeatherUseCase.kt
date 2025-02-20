@@ -9,7 +9,7 @@ import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
 import com.youllbecold.trustme.usecases.weather.state.copyWithError
 import com.youllbecold.trustme.usecases.weather.state.copyWithLoading
 import com.youllbecold.trustme.usecases.weather.state.copyWithNetworkResult
-import com.youllbecold.trustme.utils.Location
+import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.model.Weather
@@ -42,7 +42,7 @@ class HourlyWeatherUseCase(
     val weatherState: StateFlow<WeatherState<List<Weather>>> = _weatherState
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    fun refreshHourlyWeather(location: Location) {
+    fun refreshHourlyWeather(location: GeoLocation) {
         _weatherState.update { it.copyWithLoading() }
 
         if (!networkHelper.hasInternet()) {
@@ -58,7 +58,7 @@ class HourlyWeatherUseCase(
                 2 // Two forecast days to always get over 24 hours ahead.
             )
 
-            _weatherState.update { it.copyWithNetworkResult(result, location) }
+            _weatherState.update { it.copyWithNetworkResult(result) }
         }
     }
 }

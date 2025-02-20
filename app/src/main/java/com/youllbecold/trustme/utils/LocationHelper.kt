@@ -1,6 +1,8 @@
 package com.youllbecold.trustme.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
@@ -9,14 +11,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
+import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
@@ -25,38 +29,68 @@ import java.util.Locale
 /**
  * Helper class for fetching the device's location.
  */
+@SuppressLint("MissingPermission") // Not missing, handled by the permission helper.
 @Singleton
-class LocationHelper {
+class LocationHelper(
+    private val app: Application,
+    permissionHelper: PermissionHelper,
+) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(app) }
 
-    private val _cachedLocation: MutableStateFlow<Location?> = MutableStateFlow(null)
-    val cachedLocation: StateFlow<Location?> = _cachedLocation
+    private val _geoLocation: MutableStateFlow<GeoLocationState> = MutableStateFlow(GeoLocationState())
 
+    /**
+     * State flow for the device's location.
+     */
+    val geoLocationState: StateFlow<GeoLocationState> = _geoLocation
+
+    init {
+        coroutineScope.launch {
+            val hasPermission = permissionHelper.hasLocationPermission.first()
+
+            if (hasPermission) {
+                refresh()
+            }
+
+            // Update address when location changes.
+            _geoLocation.collectLatest { geo ->
+                geo.location?.let { updateAddress(it) }
+            }
+        }
+    }
+
+    /**
+     * Refreshes the device's location.
+     */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    fun refreshLocation(context: Context, onSuccess: (Location) -> Unit, onError: (String?) -> Unit) {
-        val locationClient = LocationServices.getFusedLocationProviderClient(context)
-        val priority = Priority.PRIORITY_HIGH_ACCURACY
+    fun refresh() {
+        _geoLocation.update { it.copy(status = LoadingStatus.Loading) }
 
-        locationClient.getCurrentLocation(priority, CancellationTokenSource().token)
-            .addOnCompleteListener { task: Task<android.location.Location> ->
-                if (task.isSuccessful && task.result != null) {
-                    val location = task.result
+        locationClient.lastLocation.addOnCompleteListener { task: Task<android.location.Location> ->
+            if (task.isSuccessful && task.result != null) {
+                _geoLocation.update {
+                    GeoLocationState(GeoLocation(task.result.latitude, task.result.longitude))
+                }
+            } else {
+                _geoLocation.update { it.copy(status = LoadingStatus.GenericError) }
+            }
+        }
+    }
 
-                    obtainAddress(context, location.latitude, location.longitude) { address ->
-                        // City might be null, but that's fine.
-                        val city = address?.locality ?: address?.adminArea ?: address?.countryName
-                        val location = Location(location.latitude, location.longitude, city)
+    private fun updateAddress(geoLocation: GeoLocation) {
+        obtainAddress(app, geoLocation.latitude, geoLocation.longitude) { address ->
+            val city = address?.locality ?: address?.adminArea ?: address?.countryName
 
-                        onSuccess(location)
-                        _cachedLocation.value = location
-                    }
-
+            _geoLocation.update {
+                // Consistency check, if the location is still the same, update the city.
+                if (it.location == geoLocation) {
+                    it.copy(city = city)
                 } else {
-                    task.exception?.let {
-                        onError(it.message)
-                    }
+                    it
                 }
             }
+        }
     }
 
     private fun obtainAddress(context: Context, latitude: Double, longitude: Double, onResult: (Address?) -> Unit) {
@@ -94,11 +128,13 @@ class LocationHelper {
     }
 }
 
-/**
- * Data class representing a location.
- */
-data class Location(
+data class GeoLocation(
     val latitude: Double,
     val longitude: Double,
+)
+
+data class GeoLocationState(
+    val location: GeoLocation? = null,
+    val status: LoadingStatus = LoadingStatus.Idle,
     val city: String? = null
 )
