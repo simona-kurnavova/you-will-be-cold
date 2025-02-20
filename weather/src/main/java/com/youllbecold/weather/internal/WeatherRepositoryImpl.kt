@@ -10,11 +10,10 @@ import com.youllbecold.weather.model.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 /**
  * Repository for weather data.
@@ -28,16 +27,16 @@ internal class WeatherRepositoryImpl(
      * Get current weather.
      */
     override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Weather> =
-        withContext(dispatchers) {
-            weatherApi.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius))
-                .processResponse { responseBody ->  responseBody.toWeather() }
-        }
+        processCall(
+            call = { weatherApi.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius)) },
+            processBody = { responseBody -> responseBody.toWeather() }
+        )
 
     override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<Weather>> =
-        withContext(dispatchers) {
-            weatherApi.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays)
-                .processResponse { responseBody -> responseBody.toWeatherList() }
-        }
+        processCall(
+            call = { weatherApi.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays) },
+            processBody = { responseBody -> responseBody.toWeatherList() }
+        )
 
     override suspend fun getDatedWeather(
         latitude: Double,
@@ -47,19 +46,33 @@ internal class WeatherRepositoryImpl(
     ): Result<List<Weather>> {
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-        return withContext(dispatchers) {
-            weatherApi.getHourlyWeatherForDateRange(
+        return processCall(
+            call = { weatherApi.getHourlyWeatherForDateRange(
                 latitude,
                 longitude,
                 temperatureUnit = getUnits(useCelsius),
                 startDate = dateString,
                 endDate = dateString
-            ).processResponse { responseBody -> responseBody.toWeatherList() }
-        }
+            ) },
+            processBody = { responseBody -> responseBody.toWeatherList() }
+        )
     }
 
     private fun getUnits(useCelsius: Boolean): String =
         if (useCelsius) TemperatureUnitRequest.CELSIUS.value else TemperatureUnitRequest.FAHRENHEIT.value
+
+    private suspend fun <R, T> processCall(
+        call: suspend () -> Response<R>,
+        processBody: (R) -> T
+    ): Result<T> = withContext(dispatchers) {
+        try {
+            call().processResponse(processBody)
+        } catch (e: IOException) { // Network issues
+            Result.failure(Exception("No internet connection. Please try again later."))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     private fun <R, T> Response<R>.processResponse(
         processBody: (R) -> T

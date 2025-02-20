@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Provider for weather data.
@@ -21,7 +22,13 @@ object WeatherProvider {
     val weatherRepository: WeatherRepository by lazy { WeatherRepositoryImpl(weatherApi) }
 
     private fun buildRetrofit(): Retrofit {
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder()
+            .retryOnConnectionFailure(true)
+            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+            .build()
+
         val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         val clientBuilder = client.newBuilder().addInterceptor(interceptor)
 
@@ -34,3 +41,4 @@ object WeatherProvider {
 }
 
 private const val BASE_URL = "https://api.open-meteo.com"
+private const val CONNECTION_TIMEOUT = 10L
