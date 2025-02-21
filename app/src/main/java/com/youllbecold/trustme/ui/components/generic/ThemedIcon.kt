@@ -46,6 +46,7 @@ enum class IconType(
     Fire(R.drawable.ic_fire, R.color.icon_red),
     Wind(R.drawable.ic_wind, R.color.icon_gray),
     Popsicle(R.drawable.ic_popsicle, R.color.icon_blue),
+    Thermometer(R.drawable.ic_thermometer, R.color.icon_default),
 
     // Clothes
     TShirt(R.drawable.ic_shirt, R.color.icon_gray),
@@ -69,6 +70,7 @@ enum class IconType(
     Book(R.drawable.ic_book, R.color.icon_default),
     Tool(R.drawable.ic_tool, R.color.icon_default),
     Plus(R.drawable.ic_plus, R.color.icon_default),
+    Person(R.drawable.ic_person, R.color.icon_default),
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)

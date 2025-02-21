@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.screens
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,11 +18,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCardType
@@ -33,10 +37,16 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
-import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
+import com.youllbecold.trustme.ui.viewmodels.Forecast
+import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
+import com.youllbecold.trustme.ui.viewmodels.toHourlyTemperature
+import com.youllbecold.trustme.usecases.weather.RainLevelState
+import com.youllbecold.trustme.usecases.weather.Recommendation
+import com.youllbecold.trustme.usecases.weather.UvLevelState
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
@@ -98,11 +108,11 @@ private fun HomeScreen(
                 )
             }
 
-            val showWeather = state.currentWeather != null
+            val showWeather = state.weather != null
 
             FadingItem(visible = showWeather) {
                 WeatherNowSection(
-                    currentWeather = state.currentWeather,
+                    currentWeather = state.weather?.current?.weather?.first(),
                     city = state.city,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,15 +122,20 @@ private fun HomeScreen(
 
             FadingItem(visible = showWeather) {
                 HourlyWeatherCard(
-                    hourlyTemperatures = state.hourlyTemperatures,
+                    hourlyTemperatures = state.weather?.today.toHourlyTemperature(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
                 )
             }
 
-            FadingItem(visible = true) {
-                RecommendSection()
+            FadingItem(visible = showWeather) {
+                state.weather?.let { weather ->
+                    RecommendSection(
+                        weather = weather,
+                        modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                    )
+                }
             }
         }
     }
@@ -159,13 +174,14 @@ private fun WeatherNowSection(
 
 @Composable
 private fun RecommendSection(
-    modifier: Modifier = Modifier
+    weather: Forecast,
+    modifier: Modifier = Modifier,
 ) {
-    var selectedOption by remember { mutableIntStateOf(0) }
+    var selectedOption by remember { mutableIntStateOf(RecommendationChip.NOW.ordinal) }
 
     Column(
         modifier = modifier.fillMaxWidth()
-    ){
+    ) {
         Text(
             text = "Recommendations",
             style = MaterialTheme.typography.bodyMedium,
@@ -173,27 +189,33 @@ private fun RecommendSection(
         )
 
         ChipSelectCard(
-            options = listOf("Now", "Today", "Tomorrow"),
+            options = RecommendationChip.entries.map { stringResource(it.stringId) },
             onOptionSelected = { selectedOption = it },
             selectedOption = selectedOption,
             modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
         ) {
+            val weather = when (RecommendationChip.entries[selectedOption]) {
+                RecommendationChip.NOW -> weather.current
+                RecommendationChip.TODAY -> weather.today
+                RecommendationChip.TOMORROW -> weather.tomorrow
+            }
+
             RecommendationCard(
-                tmpText = "Recommendation for index $selectedOption"
+                weatherWithRecommendation = weather,
             )
         }
     }
 }
 
+enum class RecommendationChip(@StringRes val stringId: Int) {
+    NOW(R.string.recommendation_chip_now),
+    TODAY(R.string.recommendation_chip_today),
+    TOMORROW(R.string.recommendation_chip_tomorrow)
+}
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    val hourlyTemperature = HourlyTemperature(
-        LocalDateTime.now(),
-        0.0,
-        WeatherEvaluation.SUNNY
-    )
-
     val weather = Weather(
         time = LocalDateTime.now(),
         unitsCelsius = true,
@@ -211,8 +233,32 @@ fun HomeScreenPreview() {
             HomeUiState(
                 hasPermission = true,
                 status = LoadingStatus.Loading,
-                currentWeather = weather,
-                hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
+                weather = Forecast(
+                    current = WeatherWithRecommendation(
+                        weather = persistentListOf(weather, weather, weather),
+                        recommendation = Recommendation(
+                            uvLevel = UvLevelState.LOW,
+                            rainLevel = RainLevelState.NONE,
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                        )
+                    ),
+                    today = WeatherWithRecommendation(
+                        weather = persistentListOf(weather, weather, weather),
+                        recommendation = Recommendation(
+                            uvLevel = UvLevelState.LOW,
+                            rainLevel = RainLevelState.NONE,
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                        )
+                    ),
+                    tomorrow = WeatherWithRecommendation(
+                        weather = persistentListOf(weather, weather, weather),
+                        recommendation = Recommendation(
+                            uvLevel = UvLevelState.LOW,
+                            rainLevel = RainLevelState.NONE,
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                        )
+                    )
+                ),
                 city = "Berlin",
             )
         )

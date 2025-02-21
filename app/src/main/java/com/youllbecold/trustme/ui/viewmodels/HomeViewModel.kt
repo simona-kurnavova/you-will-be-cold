@@ -2,10 +2,13 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.Recommendation
+import com.youllbecold.trustme.usecases.weather.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
 import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.LocationHelper
@@ -13,6 +16,9 @@ import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -35,31 +41,30 @@ class HomeViewModel(
     private val app: Application,
     private val currentWeatherUseCase: CurrentWeatherUseCase,
     private val hourlyWeatherUseCase: HourlyWeatherUseCase,
+    private val recommendUseCase: RecommendationUseCase,
     private val networkHelper: NetworkHelper,
     private val locationHelper: LocationHelper,
     permissionHelper: PermissionHelper,
 ) : ViewModel() {
 
-    val uiState: StateFlow<HomeUiState> =
-        combine(
-            permissionHelper.hasLocationPermission,
-            locationHelper.geoLocationState,
-            networkHelper.isConnected,
-            currentWeatherUseCase.weatherState,
-            hourlyWeatherUseCase.weatherState,
-        ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
-            HomeUiState(
-                hasPermission = hasPermission,
-                status = when {
-                    !hasInternet -> LoadingStatus.NoInternet
-                    !locationState.status.isIdle() -> locationState.status
-                    else -> weatherState.status.toWeatherStatus()
-                },
-                currentWeather = weatherState.weather,
-                hourlyTemperatures = hourlyWeatherState.weather.toHourlyTemperature(),
-                city = locationState.city
-            )
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
+    val uiState: StateFlow<HomeUiState> = combine(
+        permissionHelper.hasLocationPermission,
+        locationHelper.geoLocationState,
+        networkHelper.isConnected,
+        currentWeatherUseCase.weatherState,
+        hourlyWeatherUseCase.weatherState,
+    ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
+        HomeUiState(
+            hasPermission = hasPermission,
+            status = when {
+                !hasInternet -> LoadingStatus.NoInternet
+                !locationState.status.isIdle() -> locationState.status
+                else -> weatherState.status.toWeatherStatus()
+            },
+            city = locationState.city,
+            weather = obtainWeatherWithRecommendations(weatherState.weather, hourlyWeatherState.weather)
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
 
     init {
         refreshLocation()
@@ -74,10 +79,6 @@ class HomeViewModel(
                 geoLocation.location?.let { refreshWeather(it) }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun refreshLocation() {
-        locationHelper.refresh()
     }
 
     fun onAction(action: HomeAction) {
@@ -98,20 +99,36 @@ class HomeViewModel(
 
         if (PermissionHelper.hasLocationPermission(app)) {
             currentWeatherUseCase.refreshCurrentWeather(location)
-            hourlyWeatherUseCase.refreshHourlyWeather(location)
+            hourlyWeatherUseCase.refreshHourlyWeather(location, days = 2)
         }
     }
 
-    private fun List<Weather>.toHourlyTemperature(): List<HourlyTemperature> =
-        filter { it.time > LocalDateTime.now() }
-            .take(FORECAST_HOURS_LIMIT)
-            .map { weather ->
-                HourlyTemperature(
-                    time = weather.time,
-                    temperature = weather.temperature,
-                    weatherEvaluation = weather.weatherEvaluation
-                )
-            }
+    private suspend fun obtainWeatherWithRecommendations(
+        currentWeather: Weather?,
+        hourlyWeather: List<Weather>,
+    ): Forecast? {
+        if (currentWeather == null || hourlyWeather.isEmpty()) {
+            return null
+        }
+
+        val filteredHourly = hourlyWeather.filter { it.time.toLocalDate() >= LocalDateTime.now().toLocalDate() }
+        val (todayWeather, tomorrowWeather) = filteredHourly.partition { it.time.toLocalDate() == LocalDateTime.now().toLocalDate() }
+
+        return Forecast(
+            current = WeatherWithRecommendation(
+                persistentListOf(currentWeather),
+                recommendUseCase.recommend(listOf(currentWeather))
+            ),
+            today = WeatherWithRecommendation(
+                todayWeather.toPersistentList(),
+                recommendUseCase.recommend(todayWeather)
+            ),
+            tomorrow = WeatherWithRecommendation(
+                tomorrowWeather.toPersistentList(),
+                recommendUseCase.recommend(tomorrowWeather)
+            )
+        )
+    }
 
     private fun WeatherUseCaseStatus.toWeatherStatus(): LoadingStatus = when (this) {
         WeatherUseCaseStatus.Idle,
@@ -119,43 +136,10 @@ class HomeViewModel(
         WeatherUseCaseStatus.Loading -> LoadingStatus.Loading
         is WeatherUseCaseStatus.Error -> LoadingStatus.GenericError
     }
-}
 
-/**
- * Limit the forecast to 24 hours only.
- */
-private const val FORECAST_HOURS_LIMIT = 24
-
-/**
- * UI state for the home screen.
- *
- * @param hasPermission Whether the app has location permission.
- * @param status The current status of the weather fetching, location refreshing, etc.
- * @param currentWeather The current weather.
- * @param hourlyTemperatures The hourly temperatures forecast.
- * @param city The city name.
- */
-data class HomeUiState(
-    val hasPermission: Boolean = false,
-    val status: LoadingStatus = LoadingStatus.Idle,
-    val currentWeather: Weather? = null,
-    val hourlyTemperatures: List<HourlyTemperature> = emptyList(),
-    val city: String? = null,
-) {
-    /**
-     * Whether the screen is refreshing - does not account for the initial loading.
-     */
-    fun isRefreshing() = status == LoadingStatus.Loading && currentWeather != null
-
-    /**
-     * Whether the screen is loading for the first time.
-     */
-    fun isInitialLoading() = status == LoadingStatus.Loading && currentWeather == null
-
-    /**
-     * Whether the screen is in an error state.
-     */
-    fun isError() = status == LoadingStatus.GenericError || status == LoadingStatus.NoInternet
+    private fun refreshLocation() {
+        locationHelper.refresh()
+    }
 }
 
 /**
@@ -181,4 +165,63 @@ data class HourlyTemperature(
 
     val roundedTemperature: Int
         get() = temperature.roundToInt()
+}
+
+
+/**
+ * UI state for the home screen.
+ *
+ * @param hasPermission Whether the app has location permission.
+ * @param status The current status of the weather fetching, location refreshing, etc.
+ * @param city The city name.
+ * @param weather Forecast for the current, today, and tomorrow weather, with recommendations.
+ */
+@Stable
+data class HomeUiState(
+    val hasPermission: Boolean = false,
+    val status: LoadingStatus = LoadingStatus.Idle,
+    val city: String? = null,
+    val weather: Forecast? = null
+) {
+    /**
+     * Whether the screen is refreshing - does not account for the initial loading.
+     */
+    fun isRefreshing() = status == LoadingStatus.Loading && weather != null
+
+    /**
+     * Whether the screen is loading for the first time.
+     */
+    fun isInitialLoading() = status == LoadingStatus.Loading && weather == null
+
+    /**
+     * Whether the screen is in an error state.
+     */
+    fun isError() = status == LoadingStatus.GenericError || status == LoadingStatus.NoInternet
+}
+
+@Stable
+data class Forecast(
+    val current: WeatherWithRecommendation,
+    val today: WeatherWithRecommendation,
+    val tomorrow: WeatherWithRecommendation
+)
+
+fun WeatherWithRecommendation?.toHourlyTemperature(): PersistentList<HourlyTemperature> =
+    this?.weather?.map { weather ->
+        HourlyTemperature(
+            time = weather.time,
+            temperature = weather.temperature,
+            weatherEvaluation = weather.weatherEvaluation
+        )
+    }?.toPersistentList() ?: persistentListOf()
+
+data class WeatherWithRecommendation(
+    val weather: PersistentList<Weather>,
+    val recommendation: Recommendation
+) {
+    val minTemperature: Double
+        get() = weather.minOf { it.temperature }
+
+    val maxTemperature: Double
+        get() = weather.maxOf { it.temperature }
 }

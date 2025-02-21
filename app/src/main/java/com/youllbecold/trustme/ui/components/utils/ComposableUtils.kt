@@ -10,6 +10,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
@@ -41,4 +42,12 @@ data class ImmutableDate(
 @Immutable
 data class ImmutableTime(
     val time: LocalTime
+)
+
+/**
+* Immutable data class for time.
+*/
+@Immutable
+data class ImmutableDateTime(
+    val dateTime: LocalDateTime
 )

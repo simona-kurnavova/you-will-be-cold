@@ -103,4 +103,20 @@
     <string name="toast_invalid_time_range">Please specify correct time range.</string>
     <string name="toast_no_clothes_selected">Please select some clothes.</string>
     <string name="toast_error_editing_log">There was an unexpected error while editing log.</string>
+    <string name="recommendation_chip_now">Now</string>
+    <string name="recommendation_chip_today">Today</string>
+    <string name="recommendation_chip_tomorrow">Tomorrow</string>
+    <string name="uv_recom_low">It will be a little sunny, consider using sunscreen</string>
+    <string name="uv_recom_medium">It will be sunny, use sunscreen, sunglasses and a hat</string>
+    <string name="uv_recom_high">The world is on fire, use sunscreen, sunglasses, a hat and stay in the shade</string>
+    <string name="uv_recom_none">No sun anywhere, just have a blast</string>
+    <string name="rain_recom_none">No rain, no problem</string>
+    <string name="rain_recom_low">There is a non-zero chance of rain. Don\'t say I didn\'t warn you!</string>
+    <string name="rain_recom_medium">There some pretty decent chance of rain. Take an umbrella or a raincoat. Or just don\'t bother washing your hair, up to you.</string>
+    <string name="rain_recom_high">It\'s raining men, Halleluuujah it\'s raining men. Oh no, it\'s not, just regular rain. Are we in London? Is apocalypse coming? Even umbrella won\'t save you, but take one anyway.</string>
+    <string name="recom_description_single">Temperature is around %s.</string>
+    <string name="recom_description_range">Temperatures will be between %1$s and %2$s.</string>
+    <string name="recom_apparent_description_single">It feels like %s</string>
+    <string name="recom_apparent_description">It will feel like %1$s - %2$s</string>
+    <string name="recom_clothes_title">Recommended clothes</string>
 </resources>

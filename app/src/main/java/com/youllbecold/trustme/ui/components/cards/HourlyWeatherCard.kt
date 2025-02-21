@@ -16,11 +16,13 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
 import com.youllbecold.weather.model.WeatherEvaluation
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDateTime
 
 @Composable
 fun HourlyWeatherCard(
-    hourlyTemperatures: List<HourlyTemperature>,
+    hourlyTemperatures: PersistentList<HourlyTemperature>,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -58,7 +60,7 @@ private fun HourlyWeatherCardPreview() {
     )
     YoullBeColdTheme {
         HourlyWeatherCard(
-            listOf(item, item, item, item)
+            persistentListOf(item, item, item, item)
         )
     }
 }

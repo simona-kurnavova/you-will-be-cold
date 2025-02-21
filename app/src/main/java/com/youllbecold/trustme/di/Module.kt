@@ -16,6 +16,7 @@ import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.RecommendationUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.utils.NetworkHelper
@@ -44,6 +45,7 @@ val appModule = module {
     factoryOf(::CurrentWeatherUseCase)
     factoryOf(::HourlyWeatherUseCase)
     factoryOf(::RangedWeatherUseCase)
+    factoryOf(::RecommendationUseCase)
 }
 
 val uiModule = module {

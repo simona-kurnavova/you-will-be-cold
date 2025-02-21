@@ -7,7 +7,9 @@ import com.youllbecold.recomendation.model.Recommendation
  */
 interface RecommendRepository {
     suspend fun recommend(
-        apparentTemperatureMin: Double,
-        apparentTemperatureMax: Double
+        hourlyTemperatures: List<Double>,
+        hourlyApparentTemperatures: List<Double>,
+        uvIndex: List<Double>,
+        rainProbability: List<Int>
     ): Recommendation
 }

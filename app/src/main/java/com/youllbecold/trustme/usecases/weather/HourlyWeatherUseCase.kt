@@ -42,7 +42,7 @@ class HourlyWeatherUseCase(
     val weatherState: StateFlow<WeatherState<List<Weather>>> = _weatherState
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    fun refreshHourlyWeather(location: GeoLocation) {
+    fun refreshHourlyWeather(location: GeoLocation, days: Int) {
         _weatherState.update { it.copyWithLoading() }
 
         if (!networkHelper.hasInternet()) {
@@ -55,7 +55,7 @@ class HourlyWeatherUseCase(
                 location.latitude,
                 location.longitude,
                 dataStorePreferences.useCelsiusUnits.first(),
-                2 // Two forecast days to always get over 24 hours ahead.
+                forecastDays = days
             )
 
             _weatherState.update { it.copyWithNetworkResult(result) }
