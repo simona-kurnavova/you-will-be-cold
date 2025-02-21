@@ -1,67 +1,31 @@
 package com.youllbecold.trustme.ui.components.generic
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.InputChipDefaults
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable
 fun ThemedChip(
     text: String,
-    iconType: IconType,
-    onRemove: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
 ) {
-    var enabled by remember { mutableStateOf(true) }
-    if (!enabled) return
-
     InputChip(
-        onClick = {
-            onRemove()
-            enabled = !enabled
-        },
+        onClick = onClick,
         label = { Text(text) },
-        selected = enabled,
-        leadingIcon = {
-            ThemedIcon(
-                iconType = iconType,
-                iconAttr = IconAttr(size = InputChipDefaults.AvatarSize)
-            )
-        },
-        trailingIcon = {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = stringResource(R.string.content_desc_x_remove),
-                Modifier.size(InputChipDefaults.AvatarSize)
-            )
-        },
+        selected = selected,
         modifier = modifier.wrapContentSize(),
         colors = InputChipDefaults.inputChipColors().copy(
-            selectedContainerColor = colorResource(iconType.bgColor),
-            selectedLabelColor = colorResource(iconType.color),
-            selectedTrailingIconColor = colorResource(iconType.color),
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     )
 }
@@ -71,10 +35,9 @@ fun ThemedChip(
 @Composable
 private fun ThemedChipPreview() {
     YoullBeColdTheme {
-         ThemedChip(
-            text = "Long dress",
-            iconType = IconType.Dress,
-            onRemove = { }
+        ThemedChip(
+            text = "Today",
+            onClick = {}
         )
     }
 }

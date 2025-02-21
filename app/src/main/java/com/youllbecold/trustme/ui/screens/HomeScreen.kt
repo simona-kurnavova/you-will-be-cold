@@ -6,10 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +25,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCardType
+import com.youllbecold.trustme.ui.components.cards.RecommendationCard
 import com.youllbecold.trustme.ui.components.cards.WeatherCard
+import com.youllbecold.trustme.ui.components.generic.ChipSelectCard
 import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HomeAction
@@ -94,26 +101,26 @@ private fun HomeScreen(
             val showWeather = state.currentWeather != null
 
             FadingItem(visible = showWeather) {
-                state.currentWeather?.let {
-                    WeatherCard(
-                        weather = it,
-                        city = state.city,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                    )
-                }
+                WeatherNowSection(
+                    currentWeather = state.currentWeather,
+                    city = state.city,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                )
             }
 
             FadingItem(visible = showWeather) {
-                state.currentWeather?.let {
-                    HourlyWeatherCard(
-                        hourlyTemperatures = state.hourlyTemperatures,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                    )
-                }
+                HourlyWeatherCard(
+                    hourlyTemperatures = state.hourlyTemperatures,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                )
+            }
+
+            FadingItem(visible = true) {
+                RecommendSection()
             }
         }
     }
@@ -122,6 +129,61 @@ private fun HomeScreen(
 private const val CONTENT_PADDING = 8
 private const val PADDING_BETWEEN_ITEMS = 8
 private const val PROGRESS_INDICATOR_PADDING = 32
+
+@Composable
+private fun WeatherNowSection(
+    currentWeather: Weather?,
+    city: String?,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Current weather",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+        )
+
+        currentWeather?.let {
+            WeatherCard(
+                weather = it,
+                city = city,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RecommendSection(
+    modifier: Modifier = Modifier
+) {
+    var selectedOption by remember { mutableIntStateOf(0) }
+
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ){
+        Text(
+            text = "Recommendations",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(vertical = PADDING_BETWEEN_ITEMS.dp)
+        )
+
+        ChipSelectCard(
+            options = listOf("Now", "Today", "Tomorrow"),
+            onOptionSelected = { selectedOption = it },
+            selectedOption = selectedOption,
+            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+        ) {
+            RecommendationCard(
+                tmpText = "Recommendation for index $selectedOption"
+            )
+        }
+    }
+}
 
 @Preview
 @Composable
@@ -151,6 +213,7 @@ fun HomeScreenPreview() {
                 status = LoadingStatus.Loading,
                 currentWeather = weather,
                 hourlyTemperatures = listOf(hourlyTemperature, hourlyTemperature, hourlyTemperature),
+                city = "Berlin",
             )
         )
     }

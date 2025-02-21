@@ -34,7 +34,7 @@ import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
-import com.youllbecold.trustme.ui.components.generic.ThemedChip
+import com.youllbecold.trustme.ui.components.generic.ThemedInputChip
 import com.youllbecold.trustme.ui.components.generic.icontext.Tile
 import com.youllbecold.trustme.ui.components.generic.datetime.TimeRangeInput
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
@@ -196,7 +196,7 @@ private fun ClothesSection(
                 // Selected clothes chips
                 clothes.forEach { item ->
                     key(item) {
-                        ThemedChip(
+                        ThemedInputChip(
                             text = item.getTitle(),
                             iconType = item.icon,
                             onRemove = { onClothesCategoryChange(clothes.remove(item)) },
