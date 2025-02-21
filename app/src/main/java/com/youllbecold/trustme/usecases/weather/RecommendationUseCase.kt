@@ -28,6 +28,7 @@ class RecommendationUseCase(
 
             Recommendation(
                 uvLevel = when (rec.uvLevel) {
+                    UvRecommendation.NoProtection -> UvLevelState.NONE
                     UvRecommendation.LowProtection -> UvLevelState.LOW
                     UvRecommendation.MediumProtection -> UvLevelState.MEDIUM
                     UvRecommendation.HighProtection -> UvLevelState.HIGH

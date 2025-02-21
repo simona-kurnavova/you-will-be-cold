@@ -37,6 +37,7 @@ internal class RecommendRepositoryImpl(
 
     private fun uvRecommendation(uvIndex: Double): UvRecommendation {
         return when {
+            uvIndex <= 0 -> UvRecommendation.NoProtection
             uvIndex < 3 -> UvRecommendation.LowProtection
             uvIndex < 6 -> UvRecommendation.MediumProtection
             else -> UvRecommendation.HighProtection

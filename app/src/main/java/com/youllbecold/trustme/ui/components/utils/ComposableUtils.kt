@@ -43,11 +43,3 @@ data class ImmutableDate(
 data class ImmutableTime(
     val time: LocalTime
 )
-
-/**
-* Immutable data class for time.
-*/
-@Immutable
-data class ImmutableDateTime(
-    val dateTime: LocalDateTime
-)

@@ -18,6 +18,7 @@ enum class Certainty {
 }
 
 enum class UvRecommendation {
+    NoProtection,
     LowProtection,
     MediumProtection,
     HighProtection,
