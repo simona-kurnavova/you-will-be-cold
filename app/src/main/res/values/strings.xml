@@ -81,7 +81,7 @@
     <string name="clothes_jeans">Jeans</string>
     <string name="clothes_sandals">Sandals</string>
     <string name="clothes_tennis_shoes">Tennis shoes</string>
-    <string name="clothes_dress">Dress</string>
+    <string name="clothes_dress">Short dress</string>
     <string name="clothes_category_tops">Tops</string>
     <string name="clothes_category_jackets">Jackets</string>
     <string name="clothes_category_pants">Pants</string>
@@ -119,4 +119,22 @@
     <string name="recom_apparent_description_single">It feels like %s</string>
     <string name="recom_apparent_description">It will feel like %1$s - %2$s</string>
     <string name="recom_clothes_title">Recommended clothes</string>
+    <string name="baseball_hat">Baseball hat</string>
+    <string name="winter_hat">Winter hat</string>
+    <string name="sunglasses">Sunglasses</string>
+    <string name="gloves">Gloves</string>
+    <string name="scarf">Scarf</string>
+    <string name="tights">Tights</string>
+    <string name="winter_shoes">Winter shoes</string>
+    <string name="warm_pants">Warm pants</string>
+    <string name="legging">Leggings</string>
+    <string name="winter_jacker">Winter jacket</string>
+    <string name="light_jacket">Light jacket</string>
+    <string name="tank_top">Tank top</string>
+    <string name="clothes_dress_long">Long dress</string>
+    <string name="recom_certainty_description">Certainty of this suggestion is %s. Improve it by logging more often!</string>
+    <string name="certainity_low">low</string>
+    <string name="certainity_medium">medium</string>
+    <string name="certainity_high">high</string>
+    <string name="clothes_long_skirt">Long skirt</string>
 </resources>

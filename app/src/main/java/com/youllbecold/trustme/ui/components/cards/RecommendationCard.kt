@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
@@ -60,6 +61,16 @@ fun RecommendationCard(
             }
 
             ClothesRecommendations(recommendation)
+
+            ThemedDivider(
+                modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
+            )
+
+            Text(
+                text = stringResource(R.string.recom_certainty_description, recommendation.certainty.getTitle()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+            )
         }
     }
 }
@@ -114,7 +125,8 @@ private fun RecommendationCardPreview() {
             recommendation = Recommendation(
                 UvLevelState.HIGH,
                 RainLevelState.VERY_HIGH,
-                persistentListOf(Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES)
+                persistentListOf(Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES),
+                Certainty.High
             )
         ))
     }

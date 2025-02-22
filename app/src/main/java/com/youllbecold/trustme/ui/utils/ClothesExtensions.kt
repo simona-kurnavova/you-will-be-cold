@@ -3,6 +3,7 @@ package com.youllbecold.trustme.ui.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectableItemContent
@@ -53,7 +54,21 @@ fun Clothes.getTitle(): String = when (this) {
     Clothes.JEANS -> stringResource(R.string.clothes_jeans)
     Clothes.SANDALS -> stringResource(R.string.clothes_sandals)
     Clothes.TENNIS_SHOES -> stringResource(R.string.clothes_tennis_shoes)
-    Clothes.DRESS -> stringResource(R.string.clothes_dress)
+    Clothes.SHORT_DRESS -> stringResource(R.string.clothes_dress)
+    Clothes.LONG_DRESS -> stringResource(R.string.clothes_dress_long)
+    Clothes.BASEBALL_HAT -> stringResource(R.string.baseball_hat)
+    Clothes.WINTER_HAT -> stringResource(R.string.winter_hat)
+    Clothes.TANK_TOP -> stringResource(R.string.tank_top)
+    Clothes.LIGHT_JACKET -> stringResource(R.string.light_jacket)
+    Clothes.WINTER_JACKET -> stringResource(R.string.winter_jacker)
+    Clothes.LEGGINGS -> stringResource(R.string.legging)
+    Clothes.WARM_PANTS -> stringResource(R.string.warm_pants)
+    Clothes.WINTER_SHOES -> stringResource(R.string.winter_shoes)
+    Clothes.TIGHTS -> stringResource(R.string.tights)
+    Clothes.SCARF -> stringResource(R.string.scarf)
+    Clothes.GLOVES -> stringResource(R.string.gloves)
+    Clothes.SUNGLASSES -> stringResource(R.string.sunglasses)
+    Clothes.LONG_SKIRT -> stringResource(R.string.clothes_long_skirt)
 }
 
 /**
@@ -79,3 +94,10 @@ val Clothes.Category.items: List<Clothes>
  */
 fun Set<Clothes>.withCategory(category: Clothes.Category): List<Clothes> =
     this.filter { it.category == category }
+
+@Composable
+fun Certainty.getTitle(): String = when (this) {
+    Certainty.Low -> stringResource(R.string.certainity_low)
+    Certainty.Medium -> stringResource(R.string.certainity_medium)
+    Certainty.High -> stringResource(R.string.certainity_high)
+}

@@ -11,6 +11,7 @@ import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -20,9 +21,10 @@ internal class LogRepositoryImpl(
 ) : LogRepository {
     private val dispatchers = Dispatchers.IO
 
-    override val logs = logDao.getAll().map { logs ->
-        logs.map { it.toModel() }
-    }
+    override val logs: Flow<List<LogData>>
+        get() = logDao.getAll().map { logs ->
+            logs.map { it.toModel() }
+        }
 
     override suspend fun getLog(id: Int): LogData? {
         return withContext(dispatchers) {
@@ -105,7 +107,6 @@ internal class LogRepositoryImpl(
             FeelingEntity.VERY_WARM -> Feeling.VERY_WARM
         }
     }
-
     private fun ClothesId.toClothes(): Clothes = when (this) {
         ClothesId.SHORT_SLEEVE -> Clothes.SHORT_SLEEVE
         ClothesId.LONG_SLEEVE -> Clothes.LONG_SLEEVE
@@ -114,7 +115,21 @@ internal class LogRepositoryImpl(
         ClothesId.JEANS -> Clothes.JEANS
         ClothesId.SANDALS -> Clothes.SANDALS
         ClothesId.TENNIS_SHOES -> Clothes.TENNIS_SHOES
-        ClothesId.DRESS -> Clothes.DRESS
+        ClothesId.SHORT_DRESS -> Clothes.SHORT_DRESS
+        ClothesId.BASEBALL_HAT -> Clothes.BASEBALL_HAT
+        ClothesId.WINTER_HAT -> Clothes.WINTER_HAT
+        ClothesId.TANK_TOP -> Clothes.TANK_TOP
+        ClothesId.LIGHT_JACKET -> Clothes.LIGHT_JACKET
+        ClothesId.WINTER_JACKET -> Clothes.WINTER_JACKET
+        ClothesId.LEGGINGS -> Clothes.LEGGINGS
+        ClothesId.WARM_PANTS -> Clothes.WARM_PANTS
+        ClothesId.WINTER_SHOES -> Clothes.WINTER_SHOES
+        ClothesId.LONG_DRESS -> Clothes.LONG_DRESS
+        ClothesId.TIGHTS -> Clothes.TIGHTS
+        ClothesId.SCARF -> Clothes.SCARF
+        ClothesId.GLOVES -> Clothes.GLOVES
+        ClothesId.SUNGLASSES -> Clothes.SUNGLASSES
+        ClothesId.LONG_SKIRT -> Clothes.LONG_SKIRT
     }
 
     private fun Clothes.toClothesId(): ClothesId = when (this) {
@@ -125,6 +140,20 @@ internal class LogRepositoryImpl(
         Clothes.JEANS -> ClothesId.JEANS
         Clothes.SANDALS -> ClothesId.SANDALS
         Clothes.TENNIS_SHOES -> ClothesId.TENNIS_SHOES
-        Clothes.DRESS -> ClothesId.DRESS
+        Clothes.SHORT_DRESS -> ClothesId.SHORT_DRESS
+        Clothes.BASEBALL_HAT -> ClothesId.BASEBALL_HAT
+        Clothes.WINTER_HAT -> ClothesId.WINTER_HAT
+        Clothes.TANK_TOP -> ClothesId.TANK_TOP
+        Clothes.LIGHT_JACKET -> ClothesId.LIGHT_JACKET
+        Clothes.WINTER_JACKET -> ClothesId.WINTER_JACKET
+        Clothes.LEGGINGS -> ClothesId.LEGGINGS
+        Clothes.WARM_PANTS -> ClothesId.WARM_PANTS
+        Clothes.WINTER_SHOES -> ClothesId.WINTER_SHOES
+        Clothes.LONG_DRESS -> ClothesId.LONG_DRESS
+        Clothes.TIGHTS -> ClothesId.TIGHTS
+        Clothes.SCARF -> ClothesId.SCARF
+        Clothes.GLOVES -> ClothesId.GLOVES
+        Clothes.SUNGLASSES -> ClothesId.SUNGLASSES
+        Clothes.LONG_SKIRT -> ClothesId.LONG_SKIRT
     }
 }

@@ -6,7 +6,6 @@ import com.youllbecold.logdatabase.model.LogData
 data class Recommendation(
     val clothes: List<Clothes> = emptyList(),
     val certainty: Certainty = Certainty.Low,
-    val basedOn: List<LogData> = emptyList(),
     val uvLevel: UvRecommendation,
     val rainLevel: RainRecommendation
 )

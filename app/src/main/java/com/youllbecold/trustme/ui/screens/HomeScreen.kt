@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCard
@@ -239,7 +240,8 @@ fun HomeScreenPreview() {
                         recommendation = Recommendation(
                             uvLevel = UvLevelState.LOW,
                             rainLevel = RainLevelState.NONE,
-                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
+                            Certainty.High
                         )
                     ),
                     today = WeatherWithRecommendation(
@@ -247,7 +249,8 @@ fun HomeScreenPreview() {
                         recommendation = Recommendation(
                             uvLevel = UvLevelState.LOW,
                             rainLevel = RainLevelState.NONE,
-                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
+                            Certainty.Low
                         )
                     ),
                     tomorrow = WeatherWithRecommendation(
@@ -255,7 +258,8 @@ fun HomeScreenPreview() {
                         recommendation = Recommendation(
                             uvLevel = UvLevelState.LOW,
                             rainLevel = RainLevelState.NONE,
-                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES)
+                            clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
+                            Certainty.Medium
                         )
                     )
                 ),

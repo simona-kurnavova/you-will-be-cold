@@ -9,6 +9,7 @@ interface RecommendRepository {
     suspend fun recommend(
         hourlyTemperatures: List<Double>,
         hourlyApparentTemperatures: List<Double>,
+        usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
     ): Recommendation
