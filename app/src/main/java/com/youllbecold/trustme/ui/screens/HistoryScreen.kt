@@ -76,7 +76,7 @@ private fun HistoryScreen(
             key(state.logs[index].id) {
                 LogCard(
                     log = state.logs[index],
-                    modifier = Modifier.padding(BETWEEN_ITEM_PADDING.dp),
+                    modifier = Modifier.padding(vertical = BETWEEN_ITEM_PADDING.dp),
                     editAction = {
                         onAction(HistoryAction.Edit(state.logs[index]))
                     },
