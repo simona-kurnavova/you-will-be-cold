@@ -55,6 +55,9 @@ fun Context.getTemperatureString(temperature: Double, unitsCelsius: Boolean): St
         getString(R.string.temperature_fahrenheit, temperature)
     }
 
+/**
+ * Get the title for the [UvLevelState].
+ */
 @Composable
 fun UvLevelState.getTitle(): String = when (this) {
     UvLevelState.NONE -> stringResource(R.string.uv_recom_none)
@@ -63,6 +66,9 @@ fun UvLevelState.getTitle(): String = when (this) {
     UvLevelState.HIGH -> stringResource(R.string.uv_recom_high)
 }
 
+/**
+ * Get the title for the [RainLevelState].
+ */
 @Composable
 fun RainLevelState.getTitle(): String = when (this) {
     RainLevelState.NONE -> stringResource(R.string.rain_recom_none)
@@ -71,32 +77,45 @@ fun RainLevelState.getTitle(): String = when (this) {
     RainLevelState.VERY_HIGH -> stringResource(R.string.rain_recom_high)
 }
 
+/**
+ * Get description for the temperature range.
+ */
 @Composable
-fun WeatherWithRecommendation.rangeDescription(): String {
-    val context = LocalContext.current
-    val usesCelsius = weather.first().unitsCelsius
+fun WeatherWithRecommendation.temperatureRangeDescription(): String {
+    return description(
+        valueSelector = { it.temperature },
+        singleResId = R.string.recom_description_single,
+        rangeResId = R.string.recom_description_range
+    )
+}
 
-    val min = context.getTemperatureString(weather.minOf { it.temperature }, usesCelsius)
-    val max = context.getTemperatureString(weather.maxOf { it.temperature }, usesCelsius)
-
-    if (weather.size == 1) {
-        return stringResource(R.string.recom_description_single, min)
-    }
-
-    return stringResource(R.string.recom_description_range, min, max)
+/**
+ * Get description for the apparent temperature range.
+ */
+@Composable
+fun WeatherWithRecommendation.feelLikeDescription(): String {
+    return description(
+        valueSelector = { it.apparentTemperature },
+        singleResId = R.string.recom_apparent_description_single,
+        rangeResId = R.string.recom_apparent_description
+    )
 }
 
 @Composable
-fun WeatherWithRecommendation.feelLikeDescription(): String {
+private fun WeatherWithRecommendation.description(
+    valueSelector: (Weather) -> Double,
+    singleResId: Int,
+    rangeResId: Int
+): String {
     val context = LocalContext.current
     val usesCelsius = weather.first().unitsCelsius
 
-    val min = context.getTemperatureString(weather.minOf { it.apparentTemperature }, usesCelsius)
-    val max = context.getTemperatureString(weather.maxOf { it.apparentTemperature }, usesCelsius)
+    val min = context.getTemperatureString(weather.minOf(valueSelector), usesCelsius)
+    val max = context.getTemperatureString(weather.maxOf(valueSelector), usesCelsius)
 
-    if (weather.size == 1) {
-        return stringResource(R.string.recom_apparent_description_single, min)
+    return if (weather.size == 1) {
+        stringResource(singleResId, min)
+    } else {
+        stringResource(rangeResId, min, max)
     }
-
-    return stringResource(R.string.recom_apparent_description, min, max)
 }

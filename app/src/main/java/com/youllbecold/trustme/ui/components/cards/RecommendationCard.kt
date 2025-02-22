@@ -22,7 +22,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.feelLikeDescription
 import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
-import com.youllbecold.trustme.ui.utils.rangeDescription
+import com.youllbecold.trustme.ui.utils.temperatureRangeDescription
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.weather.RainLevelState
 import com.youllbecold.trustme.usecases.weather.Recommendation
@@ -42,7 +42,7 @@ fun RecommendationCard(
             val recommendation = weatherWithRecommendation.recommendation
 
             listOfNotNull(
-                weatherWithRecommendation.rangeDescription() to IconType.Thermometer,
+                weatherWithRecommendation.temperatureRangeDescription() to IconType.Thermometer,
                 weatherWithRecommendation.feelLikeDescription() to IconType.Person,
                 (recommendation.uvLevel.getTitle() to IconType.Sun)
                     .takeIf { recommendation.uvLevel != UvLevelState.NONE },
