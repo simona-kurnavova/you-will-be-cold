@@ -1,8 +1,10 @@
 package com.youllbecold.trustme.ui.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -14,7 +16,10 @@ import org.koin.android.annotation.KoinViewModel
  * ViewModel for settings screen.
  */
 @KoinViewModel
-class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel() {
+class SettingsViewModel(
+    private val app: Application,
+    private val dataStore: DataStorePreferences
+) : ViewModel() {
 
     /**
      * Flow of [SettingsUiState].
@@ -23,11 +28,20 @@ class SettingsViewModel(private val dataStore: DataStorePreferences) : ViewModel
         dataStore.allowDailyNotification,
         dataStore.useCelsiusUnits
     ) { allowDailyNotification, useCelsiusUnits ->
+        val allowDaily = allowDailyNotification && PermissionHelper.hasNotificationPermission(app)
+
         SettingsUiState(
-            allowDailyNotification = allowDailyNotification,
+            allowDailyNotification = allowDaily,
             useCelsiusUnits = useCelsiusUnits
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState())
+
+    init {
+        // In case we lost permission, we should disable daily notification toggle
+        if (!PermissionHelper.hasNotificationPermission(app)) {
+            setAllowDailyNotification(false)
+        }
+    }
 
     /**
      * Handles [SettingsAction]

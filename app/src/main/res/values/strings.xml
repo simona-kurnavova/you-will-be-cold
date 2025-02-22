@@ -112,7 +112,7 @@
     <string name="uv_recom_none">No sun anywhere, just have a blast</string>
     <string name="rain_recom_none">No rain, no problem</string>
     <string name="rain_recom_low">There is a non-zero chance of rain. Don\'t say I didn\'t warn you!</string>
-    <string name="rain_recom_medium">There some pretty decent chance of rain. Take an umbrella or a raincoat. Or just don\'t bother washing your hair, up to you.</string>
+    <string name="rain_recom_medium">There is some pretty decent chance of rain. Take an umbrella or a raincoat. Or just don\'t bother washing your hair, up to you.</string>
     <string name="rain_recom_high">It\'s raining men, Halleluuujah it\'s raining men. Oh no, it\'s not, just regular rain. Are we in London? Is apocalypse coming? Even umbrella won\'t save you, but take one anyway.</string>
     <string name="recom_description_single">Temperature is around %s.</string>
     <string name="recom_description_range">Temperatures will be between %1$s and %2$s.</string>
@@ -137,4 +137,6 @@
     <string name="certainity_medium">medium</string>
     <string name="certainity_high">high</string>
     <string name="clothes_long_skirt">Long skirt</string>
+    <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
+    <string name="toast_ask_notification_perm">Please grant notification permission</string>
 </resources>
