@@ -14,6 +14,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -53,7 +54,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val state = uiState.value
-    var dailyNotifRequested: Boolean by remember { mutableStateOf(false) }
+    var dailyNotifRequested: Boolean by rememberSaveable { mutableStateOf(false) }
 
     val notificationPermState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)

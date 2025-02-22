@@ -2,7 +2,9 @@ package com.youllbecold.trustme.ui.screens
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -138,6 +140,8 @@ private fun HomeScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(END_SPACE.dp))
         }
     }
 }
@@ -145,6 +149,7 @@ private fun HomeScreen(
 private const val CONTENT_PADDING = 8
 private const val PADDING_BETWEEN_ITEMS = 8
 private const val PROGRESS_INDICATOR_PADDING = 32
+private const val END_SPACE = 48
 
 @Composable
 private fun WeatherNowSection(
@@ -194,8 +199,8 @@ private fun RecommendSection(
             onOptionSelected = { selectedOption = it },
             selectedOption = selectedOption,
             modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-        ) {
-            val weather = when (RecommendationChip.entries[selectedOption]) {
+        ) { page ->
+            val weather = when (RecommendationChip.entries[page]) {
                 RecommendationChip.NOW -> weather.current
                 RecommendationChip.TODAY -> weather.today
                 RecommendationChip.TOMORROW -> weather.tomorrow

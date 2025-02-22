@@ -1,17 +1,27 @@
 package com.youllbecold.trustme.ui.components.generic
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChipSelectCard(
@@ -19,8 +29,20 @@ fun ChipSelectCard(
     onOptionSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     selectedOption: Int = 0,
-    content: @Composable () -> Unit,
+    content: @Composable (Int) -> Unit,
 ) {
+    val pagerState = rememberPagerState(
+        initialPage = selectedOption,
+        pageCount = options::size
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        // Pager state changed
+        onOptionSelected(pagerState.currentPage)
+    }
+
+    val scope = rememberCoroutineScope()
+
     Column(modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SPACE_BETWEEN_CHIPS.dp)
@@ -28,7 +50,12 @@ fun ChipSelectCard(
             options.forEachIndexed { index, option ->
                 ThemedChip(
                     text = option,
-                    onClick = { onOptionSelected(index) },
+                    onClick = {
+                        onOptionSelected(index)
+
+                        // Scroll to the clicked tab in the pager
+                        scope.launch { pagerState.scrollToPage(index) }
+                     },
                     selected = index == selectedOption
                 )
             }
@@ -36,7 +63,13 @@ fun ChipSelectCard(
         
         Spacer(modifier = Modifier.height(PADDING_UNDER_CHIPS.dp))
 
-        content()
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top,
+        ) { page ->
+            content(page)
+        }
     }
 }
 
