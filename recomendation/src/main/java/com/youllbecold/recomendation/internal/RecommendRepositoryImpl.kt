@@ -20,13 +20,17 @@ internal class RecommendRepositoryImpl(
         usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
-    ): Recommendation = withContext(Dispatchers.Default) {
+    ): Recommendation? = withContext(Dispatchers.Default) {
         // Calculate min and max temperatures and convert to Celsius as needed
-        val minApparentC = hourlyApparentTemperatures.min().let {
+        val minApparentC = hourlyApparentTemperatures.minOrNull()?.let {
             if (usesCelsius) it else fahrenheitToCelsius(it)
         }
-        val maxApparentC = hourlyApparentTemperatures.max().let {
+        val maxApparentC = hourlyApparentTemperatures.maxOrNull()?.let {
             if (usesCelsius) it else fahrenheitToCelsius(it)
+        }
+
+        if (minApparentC == null || maxApparentC == null) {
+            return@withContext null
         }
 
         // Get all weather logs - let's assume it is not overwhelming amount of data for now

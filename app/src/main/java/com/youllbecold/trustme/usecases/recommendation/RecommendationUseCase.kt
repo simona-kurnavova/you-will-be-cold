@@ -22,7 +22,7 @@ class RecommendationUseCase(
 ) {
     private val dispatchers = Dispatchers.IO
 
-    suspend fun recommend(hourlyWeather: List<Weather>): Recommendation =
+    suspend fun recommend(hourlyWeather: List<Weather>): Recommendation? =
         withContext(dispatchers) {
             val rec = recommendRepository.recommend(
                 hourlyWeather.map { it.apparentTemperature },
@@ -30,6 +30,10 @@ class RecommendationUseCase(
                 hourlyWeather.map { it.uvIndex },
                 hourlyWeather.map { it.precipitationProbability }
             )
+
+            if (rec == null) {
+                return@withContext null
+            }
 
             Recommendation(
                 uvLevel = rec.uvLevel,

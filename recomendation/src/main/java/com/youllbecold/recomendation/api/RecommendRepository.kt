@@ -11,5 +11,5 @@ interface RecommendRepository {
         usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
-    ): Recommendation
+    ): Recommendation?
 }

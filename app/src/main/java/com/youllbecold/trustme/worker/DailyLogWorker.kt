@@ -43,7 +43,7 @@ class DailyLogWorker(appContext: Context, workerParams: WorkerParameters):
             Log.d("DailyLogWorker", "Scheduling work in $delay minutes at $targetHour:$targetMinute daily")
 
             val request = PeriodicWorkRequestBuilder<DailyLogWorker>(1, TimeUnit.DAYS)
-                .setInitialDelay(delay, TimeUnit.MINUTES)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                 .setConstraints(constraints)
                 .build()
 
@@ -70,7 +70,6 @@ class DailyLogWorker(appContext: Context, workerParams: WorkerParameters):
 
             // Create a reference for today at the desired time
             val todayTargetTime = now.withHour(targetHour).withMinute(targetMinute)
-                .withSecond(0).withNano(0)
 
             // If the target time today has already passed, move to tomorrow
             val nextTargetTime = if (now.isBefore(todayTargetTime)) {

@@ -217,11 +217,5 @@ fun WeatherWithRecommendation?.toHourlyTemperature(): PersistentList<HourlyTempe
 
 data class WeatherWithRecommendation(
     val weather: PersistentList<Weather>,
-    val recommendation: Recommendation
-) {
-    val minTemperature: Double
-        get() = weather.minOf { it.temperature }
-
-    val maxTemperature: Double
-        get() = weather.maxOf { it.temperature }
-}
+    val recommendation: Recommendation?
+)

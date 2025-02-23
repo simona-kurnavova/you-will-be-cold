@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,7 @@ import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.temperatureRangeDescription
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
-import com.youllbecold.trustme.usecases.weather.Recommendation
+import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
@@ -41,6 +42,15 @@ fun RecommendationCard(
     OutlinedCard(modifier = modifier) {
         Column {
             val recommendation = weatherWithRecommendation.recommendation
+
+            if (recommendation == null) {
+                Text(
+                    text = stringResource(R.string.recom_no_recommendation),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                return@Column
+            }
 
             listOfNotNull(
                 weatherWithRecommendation.temperatureRangeDescription() to IconType.Thermometer,

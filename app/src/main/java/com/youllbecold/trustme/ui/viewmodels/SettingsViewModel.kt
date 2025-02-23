@@ -65,6 +65,8 @@ class SettingsViewModel(
 
             if (allow) {
                 DailyLogWorker.schedule(app)
+            } else {
+                DailyLogWorker.cancel(app)
             }
         }
     }
