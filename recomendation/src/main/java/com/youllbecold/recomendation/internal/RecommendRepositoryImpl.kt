@@ -9,18 +9,18 @@ import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.Recommendation
 import com.youllbecold.recomendation.model.UvRecommendation
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 internal class RecommendRepositoryImpl(
     private val logRepository: LogRepository
 ) : RecommendRepository {
-
     override suspend fun recommend(
         hourlyApparentTemperatures: List<Double>,
         usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
-    ): Recommendation {
+    ): Recommendation = withContext(Dispatchers.Default) {
         // Calculate min and max temperatures and convert to Celsius as needed
         val minApparentC = hourlyApparentTemperatures.min().let {
             if (usesCelsius) it else fahrenheitToCelsius(it)
@@ -30,7 +30,7 @@ internal class RecommendRepositoryImpl(
         }
 
         // Get all weather logs - let's assume it is not overwhelming amount of data for now
-        val allLogs = logRepository.logs.first()
+        val allLogs = gatherLogs(minApparentC to maxApparentC)
 
         // For each log calculate similarity measure with current weather and adjust according to feelings
         val clothesWithSimilarity = allLogs.mapNotNull { log: LogData ->
@@ -61,18 +61,42 @@ internal class RecommendRepositoryImpl(
             }
 
             else -> {
-                Log.d("RecommendRepository", "Found similar enough logs")
+                Log.d("RecommendRepository", "Found similar log")
                 similarLog.first to similarLog.second.convertToCertainty()
             }
         }
 
-        return Recommendation(
+        Recommendation(
             clothes = finalClothes,
             certainty = certaintyMeasure,
-            uvLevel = uvIndex.maxOfOrNull { uvRecommendation(it) } ?: UvRecommendation.LowProtection,
-            rainLevel = rainProbability.maxOfOrNull { rainRecommendation(it) } ?: RainRecommendation.NoRain
-        )
+            uvLevel = uvIndex.maxOfOrNull { uvRecommendation(it) }
+                ?: UvRecommendation.LowProtection,
+            rainLevel = rainProbability.maxOfOrNull { rainRecommendation(it) }
+                ?: RainRecommendation.NoRain)
     }
+
+    /**
+     * Gather suitable logs from database. First try only specific range, then expand range if needed.
+     */
+    private suspend fun gatherLogs(
+        apparentTempRange: Pair<Double, Double>
+    ): List<LogData> =
+        withContext(Dispatchers.IO) {
+            var expandConstant = 0.0
+
+            while (expandConstant <= MAX_RANGE_EXPAND) {
+                val logs = logRepository.getLogsInRange(
+                    apparentTempRange.first - expandConstant to apparentTempRange.second + expandConstant
+                )
+
+                if (logs.isNotEmpty()) {
+                    return@withContext logs
+                }
+                expandConstant += 1.0
+            }
+
+            return@withContext emptyList()
+        }
 
     private fun uvRecommendation(uvIndex: Double): UvRecommendation {
         return when {
@@ -127,3 +151,5 @@ internal class RecommendRepositoryImpl(
 private const val MINIMAL_SIMILARITY_MEASURE: Double = 0.2
 private const val MEDIUM_SIMILARITY_MEASURE: Double = 0.5
 private const val HIGH_SIMILARITY_MEASURE: Double = 0.8
+
+private const val MAX_RANGE_EXPAND = 5.0

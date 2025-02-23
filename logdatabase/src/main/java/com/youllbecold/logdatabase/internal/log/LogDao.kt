@@ -2,8 +2,6 @@ package com.youllbecold.logdatabase.internal.log
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
@@ -14,6 +12,17 @@ import kotlinx.coroutines.flow.Flow
 internal interface LogDao {
     @Query("SELECT * FROM log ORDER BY datetime(date_from) DESC LIMIT :limit")
     fun getAll(limit: Int = DEFAULT_LIMIT): Flow<List<LogEntity>>
+
+    @Query("SELECT * FROM log WHERE " +
+            "apparentTemperatureMinC >= :apparentTempLower AND " +
+            "apparentTemperatureMaxC <= :apparentTempUpper " +
+            "ORDER BY datetime(date_from) DESC " +
+            "LIMIT :limit")
+    suspend fun getAllInRange(
+        apparentTempLower: Double,
+        apparentTempUpper: Double,
+        limit: Int = DEFAULT_LIMIT
+    ): List<LogEntity>
 
     @Query("SELECT * FROM log WHERE id = :id LIMIT 1")
     fun getById(id: Int): Flow<LogEntity?>
@@ -28,4 +37,4 @@ internal interface LogDao {
     fun delete(logEntity: LogEntity)
 }
 
-private const val DEFAULT_LIMIT = 100
+private const val DEFAULT_LIMIT = 1000

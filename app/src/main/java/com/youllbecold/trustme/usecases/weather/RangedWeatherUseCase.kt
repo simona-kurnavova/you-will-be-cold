@@ -3,7 +3,6 @@ package com.youllbecold.trustme.usecases.weather
 import android.Manifest
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.WeatherState
 import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
@@ -11,7 +10,6 @@ import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
 import java.time.Duration
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
 import java.time.LocalDate
@@ -20,7 +18,6 @@ import java.time.LocalTime
 @Singleton
 class RangedWeatherUseCase(
     private val weatherRepository: WeatherRepository,
-    private val dataStorePreferences: DataStorePreferences,
     private val networkHelper: NetworkHelper
 ) {
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -28,7 +25,8 @@ class RangedWeatherUseCase(
         location: GeoLocation,
         date: LocalDate,
         timeFrom: LocalTime,
-        timeTo: LocalTime
+        timeTo: LocalTime,
+        useCelsiusUnits: Boolean = true
     ): Result<WeatherState> = withContext(Dispatchers.IO) {
         Log.d("RangedWeatherUseCase", "Obtaining ranged weather")
 
@@ -39,7 +37,7 @@ class RangedWeatherUseCase(
         val result = weatherRepository.getDatedWeather(
             location.latitude,
             location.longitude,
-            dataStorePreferences.useCelsiusUnits.first(),
+            useCelsiusUnits,
             date = date,
         )
 

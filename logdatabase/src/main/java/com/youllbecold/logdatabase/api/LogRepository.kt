@@ -13,6 +13,13 @@ interface LogRepository {
     val logs: Flow<List<LogData>>
 
     /**
+     * Returns logs within the given apparent temperature range.
+     *
+     * @param apparentTempRange The range of apparent temperatures to filter logs by. Only inside this range.
+     */
+    suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData>
+
+    /**
      * Returns a log by its ID.
      */
     suspend fun getLog(id: Int): LogData?

@@ -124,6 +124,8 @@ private fun ExpandedCardContent(
         )
 
         log.weather?.let {
+            // Always obtaining temperature in Celsius
+            // TODO: Support conversion to Fahrenheit
             val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, true)
             val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
 

@@ -2,11 +2,18 @@ package com.youllbecold.logdatabase.internal.log.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
-@Entity(tableName = "log")
+@Entity(
+    tableName = "log",
+    indices = [
+        Index(value = ["apparentTemperatureMinC"]),
+        Index(value = ["apparentTemperatureMaxC"])
+    ]
+)
 internal data class LogEntity(
 
     @PrimaryKey(autoGenerate = true)
