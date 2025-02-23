@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.utils.PermissionHelper
+import com.youllbecold.trustme.worker.DailyLogWorker
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -61,6 +62,10 @@ class SettingsViewModel(
     private fun setAllowDailyNotification(allow: Boolean) {
         viewModelScope.launch {
             dataStore.setAllowDailyNotification(allow)
+
+            if (allow) {
+                DailyLogWorker.schedule(app)
+            }
         }
     }
 

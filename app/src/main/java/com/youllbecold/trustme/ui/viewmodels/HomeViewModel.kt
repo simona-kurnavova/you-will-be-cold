@@ -5,10 +5,10 @@ import android.app.Application
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.youllbecold.trustme.usecases.recommendation.Recommendation
+import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
-import com.youllbecold.trustme.usecases.weather.Recommendation
-import com.youllbecold.trustme.usecases.weather.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.state.WeatherUseCaseStatus
 import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.LocationHelper

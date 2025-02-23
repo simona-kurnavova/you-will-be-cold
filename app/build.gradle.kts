@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
+    // Work Manager
+    implementation(libs.androidx.work.runtime.ktx)
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

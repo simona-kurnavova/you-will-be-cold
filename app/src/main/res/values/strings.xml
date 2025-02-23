@@ -139,4 +139,10 @@
     <string name="clothes_long_skirt">Long skirt</string>
     <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
     <string name="toast_ask_notification_perm">Please grant notification permission</string>
+
+    <string name="daily_notification_channel_name">Daily reminder</string>
+    <string name="daily_notification_channel_descr">Notification channel for daily reminder notifications.</string>
+    <string name="notif_daily_log_desc">Tell me more about your day so that I can make better recommendations!</string>
+    <string name="notif_daily_log_title">Were you cold? What did you wear?</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.usecases.weather
+package com.youllbecold.trustme.usecases.recommendation
 
 import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes

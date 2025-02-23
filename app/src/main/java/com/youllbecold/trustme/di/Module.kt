@@ -4,6 +4,7 @@ import com.youllbecold.logdatabase.LogRepositoryProvider
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.recomendation.RecommendRepositoryProvider
 import com.youllbecold.recomendation.api.RecommendRepository
+import com.youllbecold.trustme.notifications.NotificationHelper
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.EditLogViewModel
@@ -16,7 +17,7 @@ import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
-import com.youllbecold.trustme.usecases.weather.RecommendationUseCase
+import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.utils.NetworkHelper
@@ -35,6 +36,7 @@ val appModule = module {
     singleOf(::PermissionHelper)
     singleOf(::NetworkHelper)
     singleOf(::LocationHelper)
+    singleOf(::NotificationHelper)
 
     // Repositories
     single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
