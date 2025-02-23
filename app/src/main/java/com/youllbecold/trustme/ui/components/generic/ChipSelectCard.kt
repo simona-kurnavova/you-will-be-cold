@@ -1,14 +1,11 @@
 package com.youllbecold.trustme.ui.components.generic
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -37,8 +34,7 @@ fun ChipSelectCard(
     )
 
     LaunchedEffect(pagerState.currentPage) {
-        // Pager state changed
-        onOptionSelected(pagerState.currentPage)
+        onOptionSelected(pagerState.currentPage) // Pager state changed
     }
 
     val scope = rememberCoroutineScope()

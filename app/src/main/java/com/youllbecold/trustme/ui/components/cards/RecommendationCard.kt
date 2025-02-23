@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.recomendation.model.Certainty
+import com.youllbecold.recomendation.model.RainRecommendation
+import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
@@ -25,9 +27,7 @@ import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.temperatureRangeDescription
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
-import com.youllbecold.trustme.usecases.weather.RainLevelState
 import com.youllbecold.trustme.usecases.weather.Recommendation
-import com.youllbecold.trustme.usecases.weather.UvLevelState
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
@@ -46,9 +46,9 @@ fun RecommendationCard(
                 weatherWithRecommendation.temperatureRangeDescription() to IconType.Thermometer,
                 weatherWithRecommendation.feelLikeDescription() to IconType.Person,
                 (recommendation.uvLevel.getTitle() to IconType.Sun)
-                    .takeIf { recommendation.uvLevel != UvLevelState.NONE },
+                    .takeIf { recommendation.uvLevel != UvRecommendation.NoProtection },
                 (recommendation.rainLevel.getTitle() to IconType.Rain)
-                    .takeIf { recommendation.rainLevel != RainLevelState.NONE }
+                    .takeIf { recommendation.rainLevel != RainRecommendation.NoRain }
             ).forEach { (text, iconType) ->
                 IconText(
                     text = text,
@@ -123,8 +123,8 @@ private fun RecommendationCardPreview() {
         RecommendationCard(weatherWithRecommendation = WeatherWithRecommendation(
             weather = persistentListOf(weather, weather, weather),
             recommendation = Recommendation(
-                UvLevelState.HIGH,
-                RainLevelState.VERY_HIGH,
+                UvRecommendation.HighProtection,
+                RainRecommendation.HeavyRain,
                 persistentListOf(Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES),
                 Certainty.High
             )

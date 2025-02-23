@@ -5,11 +5,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.youllbecold.recomendation.model.RainRecommendation
+import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
-import com.youllbecold.trustme.usecases.weather.RainLevelState
-import com.youllbecold.trustme.usecases.weather.UvLevelState
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 
@@ -56,25 +56,25 @@ fun Context.getTemperatureString(temperature: Double, unitsCelsius: Boolean): St
     }
 
 /**
- * Get the title for the [UvLevelState].
+ * Get the title for the [UvRecommendation].
  */
 @Composable
-fun UvLevelState.getTitle(): String = when (this) {
-    UvLevelState.NONE -> stringResource(R.string.uv_recom_none)
-    UvLevelState.LOW -> stringResource(R.string.uv_recom_low)
-    UvLevelState.MEDIUM -> stringResource(R.string.uv_recom_medium)
-    UvLevelState.HIGH -> stringResource(R.string.uv_recom_high)
+fun UvRecommendation.getTitle(): String = when (this) {
+    UvRecommendation.NoProtection -> stringResource(R.string.uv_recom_none)
+    UvRecommendation.LowProtection -> stringResource(R.string.uv_recom_low)
+    UvRecommendation.MediumProtection -> stringResource(R.string.uv_recom_medium)
+    UvRecommendation.HighProtection -> stringResource(R.string.uv_recom_high)
 }
 
 /**
- * Get the title for the [RainLevelState].
+ * Get the title for the [RainRecommendation].
  */
 @Composable
-fun RainLevelState.getTitle(): String = when (this) {
-    RainLevelState.NONE -> stringResource(R.string.rain_recom_none)
-    RainLevelState.LOW -> stringResource(R.string.rain_recom_low)
-    RainLevelState.HIGH -> stringResource(R.string.rain_recom_medium)
-    RainLevelState.VERY_HIGH -> stringResource(R.string.rain_recom_high)
+fun RainRecommendation.getTitle(): String = when (this) {
+    RainRecommendation.NoRain -> stringResource(R.string.rain_recom_none)
+    RainRecommendation.LightRain -> stringResource(R.string.rain_recom_low)
+    RainRecommendation.MediumRain -> stringResource(R.string.rain_recom_medium)
+    RainRecommendation.HeavyRain -> stringResource(R.string.rain_recom_high)
 }
 
 /**

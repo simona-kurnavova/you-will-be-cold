@@ -16,7 +16,6 @@ internal class RecommendRepositoryImpl(
 ) : RecommendRepository {
 
     override suspend fun recommend(
-        hourlyTemperatures: List<Double>,
         hourlyApparentTemperatures: List<Double>,
         usesCelsius: Boolean,
         uvIndex: List<Double>,

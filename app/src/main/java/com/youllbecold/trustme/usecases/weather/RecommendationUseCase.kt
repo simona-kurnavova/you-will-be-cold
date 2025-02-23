@@ -25,7 +25,6 @@ class RecommendationUseCase(
     suspend fun recommend(hourlyWeather: List<Weather>): Recommendation =
         withContext(dispatchers) {
             val rec = recommendRepository.recommend(
-                hourlyWeather.map { it.temperature },
                 hourlyWeather.map { it.apparentTemperature },
                 dataStorePreferences.useCelsiusUnits.first(),
                 hourlyWeather.map { it.uvIndex },
@@ -33,19 +32,8 @@ class RecommendationUseCase(
             )
 
             Recommendation(
-                uvLevel = when (rec.uvLevel) {
-                    UvRecommendation.NoProtection -> UvLevelState.NONE
-                    UvRecommendation.LowProtection -> UvLevelState.LOW
-                    UvRecommendation.MediumProtection -> UvLevelState.MEDIUM
-                    UvRecommendation.HighProtection -> UvLevelState.HIGH
-                },
-
-                rainLevel = when (rec.rainLevel) {
-                    RainRecommendation.NoRain -> RainLevelState.NONE
-                    RainRecommendation.LightRain -> RainLevelState.LOW
-                    RainRecommendation.MediumRain -> RainLevelState.HIGH
-                    RainRecommendation.HeavyRain -> RainLevelState.VERY_HIGH
-                },
+                uvLevel = rec.uvLevel,
+                rainLevel = rec.rainLevel,
                 clothes = rec.clothes.toPersistentList(),
                 certainty = rec.certainty
             )
@@ -54,22 +42,8 @@ class RecommendationUseCase(
 
 @Stable
 data class Recommendation(
-    val uvLevel: UvLevelState,
-    val rainLevel: RainLevelState,
+    val uvLevel: UvRecommendation,
+    val rainLevel: RainRecommendation,
     val clothes: PersistentList<Clothes>,
     val certainty: Certainty
 )
-
-enum class UvLevelState {
-    NONE,
-    LOW,
-    MEDIUM,
-    HIGH,
-}
-
-enum class RainLevelState {
-    NONE,
-    LOW,
-    HIGH,
-    VERY_HIGH,
-}

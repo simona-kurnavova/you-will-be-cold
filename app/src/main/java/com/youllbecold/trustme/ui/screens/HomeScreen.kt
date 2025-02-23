@@ -28,6 +28,8 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.recomendation.model.Certainty
+import com.youllbecold.recomendation.model.RainRecommendation
+import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.ErrorCard
@@ -44,9 +46,7 @@ import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
 import com.youllbecold.trustme.ui.viewmodels.Forecast
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
 import com.youllbecold.trustme.ui.viewmodels.toHourlyTemperature
-import com.youllbecold.trustme.usecases.weather.RainLevelState
 import com.youllbecold.trustme.usecases.weather.Recommendation
-import com.youllbecold.trustme.usecases.weather.UvLevelState
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
@@ -243,8 +243,8 @@ fun HomeScreenPreview() {
                     current = WeatherWithRecommendation(
                         weather = persistentListOf(weather, weather, weather),
                         recommendation = Recommendation(
-                            uvLevel = UvLevelState.LOW,
-                            rainLevel = RainLevelState.NONE,
+                            uvLevel = UvRecommendation.LowProtection,
+                            rainLevel = RainRecommendation.MediumRain,
                             clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
                             Certainty.High
                         )
@@ -252,8 +252,8 @@ fun HomeScreenPreview() {
                     today = WeatherWithRecommendation(
                         weather = persistentListOf(weather, weather, weather),
                         recommendation = Recommendation(
-                            uvLevel = UvLevelState.LOW,
-                            rainLevel = RainLevelState.NONE,
+                            uvLevel = UvRecommendation.HighProtection,
+                            rainLevel = RainRecommendation.HeavyRain,
                             clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
                             Certainty.Low
                         )
@@ -261,8 +261,8 @@ fun HomeScreenPreview() {
                     tomorrow = WeatherWithRecommendation(
                         weather = persistentListOf(weather, weather, weather),
                         recommendation = Recommendation(
-                            uvLevel = UvLevelState.LOW,
-                            rainLevel = RainLevelState.NONE,
+                            uvLevel = UvRecommendation.LowProtection,
+                            rainLevel = RainRecommendation.NoRain,
                             clothes = persistentListOf(Clothes.JEANS, Clothes.LONG_SLEEVE, Clothes.TENNIS_SHOES),
                             Certainty.Medium
                         )
