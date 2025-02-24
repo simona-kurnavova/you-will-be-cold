@@ -11,6 +11,7 @@ import com.youllbecold.recomendation.model.Recommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.collections.distinct
 
 internal class RecommendRepositoryImpl(
     private val logRepository: LogRepository
@@ -21,70 +22,48 @@ internal class RecommendRepositoryImpl(
         uvIndex: List<Double>,
         rainProbability: List<Int>
     ): Recommendation? = withContext(Dispatchers.Default) {
-        // Calculate min and max temperatures and convert to Celsius as needed
-        val minApparentC = hourlyApparentTemperatures.minOrNull()?.let {
-            if (usesCelsius) it else fahrenheitToCelsius(it)
-        }
-        val maxApparentC = hourlyApparentTemperatures.maxOrNull()?.let {
-            if (usesCelsius) it else fahrenheitToCelsius(it)
-        }
-
-        if (minApparentC == null || maxApparentC == null) {
+        if (hourlyApparentTemperatures.isEmpty()) {
             return@withContext null
         }
 
-        // Get all weather logs - let's assume it is not overwhelming amount of data for now
+        // Calculate min and max temperatures and convert to Celsius as needed
+        val minApparentC = hourlyApparentTemperatures.min().let {
+            if (usesCelsius) it else fahrenheitToCelsius(it)
+        }
+        val maxApparentC = hourlyApparentTemperatures.max().let {
+            if (usesCelsius) it else fahrenheitToCelsius(it)
+        }
+
+        // Get all relevant weather logs
         val allLogs = gatherLogs(minApparentC to maxApparentC)
 
-        // For each log calculate similarity measure with current weather and adjust according to feelings
-        val clothesWithSimilarity = allLogs.mapNotNull { log: LogData ->
-            val weatherData = log.weatherData
-            val weatherSimilarity = rangeSimilarityFactor(
-                weatherData.apparentTemperatureMinC,
-                weatherData.apparentTemperatureMaxC,
-                minApparentC,
-                maxApparentC,
-            )
-
-            if (weatherSimilarity <= MINIMAL_SIMILARITY_MEASURE) {
-                return@mapNotNull null
-            }
-
-            val filteredClothes = log.clothes.replaceFullBodyClothes()
-            val (clothes, certainty) = OutfitHelper.adjustClothes(filteredClothes, log.feelings)
-
-            clothes to weatherSimilarity * certainty
-        }.sortedByDescending { it.second }
-
-        val similarLog = clothesWithSimilarity.firstOrNull()
+        // Calculate best similar candidate with certainty measure
+        val best = calculateBestCandidate(allLogs, minApparentC, maxApparentC)
 
         val (finalClothes, certaintyMeasure) = when {
-            similarLog == null -> {
+            best == null || best.second < MEDIUM_CERTAINTY_MEASURE || best.first.isEmpty() -> {
                 Log.d("RecommendRepository", "No similar logs found, using default outfit")
                 DefaultOutfitSelector.createRecommendation(minTemp = minApparentC) to Certainty.Low
             }
 
             else -> {
                 Log.d("RecommendRepository", "Found similar log")
-                similarLog.first to similarLog.second.convertToCertainty()
+                best.first to best.second.convertToCertainty()
             }
         }
 
         Recommendation(
             clothes = finalClothes,
             certainty = certaintyMeasure,
-            uvLevel = uvIndex.maxOfOrNull { uvRecommendation(it) }
-                ?: UvRecommendation.LowProtection,
-            rainLevel = rainProbability.maxOfOrNull { rainRecommendation(it) }
-                ?: RainRecommendation.NoRain)
+            uvLevel = uvIndex.maxOfOrNull { uvRecommendation(it) } ?: UvRecommendation.LowProtection,
+            rainLevel = rainProbability.maxOfOrNull { rainRecommendation(it) } ?: RainRecommendation.NoRain
+        )
     }
 
     /**
      * Gather suitable logs from database. First try only specific range, then expand range if needed.
      */
-    private suspend fun gatherLogs(
-        apparentTempRange: Pair<Double, Double>
-    ): List<LogData> =
+    private suspend fun gatherLogs(apparentTempRange: Pair<Double, Double>): List<LogData> =
         withContext(Dispatchers.IO) {
             var expandConstant = 0.0
 
@@ -101,6 +80,55 @@ internal class RecommendRepositoryImpl(
 
             return@withContext emptyList()
         }
+
+    private suspend fun calculateBestCandidate(
+        logs: List<LogData>,
+        minTemp: Double,
+        maxTemp: Double
+    ): Pair<List<Clothes>, Double>? = withContext(Dispatchers.Default) {
+        if (logs.isEmpty()) {
+            return@withContext null
+        }
+
+        var bestClothes: MutableMap<BodyPart, ClothesWithCertainty> = mutableMapOf()
+
+        logs.map { log ->
+            val weatherData = log.weatherData
+
+            log to rangeSimilarityFactor(
+                weatherData.apparentTemperatureMinC,
+                weatherData.apparentTemperatureMaxC,
+                minTemp,
+                maxTemp,
+            )
+        }
+            .filter { it.second >= MEDIUM_CERTAINTY_MEASURE }
+            .sortedByDescending { it.second } // Sort by similarity
+            .take(MAX_LOGS_PROCESSING) // Limit to certain number to optimise performance and prioritise latest logs
+            .forEach { (log, similarity) ->
+                val clothesCertainty = OutfitHelper.calculateCertainty(log.feelings)
+
+                clothesCertainty.forEach { bodyPart ->
+                    val bodyPartMatch = similarity * bodyPart.value
+
+                    if (bodyPartMatch > (bestClothes[bodyPart.key]?.certainty ?: 0.0)) {
+                        bestClothes[bodyPart.key] = ClothesWithCertainty(
+                            clothes = OutfitHelper.adjustPerFeeling(
+                                clothes = log.clothes,
+                                feeling = bodyPart.key.getFeeling(log.feelings),
+                                bodyPart = bodyPart.key
+                            ),
+                            certainty = bodyPartMatch
+                        )
+                    }
+                }
+            }
+
+        val finalClothes = bestClothes.flatMap { it.value.clothes }.distinct()
+        val certainty = bestClothes.values.map { it.certainty }.average()
+
+        return@withContext Pair(finalClothes, certainty)
+    }
 
     private fun uvRecommendation(uvIndex: Double): UvRecommendation {
         return when {
@@ -137,23 +165,19 @@ internal class RecommendRepositoryImpl(
     }
 
     private fun Double.convertToCertainty(): Certainty = when {
-        this > HIGH_SIMILARITY_MEASURE -> Certainty.High
-        this > MEDIUM_SIMILARITY_MEASURE -> Certainty.Medium
+        this > HIGH_CERTAINTY_MEASURE -> Certainty.High
+        this > MEDIUM_CERTAINTY_MEASURE -> Certainty.Medium
         else -> Certainty.Low
     }
-
-    private fun List<Clothes>.replaceFullBodyClothes(): List<Clothes> =
-        this.flatMap {
-            when (it) {
-                Clothes.SHORT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.SHORT_SKIRT)
-                Clothes.LONG_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.LONG_SKIRT)
-                else -> listOf(it)
-            }
-        }
 }
 
-private const val MINIMAL_SIMILARITY_MEASURE: Double = 0.2
-private const val MEDIUM_SIMILARITY_MEASURE: Double = 0.5
-private const val HIGH_SIMILARITY_MEASURE: Double = 0.8
+private const val HIGH_CERTAINTY_MEASURE: Double = 0.8
+private const val MEDIUM_CERTAINTY_MEASURE: Double = 0.5
 
 private const val MAX_RANGE_EXPAND = 5.0
+private const val MAX_LOGS_PROCESSING = 50
+
+data class ClothesWithCertainty(
+    val clothes: List<Clothes> = emptyList(),
+    val certainty: Double = 0.0
+)

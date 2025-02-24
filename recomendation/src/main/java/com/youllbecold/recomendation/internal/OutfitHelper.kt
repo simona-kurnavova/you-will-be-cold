@@ -4,6 +4,9 @@ import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings
 
+/**
+ * Helps with outfit recommendations calculations.
+ */
 internal object OutfitHelper {
     private val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.associateWith {
         when(it) {
@@ -40,48 +43,23 @@ internal object OutfitHelper {
     private val categorizedClothesWeights = clothesWeights.entries.groupBy { it.key.category }
 
     /**
-     * Adjusts clothes based on feelings. Returns new set of clothes and certainty level.
+     * Adjusts clothes based on feelings. Returns new set of clothes adjusted as per feeling.
      */
-    fun adjustClothes(
-        clothes: List<Clothes>,
-        feelings: Feelings
-    ): Pair<List<Clothes>, Double> {
-        val clothes = listOf(
-            adjustBasedOnFeeling(clothes, feelings.head, BodyPart.HEAD),
-            adjustBasedOnFeeling(clothes, feelings.neck, BodyPart.NECK),
-            adjustBasedOnFeeling(clothes, feelings.top, BodyPart.TOP),
-            adjustBasedOnFeeling(clothes, feelings.bottom, BodyPart.BOTTOM),
-            adjustBasedOnFeeling(clothes, feelings.hand, BodyPart.HANDS),
-            adjustBasedOnFeeling(clothes, feelings.feet, BodyPart.FEET)
-        ).flatten().distinct()
-
-
-        val certainty = listOf(
-            evaluateCertainty(feelings.head, true),
-            evaluateCertainty(feelings.neck, true),
-            evaluateCertainty(feelings.top, false),
-            evaluateCertainty(feelings.bottom, false),
-            evaluateCertainty(feelings.hand, true),
-            evaluateCertainty(feelings.feet, true)
-        ).average()
-
-        return clothes to certainty
-    }
-
-    private fun adjustBasedOnFeeling(
+    fun adjustPerFeeling(
         clothes: List<Clothes>,
         feeling: Feeling,
         bodyPart: BodyPart
     ): List<Clothes> {
         val itemSelector = getItemSelector(bodyPart)
-        val weightedCurrent: Map<Clothes, Int> = associateClothesWithWeight(clothes, itemSelector)
+
+        val weightedCurrent: Map<Clothes, Int> = clothes
+            .replaceFullBodyClothes()
+            .filterAndMapWithWeights(itemSelector)
+
         val filteredList = weightedCurrent.map { it.key }
 
-        if (feeling == Feeling.NORMAL) {
-            return filteredList
-        }
-
         return when (feeling) {
+            Feeling.NORMAL -> filteredList
             Feeling.WARM -> {
                 val warmest = weightedCurrent.maxByOrNull { it.value } ?: return emptyList() // Nothing we can do
                 val candidates = clothesWeights.entries.filter { entry ->
@@ -133,30 +111,32 @@ internal object OutfitHelper {
             }
 
             Feeling.VERY_WARM -> // Just run it twice through the warm logic
-                adjustBasedOnFeeling(
-                    adjustBasedOnFeeling(filteredList, Feeling.WARM, bodyPart),
+                adjustPerFeeling(
+                    adjustPerFeeling(filteredList, Feeling.WARM, bodyPart),
                     Feeling.WARM,
                     bodyPart
                 )
 
             Feeling.VERY_COLD ->
-                adjustBasedOnFeeling(
-                    adjustBasedOnFeeling(filteredList, Feeling.COLD, bodyPart),
+                adjustPerFeeling(
+                    adjustPerFeeling(filteredList, Feeling.COLD, bodyPart),
                     Feeling.COLD,
                     bodyPart
                 )
-            else -> throw IllegalArgumentException("Unknown feeling: $feeling") // Should not happen
         }
     }
 
-    private fun getItemSelector(bodyPart: BodyPart) = when (bodyPart) {
-        BodyPart.HEAD -> { weight: ClothesWeight -> weight.head }
-        BodyPart.NECK -> { weight: ClothesWeight -> weight.neck }
-        BodyPart.TOP -> { weight: ClothesWeight -> weight.top }
-        BodyPart.BOTTOM -> { weight: ClothesWeight -> weight.bottom }
-        BodyPart.HANDS -> { weight: ClothesWeight -> weight.hands }
-        BodyPart.FEET -> { weight: ClothesWeight -> weight.feet }
-    }
+    /**
+     * Calculates certainty of clothes based on feelings.
+     */
+    fun calculateCertainty(feelings: Feelings): Map<BodyPart, Double> = mapOf(
+        BodyPart.HEAD to evaluateCertainty(feelings.head, BodyPart.HEAD.isSingleItem()),
+        BodyPart.NECK to evaluateCertainty(feelings.neck, BodyPart.NECK.isSingleItem()),
+        BodyPart.TOP to evaluateCertainty(feelings.top, BodyPart.TOP.isSingleItem()),
+        BodyPart.BOTTOM to evaluateCertainty(feelings.bottom, BodyPart.BOTTOM.isSingleItem()),
+        BodyPart.HANDS to evaluateCertainty(feelings.hand, BodyPart.HANDS.isSingleItem()),
+        BodyPart.FEET to evaluateCertainty(feelings.feet, BodyPart.FEET.isSingleItem()),
+    )
 
     private fun evaluateCertainty(
         feeling: Feeling,
@@ -169,19 +149,27 @@ internal object OutfitHelper {
         Feeling.VERY_WARM -> if (isSingleItem) 0.6 else 0.5
     }
 
-    private fun associateClothesWithWeight(clothes: List<Clothes>, weight: (ClothesWeight) -> Int): Map<Clothes, Int> =
-        clothes
+    private fun getItemSelector(bodyPart: BodyPart) = when (bodyPart) {
+        BodyPart.HEAD -> { weight: ClothesWeight -> weight.head }
+        BodyPart.NECK -> { weight: ClothesWeight -> weight.neck }
+        BodyPart.TOP -> { weight: ClothesWeight -> weight.top }
+        BodyPart.BOTTOM -> { weight: ClothesWeight -> weight.bottom }
+        BodyPart.HANDS -> { weight: ClothesWeight -> weight.hands }
+        BodyPart.FEET -> { weight: ClothesWeight -> weight.feet }
+    }
+
+    private fun List<Clothes>.filterAndMapWithWeights(weight: (ClothesWeight) -> Int): Map<Clothes, Int> = this
             .associate { it to weight(clothesWeights[it] ?: ClothesWeight()) }
             .filter { it.value > 0 }
 
-    private enum class BodyPart {
-        HEAD,
-        NECK,
-        TOP,
-        BOTTOM,
-        HANDS,
-        FEET,
-    }
+    private fun List<Clothes>.replaceFullBodyClothes(): List<Clothes> =
+        this.flatMap {
+            when (it) {
+                Clothes.SHORT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.SHORT_SKIRT)
+                Clothes.LONG_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.LONG_SKIRT)
+                else -> listOf(it)
+            }
+        }
 
     private class ClothesWeight(
         val head: Int = 0,
@@ -191,4 +179,24 @@ internal object OutfitHelper {
         val hands: Int = 0,
         val feet: Int = 0,
     )
+}
+
+enum class BodyPart {
+    HEAD,
+    NECK,
+    TOP,
+    BOTTOM,
+    HANDS,
+    FEET;
+
+    fun isSingleItem(): Boolean = this !in listOf(TOP, BOTTOM)
+
+    fun getFeeling(feelings: Feelings): Feeling = when(this) {
+        HEAD -> feelings.head
+        NECK -> feelings.neck
+        TOP -> feelings.top
+        BOTTOM -> feelings.bottom
+        HANDS -> feelings.hand
+        FEET -> feelings.feet
+    }
 }
