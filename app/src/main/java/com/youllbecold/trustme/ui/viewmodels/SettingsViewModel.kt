@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.worker.DailyLogWorker
+import com.youllbecold.trustme.worker.DailyRecommendWorker
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -27,12 +28,16 @@ class SettingsViewModel(
      */
     val uiState: StateFlow<SettingsUiState> = combine(
         dataStore.allowDailyNotification,
+        dataStore.allowRecommendNotification,
         dataStore.useCelsiusUnits
-    ) { allowDailyNotification, useCelsiusUnits ->
-        val allowDaily = allowDailyNotification && PermissionHelper.hasNotificationPermission(app)
+    ) { allowDailyNotification, allowRecommendNotification, useCelsiusUnits ->
+        val notificationPermission = PermissionHelper.hasNotificationPermission(app)
+        val allowDaily = allowDailyNotification && notificationPermission
+        val allowRec = allowRecommendNotification && notificationPermission
 
         SettingsUiState(
             allowDailyNotification = allowDaily,
+            allowRecommendNotification = allowRec,
             useCelsiusUnits = useCelsiusUnits
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState())
@@ -41,6 +46,7 @@ class SettingsViewModel(
         // In case we lost permission, we should disable daily notification toggle
         if (!PermissionHelper.hasNotificationPermission(app)) {
             setAllowDailyNotification(false)
+            setAllowRecommendNotification(false)
         }
     }
 
@@ -50,6 +56,7 @@ class SettingsViewModel(
     fun onAction(action: SettingsAction) {
         when (action) {
             is SettingsAction.SetAllowDailyNotification -> setAllowDailyNotification(action.allow)
+            is SettingsAction.SetAllowRecommendNotification -> setAllowRecommendNotification(action.allow)
             is SettingsAction.SetUseCelsiusUnits -> setUseCelsiusUnits(action.useCelsius)
         }
     }
@@ -72,6 +79,23 @@ class SettingsViewModel(
     }
 
     /**
+     * Set whether recommendation notification is allowed.
+     *
+     * @param allow Whether recommendation notification is allowed.
+     */
+    private fun setAllowRecommendNotification(allow: Boolean) {
+        viewModelScope.launch {
+            dataStore.setAllowRecommendNotification(allow)
+
+            if (allow) {
+                DailyRecommendWorker.schedule(app)
+            } else {
+                DailyRecommendWorker.cancel(app)
+            }
+        }
+    }
+
+    /**
      * Set whether to use Celsius units.
      *
      * @param useCelsius Whether to use Celsius units.
@@ -88,6 +112,7 @@ class SettingsViewModel(
  */
 data class SettingsUiState(
     val allowDailyNotification: Boolean = false,
+    val allowRecommendNotification: Boolean = false,
     val useCelsiusUnits: Boolean = false
 )
 
@@ -96,5 +121,6 @@ data class SettingsUiState(
  */
 sealed class SettingsAction {
     data class SetAllowDailyNotification(val allow: Boolean) : SettingsAction()
+    data class SetAllowRecommendNotification(val allow: Boolean) : SettingsAction()
     data class SetUseCelsiusUnits(val useCelsius: Boolean) : SettingsAction()
 }

@@ -7,6 +7,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
+import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -25,6 +26,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
 import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Helper class for fetching the device's location.
@@ -67,7 +70,7 @@ class LocationHelper(
     fun refresh() {
         _geoLocation.update { it.copy(status = LoadingStatus.Loading) }
 
-        locationClient.lastLocation.addOnCompleteListener { task: Task<android.location.Location> ->
+        locationClient.lastLocation.addOnCompleteListener { task: Task<Location> ->
             if (task.isSuccessful && task.result != null) {
                 _geoLocation.update {
                     GeoLocationState(GeoLocation(task.result.latitude, task.result.longitude))
@@ -93,7 +96,12 @@ class LocationHelper(
         }
     }
 
-    private fun obtainAddress(context: Context, latitude: Double, longitude: Double, onResult: (Address?) -> Unit) {
+    private fun obtainAddress(
+        context: Context,
+        latitude: Double,
+        longitude: Double,
+        onResult: (Address?) -> Unit
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getAddressApi33AndHigher(context, latitude, longitude) { city -> onResult(city) }
         } else {
@@ -106,7 +114,11 @@ class LocationHelper(
     }
 
     @Suppress("Deprecation") // Geocoder.getFromLocation is deprecated, but needed for lower Androids.
-    private suspend fun getAddress(context: Context, latitude: Double, longitude: Double): Address? =
+    private suspend fun getAddress(
+        context: Context,
+        latitude: Double,
+        longitude: Double
+    ): Address? =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val geocoder = Geocoder(context, Locale.getDefault())
@@ -119,13 +131,41 @@ class LocationHelper(
         }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun getAddressApi33AndHigher(context: Context, latitude: Double, longitude: Double, action: (Address?) -> Unit) {
+    private fun getAddressApi33AndHigher(
+        context: Context,
+        latitude: Double,
+        longitude: Double,
+        action: (Address?) -> Unit
+    ) {
         val geocoder = Geocoder(context, Locale.getDefault())
         val listener = GeocodeListener { addresses ->
             action(addresses.firstOrNull())
         }
         geocoder.getFromLocation(latitude, longitude, 1, listener)
     }
+
+    companion object {
+        /**
+         * One-time location request.
+         */
+        @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        suspend fun getLastLocation(context: Context): GeoLocation? =
+            withContext(Dispatchers.IO) {
+                suspendCoroutine { continuation ->
+                    val locClient = LocationServices.getFusedLocationProviderClient(context)
+                    locClient.lastLocation
+                        .addOnSuccessListener {
+                            if (it != null) {
+                                continuation.resume(GeoLocation(it.latitude, it.longitude))
+                            } else {
+                                continuation.resume(null)
+                            }
+                        }.addOnFailureListener {
+                            continuation.resume(null)
+                        }
+                    }
+                }
+            }
 }
 
 data class GeoLocation(

@@ -8,6 +8,11 @@
     <!-- Subtitle of toggle to allow/deny daily notification. -->
     <string name="settings_daily_notification_subtitle">You will be reminded every day to log your experience</string>
 
+    <!-- Title of toggle to allow/deny recommendation notification. -->
+    <string name="settings_recommend_notification">Allow morning recommendation notification</string>
+    <!-- Subtitle of toggle to allow/deny recommendation notification. -->
+    <string name="settings_recommend_notification_subtitle">You will get notification each morning</string>
+
     <!-- Title of toggle to use Celsius/Fahrenheit. -->
     <string name="settings_use_celsius">Temperature in Celsius</string>
     <!-- Subtitle of toggle to use Celsius/Fahrenheit. -->
@@ -165,5 +170,9 @@
     <string name="clothes_jean_jacket">Jean jacket</string>
     <string name="clothes_hoodie">Hoodie</string>
     <string name="clothes_jumper">Jumper</string>
+    <string name="notif_recommend_title">Let me help you decide what to wear today</string>
+    <string name="notif_recommend_desc">It is now %1$.1f degrees. Tap to see the recommendation!</string>
+    <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>
+    <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
 
 </resources>

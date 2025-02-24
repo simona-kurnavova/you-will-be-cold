@@ -39,15 +39,18 @@ class PermissionHelper(
     companion object {
         val locationPermissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        )
+
+        val bgLocationPermission = arrayOf(
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
         )
 
         /**
          * Whether location permission is granted.
          */
         fun hasLocationPermission(context: Context): Boolean =
-            locationPermissions.all { hasPermission(context, it) }
-
+            (locationPermissions + bgLocationPermission).all { hasPermission(context, it) }
 
         /**
          * Whether notification permission is granted.

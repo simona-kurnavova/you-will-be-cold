@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.usecases.weather
 
+import android.util.Log
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.weather.state.ErrorType
 import com.youllbecold.trustme.usecases.weather.state.WeatherState
@@ -59,5 +60,19 @@ class CurrentWeatherUseCase(
 
             _weatherState.update { it.copyWithNetworkResult(result) }
         }
+    }
+
+    /**
+     * Fetches the current weather for the given location, no error handling, just result or null.
+     */
+    suspend fun getCurrentWeather(location: GeoLocation): Weather? = with(Dispatchers.IO) {
+        val result = weatherRepository.getCurrentWeather(
+            location.latitude,
+            location.longitude,
+            dataStorePreferences.useCelsiusUnits.first()
+        )
+
+        Log.d("CurrentWeatherUseCase", "Current weather: $result")
+        return result.getOrNull()
     }
 }

@@ -12,9 +12,6 @@ import androidx.work.WorkerParameters
 import com.youllbecold.trustme.notifications.NotificationHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 class DailyLogWorker(appContext: Context, workerParams: WorkerParameters):
@@ -38,7 +35,7 @@ class DailyLogWorker(appContext: Context, workerParams: WorkerParameters):
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-            val delay = calculateTimeUntilNext(targetHour, targetMinute)
+            val delay = WorkerUtils.calculateTimeUntilNext(targetHour, targetMinute)
 
             Log.d("DailyLogWorker", "Scheduling work in $delay minutes at $targetHour:$targetMinute daily")
 
@@ -56,30 +53,6 @@ class DailyLogWorker(appContext: Context, workerParams: WorkerParameters):
 
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
-        }
-
-        /**
-         * Calculates how much time (in milliseconds) is left until the next occurrence of the given time.
-         *
-         * @param targetHour The target hour (0-23).
-         * @param targetMinute The target minute (0-59).
-         * @return Time in milliseconds until the next occurrence of the given time.
-         */
-        private fun calculateTimeUntilNext(targetHour: Int, targetMinute: Int): Long {
-            val now = ZonedDateTime.now(ZoneId.systemDefault()) // Get the current local time
-
-            // Create a reference for today at the desired time
-            val todayTargetTime = now.withHour(targetHour).withMinute(targetMinute)
-
-            // If the target time today has already passed, move to tomorrow
-            val nextTargetTime = if (now.isBefore(todayTargetTime)) {
-                todayTargetTime
-            } else {
-                todayTargetTime.plusDays(1)
-            }
-
-            // Return the time difference in milliseconds
-            return ChronoUnit.MILLIS.between(now, nextTargetTime)
         }
     }
 }

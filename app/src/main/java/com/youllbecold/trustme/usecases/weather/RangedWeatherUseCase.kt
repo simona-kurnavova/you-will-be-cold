@@ -67,7 +67,6 @@ class RangedWeatherUseCase(
         }
     }
 
-
     private fun adjustTimeRange(timeFrom: LocalTime, timeTo: LocalTime): Pair<LocalTime, LocalTime> {
         val duration = Duration.between(timeFrom, timeTo)
 

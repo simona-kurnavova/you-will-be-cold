@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
 private const val PREFERENCES_DAILY_NOTIF = "allow_daily_notif"
+private const val PREFERENCES_RECOMMEND_NOTIF = "allow_recom_notif"
 private const val PREFERENCES_USE_CELSIUS_UNITS = "use_celsius_units"
 private const val PREFERENCES_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
 
@@ -28,6 +29,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class DataStorePreferences(private val context: Context) {
 
     private val dailyNotificationKey = booleanPreferencesKey(PREFERENCES_DAILY_NOTIF)
+    private val recommendNotificationKey = booleanPreferencesKey(PREFERENCES_RECOMMEND_NOTIF)
     private val useCelsiusUnitsKey = booleanPreferencesKey(PREFERENCES_USE_CELSIUS_UNITS)
     private val welcomeScreenShownKey = booleanPreferencesKey(PREFERENCES_WELCOME_SCREEN_SHOWN)
 
@@ -43,6 +45,20 @@ class DataStorePreferences(private val context: Context) {
      */
     suspend fun setAllowDailyNotification(allow: Boolean) {
         edit(dailyNotificationKey, allow)
+    }
+
+    /**
+     * Flow denoting whether recommendation notification is enabled.
+     */
+    val allowRecommendNotification: Flow<Boolean> = get(recommendNotificationKey, false)
+
+    /**
+     * Set whether recommendation notification is enabled.
+     *
+     * @param allow True if notification is enabled, false otherwise.
+     */
+    suspend fun setAllowRecommendNotification(allow: Boolean) {
+        edit(recommendNotificationKey, allow)
     }
 
     /**

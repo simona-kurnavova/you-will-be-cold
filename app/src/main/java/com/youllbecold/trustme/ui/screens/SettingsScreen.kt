@@ -55,6 +55,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val state = uiState.value
     var dailyNotifRequested: Boolean by rememberSaveable { mutableStateOf(false) }
+    var recommendNotifRequested: Boolean by rememberSaveable { mutableStateOf(false) }
 
     val notificationPermState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -65,12 +66,16 @@ fun SettingsScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted && dailyNotifRequested) {
-            onAction(SettingsAction.SetAllowDailyNotification(true))
+        if (isGranted) {
+            when {
+                dailyNotifRequested -> onAction(SettingsAction.SetAllowDailyNotification(true))
+                recommendNotifRequested -> onAction(SettingsAction.SetAllowRecommendNotification(true))
+            }
         } else {
             Toast.makeText(context, context.getString(R.string.toast_notification_perm_denied), Toast.LENGTH_SHORT).show()
         }
         dailyNotifRequested = false
+        recommendNotifRequested = false
     }
 
     Column(
@@ -94,6 +99,24 @@ fun SettingsScreen(
             },
         )
         
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
+
+        ToggleRow(
+            title = stringResource(R.string.settings_recommend_notification),
+            subtitle = stringResource(R.string.settings_recommend_notification_subtitle),
+            checked = state.allowRecommendNotification,
+            onChecked = { isChecked ->
+                if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && notificationPermState?.status?.isGranted == false) {
+                    recommendNotifRequested = true
+                    Toast.makeText(context, context.getString(R.string.toast_ask_notification_perm), Toast.LENGTH_SHORT).show()
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    onAction(SettingsAction.SetAllowRecommendNotification(isChecked))
+                }
+            },
+        )
+
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
 
         ToggleRow(

@@ -9,6 +9,8 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.youllbecold.trustme.MainActivity
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.weather.model.WeatherEvaluation
 
 class NotificationHelper(
     private val app: Application,
@@ -21,6 +23,9 @@ class NotificationHelper(
         createNotificationChannel()
     }
 
+    /**
+     * Show a notification to remind the user to log their feeling.
+     */
     fun showDailyLogNotification() {
         val title = app.getString(R.string.notif_daily_log_title)
         val description = app.getString(R.string.notif_daily_log_desc)
@@ -43,6 +48,31 @@ class NotificationHelper(
         )
     }
 
+    /**
+     * Show a notification with a recommendation based on the current weather.
+     */
+    fun showRecommendNotification(temperature: Double, weatherEvaluation: WeatherEvaluation) {
+        val title = app.getString(R.string.notif_recommend_title)
+        val description = app.getString(R.string.notif_recommend_desc, temperature)
+
+        var builder = NotificationCompat.Builder(app, CHANNEL_ID)
+            .setSmallIcon(weatherEvaluation.icon.resource)
+            .setContentTitle(title)
+            .setContentText(description)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(description)
+            )
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(createMainIntent())
+
+        notificationManager.notify(
+            DAILY_RECOMMEND_NOTIFICATION_ID,
+            builder.build()
+        )
+    }
+
     private fun createNotificationChannel() {
         val name = app.getString(R.string.daily_notification_channel_name)
         val descriptionText = app.getString(R.string.daily_notification_channel_descr)
@@ -61,3 +91,4 @@ class NotificationHelper(
 
 private const val CHANNEL_ID = "daily_reminders_channel"
 private const val DAILY_LOG_NOTIFICATION_ID = 1
+private const val DAILY_RECOMMEND_NOTIFICATION_ID = 2

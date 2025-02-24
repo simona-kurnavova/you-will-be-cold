@@ -8,7 +8,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.OverlaySkeleton
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -42,6 +45,10 @@ private fun LocationPermissionScreen(
         PermissionHelper.locationPermissions.toList()
     )
 
+    val bgLocationPermissionState = rememberPermissionState(
+        PermissionHelper.bgLocationPermission.first()
+    )
+
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permissions ->
@@ -58,30 +65,52 @@ private fun LocationPermissionScreen(
         }
     )
 
-    LaunchedEffect(locationPermissionState.allPermissionsGranted) {
+    LaunchedEffect(locationPermissionState.allPermissionsGranted, bgLocationPermissionState.status.isGranted) {
         onAction(LocationPermissionAction.RefreshLocationPermissionState)
 
-        if (locationPermissionState.allPermissionsGranted) {
+        if (locationPermissionState.allPermissionsGranted && bgLocationPermissionState.status.isGranted) {
             onAction(LocationPermissionAction.LocationPermissionGranted)
         }
     }
 
     val action = {
-        if (!locationPermissionState.shouldShowRationale) {
-            locationPermissionLauncher.launch(PermissionHelper.locationPermissions)
-        } else {
-            IntentUtils.openAppSettings(context)
-            Toast.makeText(
-                context,
-                context.getString(R.string.location_permission_ask_toast),
-                Toast.LENGTH_LONG
-            ).show()
+        when {
+            !locationPermissionState.allPermissionsGranted -> {
+                if (locationPermissionState.shouldShowRationale) {
+                    IntentUtils.openAppSettings(context)
+
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.location_permission_ask_toast),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    locationPermissionLauncher.launch(PermissionHelper.locationPermissions)
+                }
+            }
+
+            bgLocationPermissionState.status.shouldShowRationale ->
+                bgLocationPermissionState.launchPermissionRequest()
+
+            else -> {
+                IntentUtils.openAppSettings(context)
+
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.location_permission_bg_ask_toast),
+                    Toast.LENGTH_LONG
+                ).show()            }
         }
+    }
+
+    val description = when {
+        !locationPermissionState.allPermissionsGranted -> R.string.location_screen_description
+        else -> R.string.location_screen_bg_description
     }
 
     OverlaySkeleton(
         title = R.string.location_screen_title,
-        subtitle = R.string.location_screen_description,
+        subtitle = description,
         buttonText = R.string.location_screen_grant_permission_button,
         action = action,
         image = R.drawable.location_purple,
