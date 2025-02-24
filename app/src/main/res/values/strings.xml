@@ -145,5 +145,25 @@
     <string name="notif_daily_log_desc">Tell me more about your day so that I can make better recommendations!</string>
     <string name="notif_daily_log_title">Were you cold? What did you wear?</string>
     <string name="recom_no_recommendation">No recommendation available.</string>
+    <string name="clothes_category_hoodies">Hoodies</string>
+    <string name="clothes_head_scarf">Head scarf</string>
+    <string name="clothes_beanie">Beanie</string>
+    <string name="clothes_crop_top">Crop top</string>
+    <string name="clothes_shirt">Shirt</string>
+    <string name="clothes_sweater">Sweater</string>
+    <string name="clothes_cardigan">Cardigan</string>
+    <string name="clothes_winter_scarf">Warm scarf</string>
+    <string name="clothes_winter_gloves">Winter gloves</string>
+    <string name="clothes_fingerless_gloves">Fingerless gloves</string>
+    <string name="clothes_long_sleeve_short_dress">Long sleeves short dress\n</string>
+    <string name="clothes_long_sleeve_long_dress">Long sleeve long dress</string>
+    <string name="clothes_sleeveless_short_dress">Sleeveless short dress</string>
+    <string name="clothes_sleeveless_long_dress">Sleeveless long dress</string>
+    <string name="clothes_flip_flops">Flip flops</string>
+    <string name="clothes_winter_coat">Winter coat</string>
+    <string name="clothes_leather_jacket">Leather jacket</string>
+    <string name="clothes_jean_jacket">Jean jacket</string>
+    <string name="clothes_hoodie">Hoodie</string>
+    <string name="clothes_jumper">Jumper</string>
 
 </resources>

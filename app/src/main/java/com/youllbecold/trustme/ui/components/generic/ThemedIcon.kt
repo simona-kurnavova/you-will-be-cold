@@ -49,10 +49,15 @@ enum class IconType(
     Thermometer(R.drawable.ic_thermometer, R.color.icon_default),
 
     // Clothes
-    TShirt(R.drawable.ic_shirt, R.color.icon_gray),
+    TankTop(R.drawable.ic_tank_top, R.color.icon_pink),
+    TShirt(R.drawable.ic_tshirt, R.color.icon_gray),
+    Shirt(R.drawable.ic_shirt, R.color.icon_gray),
+    Sweater(R.drawable.ic_sweater, R.color.icon_orange),
     Jacket(R.drawable.ic_jacket, R.color.icon_blue),
     Pants(R.drawable.ic_pants, R.color.icon_blue),
+    Shorts(R.drawable.ic_shorts, R.color.icon_blue),
     Dress(R.drawable.ic_dress, R.color.icon_pink),
+    Skirt(R.drawable.ic_skirt, R.color.icon_pink),
     Hat(R.drawable.ic_hat, R.color.icon_gray),
     Shoes(R.drawable.ic_stocking, R.color.icon_gray),
     Sunglasses(R.drawable.ic_sunglasses, R.color.icon_gray),

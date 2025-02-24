@@ -269,7 +269,7 @@ private fun AddLogFormPreview() {
             timeFrom = ImmutableTime(LocalTime.now()),
             timeTo = ImmutableTime(LocalTime.now()),
             feelings = FeelingsState(),
-            clothes = persistentSetOf(Clothes.JEANS, Clothes.SHORT_DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
+            clothes = persistentSetOf(Clothes.JEANS, Clothes.SHORT_TSHIRT_DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
             onDateChanged = { },
             onTimeFromChange = { },
             onTimeToChange = { },

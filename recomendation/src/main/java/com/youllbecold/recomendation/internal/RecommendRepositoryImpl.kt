@@ -5,6 +5,7 @@ import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.recomendation.api.RecommendRepository
+import com.youllbecold.recomendation.internal.model.BodyPart
 import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.Recommendation

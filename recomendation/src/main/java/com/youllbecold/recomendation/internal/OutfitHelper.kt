@@ -3,45 +3,15 @@ package com.youllbecold.recomendation.internal
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings
+import com.youllbecold.recomendation.internal.model.BodyPart
+import com.youllbecold.recomendation.internal.model.ClothesWeight
+import com.youllbecold.recomendation.internal.model.categorizedClothesWeights
+import com.youllbecold.recomendation.internal.model.clothesWeights
 
 /**
  * Helps with outfit recommendations calculations.
  */
 internal object OutfitHelper {
-    private val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.associateWith {
-        when(it) {
-            Clothes.BASEBALL_HAT -> ClothesWeight(head = 1)
-            Clothes.WINTER_HAT -> ClothesWeight(head = 3)
-
-            Clothes.TANK_TOP -> ClothesWeight(top = 1)
-            Clothes.SHORT_SLEEVE -> ClothesWeight(top = 2)
-            Clothes.LONG_SLEEVE -> ClothesWeight(top = 3)
-
-            Clothes.LIGHT_JACKET -> ClothesWeight(top = 3)
-            Clothes.WINTER_JACKET -> ClothesWeight(top = 5)
-
-            Clothes.SHORT_SKIRT -> ClothesWeight(bottom = 1)
-            Clothes.SHORTS -> ClothesWeight(bottom = 1)
-            Clothes.LONG_SKIRT -> ClothesWeight(bottom = 2)
-            Clothes.LEGGINGS -> ClothesWeight(bottom = 2)
-            Clothes.JEANS -> ClothesWeight(bottom = 3)
-            Clothes.WARM_PANTS -> ClothesWeight(bottom = 3)
-
-            Clothes.SANDALS -> ClothesWeight(feet = 2)
-            Clothes.TENNIS_SHOES -> ClothesWeight(feet = 3)
-            Clothes.WINTER_SHOES -> ClothesWeight(feet = 3)
-
-            Clothes.TIGHTS -> ClothesWeight(hands = 1)
-            Clothes.SCARF -> ClothesWeight(neck = 1)
-            Clothes.GLOVES -> ClothesWeight(hands = 1)
-
-            // Accessories and full body are never recommended.
-            else -> ClothesWeight()
-        }
-    }
-
-    private val categorizedClothesWeights = clothesWeights.entries.groupBy { it.key.category }
-
     /**
      * Adjusts clothes based on feelings. Returns new set of clothes adjusted as per feeling.
      */
@@ -165,38 +135,13 @@ internal object OutfitHelper {
     private fun List<Clothes>.replaceFullBodyClothes(): List<Clothes> =
         this.flatMap {
             when (it) {
-                Clothes.SHORT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.SHORT_SKIRT)
-                Clothes.LONG_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.LONG_SKIRT)
+                Clothes.SLEEVELESS_SHORT_DRESS -> listOf(Clothes.TANK_TOP, Clothes.SHORT_SKIRT)
+                Clothes.SLEVESLESS_LONG_DRESS -> listOf(Clothes.TANK_TOP, Clothes.LONG_SKIRT)
+                Clothes.LONG_SLEEVE_SHORT_DRESS -> listOf(Clothes.LONG_SLEEVE, Clothes.SHORT_SKIRT)
+                Clothes.LONG_SLEEVE_LONG_DRESS -> listOf(Clothes.LONG_SLEEVE, Clothes.LONG_SKIRT)
+                Clothes.SHORT_TSHIRT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.SHORT_SKIRT)
+                Clothes.LONG_TSHIRT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.LONG_SKIRT)
                 else -> listOf(it)
             }
         }
-
-    private class ClothesWeight(
-        val head: Int = 0,
-        val neck: Int = 0,
-        val top: Int = 0,
-        val bottom: Int = 0,
-        val hands: Int = 0,
-        val feet: Int = 0,
-    )
-}
-
-enum class BodyPart {
-    HEAD,
-    NECK,
-    TOP,
-    BOTTOM,
-    HANDS,
-    FEET;
-
-    fun isSingleItem(): Boolean = this !in listOf(TOP, BOTTOM)
-
-    fun getFeeling(feelings: Feelings): Feeling = when(this) {
-        HEAD -> feelings.head
-        NECK -> feelings.neck
-        TOP -> feelings.top
-        BOTTOM -> feelings.bottom
-        HANDS -> feelings.hand
-        FEET -> feelings.feet
-    }
 }

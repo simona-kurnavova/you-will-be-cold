@@ -12,8 +12,9 @@ import com.youllbecold.trustme.ui.components.generic.inputs.SelectableItemConten
  * Gets the [IconType] for [Clothes.Category].
  */
 val Clothes.Category.icon: IconType
-   get() = when (this) {
+    get() = when (this) {
         Clothes.Category.TOPS -> IconType.TShirt
+        Clothes.Category.HOODIES -> IconType.Sweater
         Clothes.Category.JACKETS -> IconType.Jacket
         Clothes.Category.BOTTOMS -> IconType.Pants
         Clothes.Category.SHOES -> IconType.Shoes
@@ -28,6 +29,7 @@ val Clothes.Category.icon: IconType
 @Composable
 fun Clothes.Category.getTitle(): String = when (this) {
         Clothes.Category.TOPS -> stringResource(R.string.clothes_category_tops)
+        Clothes.Category.HOODIES -> stringResource(R.string.clothes_category_hoodies)
         Clothes.Category.JACKETS -> stringResource(R.string.clothes_category_jackets)
         Clothes.Category.BOTTOMS -> stringResource(R.string.clothes_category_pants)
         Clothes.Category.SHOES -> stringResource(R.string.clothes_category_shoes)
@@ -40,7 +42,15 @@ fun Clothes.Category.getTitle(): String = when (this) {
  * Gets the [IconType] for [Clothes].
  */
 val Clothes.icon: IconType
-    get() = this.category.icon
+    get() = when(this) {
+        Clothes.TANK_TOP -> IconType.TankTop
+        Clothes.LONG_SLEEVE,
+        Clothes.SHIRT -> IconType.Shirt
+        Clothes.SHORTS -> IconType.Shorts
+        Clothes.SHORT_SKIRT,
+        Clothes.LONG_SKIRT -> IconType.Skirt
+        else -> this.category.icon
+    }
 
 /**
  * Get the title of the [Clothes].
@@ -54,8 +64,8 @@ fun Clothes.getTitle(): String = when (this) {
     Clothes.JEANS -> stringResource(R.string.clothes_jeans)
     Clothes.SANDALS -> stringResource(R.string.clothes_sandals)
     Clothes.TENNIS_SHOES -> stringResource(R.string.clothes_tennis_shoes)
-    Clothes.SHORT_DRESS -> stringResource(R.string.clothes_dress)
-    Clothes.LONG_DRESS -> stringResource(R.string.clothes_dress_long)
+    Clothes.SHORT_TSHIRT_DRESS -> stringResource(R.string.clothes_dress)
+    Clothes.LONG_TSHIRT_DRESS -> stringResource(R.string.clothes_dress_long)
     Clothes.BASEBALL_HAT -> stringResource(R.string.baseball_hat)
     Clothes.WINTER_HAT -> stringResource(R.string.winter_hat)
     Clothes.TANK_TOP -> stringResource(R.string.tank_top)
@@ -69,6 +79,25 @@ fun Clothes.getTitle(): String = when (this) {
     Clothes.GLOVES -> stringResource(R.string.gloves)
     Clothes.SUNGLASSES -> stringResource(R.string.sunglasses)
     Clothes.LONG_SKIRT -> stringResource(R.string.clothes_long_skirt)
+    Clothes.HEAD_SCARF -> stringResource(R.string.clothes_head_scarf)
+    Clothes.BEANIE -> stringResource(R.string.clothes_beanie)
+    Clothes.CROP_TOP -> stringResource(R.string.clothes_crop_top)
+    Clothes.SHIRT -> stringResource(R.string.clothes_shirt)
+    Clothes.SWEATER -> stringResource(R.string.clothes_sweater)
+    Clothes.CARDIGAN -> stringResource(R.string.clothes_cardigan)
+    Clothes.JUMPER -> stringResource(R.string.clothes_jumper)
+    Clothes.HOODIE -> stringResource(R.string.clothes_hoodie)
+    Clothes.JEAN_JACKET -> stringResource(R.string.clothes_jean_jacket)
+    Clothes.LEATHER_JACKET -> stringResource(R.string.clothes_leather_jacket)
+    Clothes.WINTER_COAT -> stringResource(R.string.clothes_winter_coat)
+    Clothes.FLIP_FLOPS -> stringResource(R.string.clothes_flip_flops)
+    Clothes.SLEVESLESS_LONG_DRESS -> stringResource(R.string.clothes_sleeveless_long_dress)
+    Clothes.SLEEVELESS_SHORT_DRESS -> stringResource(R.string.clothes_sleeveless_short_dress)
+    Clothes.LONG_SLEEVE_LONG_DRESS -> stringResource(R.string.clothes_long_sleeve_long_dress)
+    Clothes.LONG_SLEEVE_SHORT_DRESS -> stringResource(R.string.clothes_long_sleeve_short_dress)
+    Clothes.FINGERLESS_GLOVES -> stringResource(R.string.clothes_fingerless_gloves)
+    Clothes.WINTER_GLOVES -> stringResource(R.string.clothes_winter_gloves)
+    Clothes.WINTER_SCARF -> stringResource(R.string.clothes_winter_scarf)
 }
 
 /**
