@@ -45,7 +45,6 @@ import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
 import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
-import com.youllbecold.trustme.ui.viewmodels.toHourlyTemperature
 import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
@@ -124,12 +123,14 @@ private fun HomeScreen(
             }
 
             FadingItem(visible = showWeather) {
-                HourlyWeatherCard(
-                    hourlyTemperatures = state.weather?.today.toHourlyTemperature(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                )
+                state.weather?.next24Hours()?.let { hourlyTemperatures ->
+                    HourlyWeatherCard(
+                        hourlyTemperatures = hourlyTemperatures,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                    )
+                }
             }
 
             FadingItem(visible = showWeather) {

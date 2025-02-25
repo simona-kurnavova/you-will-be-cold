@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.usecases.weather
 
-import android.util.Log
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.weather.state.ErrorType
 import com.youllbecold.trustme.usecases.weather.state.WeatherState
@@ -71,8 +70,6 @@ class CurrentWeatherUseCase(
             location.longitude,
             dataStorePreferences.useCelsiusUnits.first()
         )
-
-        Log.d("CurrentWeatherUseCase", "Current weather: $result")
         return result.getOrNull()
     }
 }

@@ -2,6 +2,9 @@ package com.youllbecold.trustme.usecases.weather.state
 
 import com.youllbecold.weather.api.isSuccessful
 
+/**
+ * General status for weather usecases.
+ */
 data class WeatherState<T>(
     val status: WeatherUseCaseStatus,
     val weather: T,

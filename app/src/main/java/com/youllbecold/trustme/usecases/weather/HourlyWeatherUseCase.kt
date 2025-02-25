@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
+/**
+ * Use case for fetching and refreshing the hourly weather.
+ */
 @Singleton
 class HourlyWeatherUseCase(
     private val weatherRepository: WeatherRepository,
@@ -41,6 +44,9 @@ class HourlyWeatherUseCase(
 
     val weatherState: StateFlow<WeatherState<List<Weather>>> = _weatherState
 
+    /**
+     * Refreshes the hourly weather for the given location.
+     */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun refreshHourlyWeather(location: GeoLocation, days: Int) {
         _weatherState.update { it.copyWithLoading() }

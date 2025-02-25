@@ -15,11 +15,23 @@ import org.koin.core.annotation.Singleton
 import java.time.LocalDate
 import java.time.LocalTime
 
+/**
+ * Use case for fetching the weather for a specific time range.
+ */
 @Singleton
 class RangedWeatherUseCase(
     private val weatherRepository: WeatherRepository,
     private val networkHelper: NetworkHelper
 ) {
+    /**
+     * Obtains the weather for a specific time range.
+     *
+     * @param location The location to obtain the weather for.
+     * @param date The date to obtain the weather for.
+     * @param timeFrom The start time of the range.
+     * @param timeTo The end time of the range.
+     * @param useCelsiusUnits Whether to use Celsius units.
+     */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     suspend fun obtainRangedWeather(
         location: GeoLocation,
@@ -28,8 +40,6 @@ class RangedWeatherUseCase(
         timeTo: LocalTime,
         useCelsiusUnits: Boolean = true
     ): Result<WeatherState> = withContext(Dispatchers.IO) {
-        Log.d("RangedWeatherUseCase", "Obtaining ranged weather")
-
         if (!networkHelper.hasInternet()) {
             return@withContext Result.failure(Exception("No internet connection"))
         }

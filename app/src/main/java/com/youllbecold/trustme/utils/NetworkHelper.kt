@@ -18,9 +18,8 @@ class NetworkHelper(private val app: Application) {
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            _isConnected.value = connectivityManager.getNetworkCapabilities(network)
-                ?.hasInternet()
-                ?: false
+            _isConnected.value =
+                connectivityManager.getNetworkCapabilities(network)?.hasInternet() == true
         }
 
         override fun onCapabilitiesChanged(

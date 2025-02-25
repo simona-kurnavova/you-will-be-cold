@@ -111,8 +111,13 @@ class HomeViewModel(
             return null
         }
 
-        val filteredHourly = hourlyWeather.filter { it.time.toLocalDate() >= LocalDateTime.now().toLocalDate() }
-        val (todayWeather, tomorrowWeather) = filteredHourly.partition { it.time.toLocalDate() == LocalDateTime.now().toLocalDate() }
+        val now = LocalDateTime.now()
+
+        val (allDayTodayWeather, tomorrowWeather) = hourlyWeather
+            .partition { it.time.toLocalDate() == now.toLocalDate() }
+
+        val todayWeather = allDayTodayWeather
+            .filter { it.time.toLocalTime() >= now.toLocalTime() }
 
         return Forecast(
             current = WeatherWithRecommendation(
@@ -204,16 +209,25 @@ data class Forecast(
     val current: WeatherWithRecommendation,
     val today: WeatherWithRecommendation,
     val tomorrow: WeatherWithRecommendation
-)
+) {
+    /**
+     * The next 24 hours of weather forecast.
+     */
+    fun next24Hours(): PersistentList<HourlyTemperature> =
+        (today.weather + tomorrow.weather)
+            .take(24)
+            .toHourlyTemperature()
+            .toPersistentList()
 
-fun WeatherWithRecommendation?.toHourlyTemperature(): PersistentList<HourlyTemperature> =
-    this?.weather?.map { weather ->
-        HourlyTemperature(
-            time = weather.time,
-            temperature = weather.temperature,
-            weatherEvaluation = weather.weatherEvaluation
-        )
-    }?.toPersistentList() ?: persistentListOf()
+    private fun List<Weather>?.toHourlyTemperature(): PersistentList<HourlyTemperature> =
+        this?.map { weather ->
+            HourlyTemperature(
+                time = weather.time,
+                temperature = weather.temperature,
+                weatherEvaluation = weather.weatherEvaluation
+            )
+        }?.toPersistentList() ?: persistentListOf()
+}
 
 data class WeatherWithRecommendation(
     val weather: PersistentList<Weather>,

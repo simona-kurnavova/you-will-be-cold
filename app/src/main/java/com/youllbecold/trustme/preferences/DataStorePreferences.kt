@@ -14,20 +14,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-private const val USER_PREFERENCES_NAME = "user_preferences"
-private const val PREFERENCES_DAILY_NOTIF = "allow_daily_notif"
-private const val PREFERENCES_RECOMMEND_NOTIF = "allow_recom_notif"
-private const val PREFERENCES_USE_CELSIUS_UNITS = "use_celsius_units"
-private const val PREFERENCES_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
-
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)
-
 /**
  * Object for accessing data store preferences.
  */
 class DataStorePreferences(private val context: Context) {
-
     private val dailyNotificationKey = booleanPreferencesKey(PREFERENCES_DAILY_NOTIF)
     private val recommendNotificationKey = booleanPreferencesKey(PREFERENCES_RECOMMEND_NOTIF)
     private val useCelsiusUnitsKey = booleanPreferencesKey(PREFERENCES_USE_CELSIUS_UNITS)
@@ -39,6 +29,21 @@ class DataStorePreferences(private val context: Context) {
     val allowDailyNotification: Flow<Boolean> = get(dailyNotificationKey, false)
 
     /**
+     * Flow denoting whether recommendation notification is enabled.
+     */
+    val allowRecommendNotification: Flow<Boolean> = get(recommendNotificationKey, false)
+
+    /**
+     * Flow denoting whether to use Celsius units. True by default.
+     */
+    val useCelsiusUnits: Flow<Boolean> = get(useCelsiusUnitsKey, true)
+
+    /**
+     * Flow denoting whether the welcome screen has been shown.
+     */
+    val welcomeScreenShown: Flow<Boolean> = get(welcomeScreenShownKey, false)
+
+    /**
      * Set whether daily notification is enabled.
      *
      * @param allow True if daily notification is enabled, false otherwise.
@@ -46,11 +51,6 @@ class DataStorePreferences(private val context: Context) {
     suspend fun setAllowDailyNotification(allow: Boolean) {
         edit(dailyNotificationKey, allow)
     }
-
-    /**
-     * Flow denoting whether recommendation notification is enabled.
-     */
-    val allowRecommendNotification: Flow<Boolean> = get(recommendNotificationKey, false)
 
     /**
      * Set whether recommendation notification is enabled.
@@ -62,21 +62,11 @@ class DataStorePreferences(private val context: Context) {
     }
 
     /**
-     * Flow denoting whether to use Celsius units. True by default.
-     */
-    val useCelsiusUnits: Flow<Boolean> = get(useCelsiusUnitsKey, true)
-
-    /**
      * Set whether to use Celsius units.
      */
     suspend fun setUseCelsiusUnits(useCelsius: Boolean) {
         edit(useCelsiusUnitsKey, useCelsius)
     }
-
-    /**
-     * Flow denoting whether the welcome screen has been shown.
-     */
-    val welcomeScreenShown: Flow<Boolean> = get(welcomeScreenShownKey, false)
 
     /**
      * Set whether the welcome screen has been shown.
@@ -101,3 +91,11 @@ class DataStorePreferences(private val context: Context) {
         }
     }
 }
+
+private const val USER_PREFERENCES_NAME = "user_preferences"
+private const val PREFERENCES_DAILY_NOTIF = "allow_daily_notif"
+private const val PREFERENCES_RECOMMEND_NOTIF = "allow_recom_notif"
+private const val PREFERENCES_USE_CELSIUS_UNITS = "use_celsius_units"
+private const val PREFERENCES_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)

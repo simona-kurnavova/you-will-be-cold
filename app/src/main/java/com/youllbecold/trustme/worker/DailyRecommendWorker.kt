@@ -3,11 +3,8 @@ package com.youllbecold.trustme.worker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.youllbecold.trustme.notifications.NotificationHelper
@@ -16,7 +13,6 @@ import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.TimeUnit
 
 class DailyRecommendWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams), KoinComponent {
@@ -61,19 +57,11 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
         const val WORK_NAME = "DailyRecommendWorker"
 
         fun schedule(context: Context, targetHour: Int = 7, targetMinute: Int = 0) {
-            val constraints = Constraints.Builder()
-                .setRequiresBatteryNotLow(true)
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
             val delay = WorkerUtils.calculateTimeUntilNext(targetHour, targetMinute)
 
             Log.d("DailyRecommendWorker", "Scheduling work in $delay minutes at $targetHour:$targetMinute daily")
 
-            val request = PeriodicWorkRequestBuilder<DailyRecommendWorker>(1, TimeUnit.DAYS)
-                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .setConstraints(constraints)
-                .build()
+            val request = WorkerUtils.createDailyWorkRequest(delay)
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,

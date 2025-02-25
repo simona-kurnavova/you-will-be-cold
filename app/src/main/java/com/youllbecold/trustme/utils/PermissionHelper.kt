@@ -17,7 +17,6 @@ import org.koin.core.annotation.Singleton
 class PermissionHelper(
     private val app: Application
 ){
-
     private val _hasLocationPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
@@ -37,11 +36,17 @@ class PermissionHelper(
     }
 
     companion object {
+        /**
+         * Location permissions required by the app.
+         */
         val locationPermissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
 
+        /**
+         * Background location permission required by the app.
+         */
         val bgLocationPermission = arrayOf(
             Manifest.permission.ACCESS_BACKGROUND_LOCATION
         )
