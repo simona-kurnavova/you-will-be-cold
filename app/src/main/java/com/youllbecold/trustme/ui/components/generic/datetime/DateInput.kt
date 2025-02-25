@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,10 +22,12 @@ import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.formatDate
+import com.youllbecold.trustme.ui.components.utils.toMillis
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,10 +36,26 @@ fun DateInput(
     onDateSelected: (ImmutableDate) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
-
     val context = LocalContext.current
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    val todayMillis = remember { System.currentTimeMillis() }
+
+    val selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis <= todayMillis // Only allow today and past dates
+        }
+
+        override fun isSelectableYear(year: Int): Boolean {
+            val currentYear = ZonedDateTime.now().year
+            return year <= currentYear // Prevent selecting future years
+        }
+    }
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = date.toMillis(),
+        selectableDates = selectableDates
+    )
 
     ClickableText(
         text = date.date.formatDate(),
@@ -73,9 +92,11 @@ fun DateInput(
                 ThemedButton(stringResource(R.string.dialog_dismiss)) {
                     showDatePicker = false
                 }
-            }
+            },
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+            )
         }
     }
 }
