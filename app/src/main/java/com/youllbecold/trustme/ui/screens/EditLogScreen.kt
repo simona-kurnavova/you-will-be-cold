@@ -1,20 +1,25 @@
 package com.youllbecold.trustme.ui.screens
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.AddLogForm
+import com.youllbecold.trustme.ui.components.LogExitDialog
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.ui.viewmodels.AddLogAction
 import com.youllbecold.trustme.ui.viewmodels.EditLogAction
 import com.youllbecold.trustme.ui.viewmodels.EditLogUiState
 import com.youllbecold.trustme.ui.viewmodels.EditLogViewModel
@@ -45,6 +50,7 @@ fun EditLogRoot(
                     viewModel.onAction(action)
                     navigateBack()
                 }
+                is EditLogAction.ExitForm -> navigateBack()
                 else -> viewModel.onAction(action)
             }
         }
@@ -58,6 +64,8 @@ private fun EditLogScreen(
 ) {
     val update: (LogState) -> Unit = { onAction(EditLogAction.SaveProgress(it)) }
     val context = LocalContext.current
+
+    var showExitDialog by remember { mutableStateOf(false) }
 
     if (state.value.editState == EditingState.Error) {
         Toast.makeText(
@@ -95,7 +103,21 @@ private fun EditLogScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
+            },
+        )
+    }
+
+    BackHandler {
+        showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        LogExitDialog(
+            onConfirmation = {
+                onAction(EditLogAction.ExitForm)
+                showExitDialog = false
+            },
+            onDismiss = { showExitDialog = false }
         )
     }
 }

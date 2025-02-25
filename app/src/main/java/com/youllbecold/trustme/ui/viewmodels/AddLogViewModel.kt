@@ -53,6 +53,7 @@ class AddLogViewModel(
         when (action) {
             is AddLogAction.SaveProgress -> logState.value = action.state
             is AddLogAction.SaveLog -> saveLogWithWeather(logState.value)
+            else -> Unit // Handled in the screen
         }
     }
 
@@ -111,6 +112,7 @@ class AddLogViewModel(
 sealed class AddLogAction {
     data class SaveProgress(val state: LogState) : AddLogAction()
     data object SaveLog : AddLogAction()
+    data object ExitForm : AddLogAction()
 }
 
 /**

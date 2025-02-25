@@ -174,5 +174,7 @@
     <string name="notif_recommend_desc">It is now %1$.1f degrees. Tap to see the recommendation!</string>
     <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>
     <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
+    <string name="dialog_exit_title">Stop logging?</string>
+    <string name="dialog_exit_message">All progress will be lost.</string>
 
 </resources>

@@ -1,16 +1,20 @@
 package com.youllbecold.trustme.ui.screens
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.AddLogForm
+import com.youllbecold.trustme.ui.components.LogExitDialog
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -39,6 +43,7 @@ fun AddLogRoot(
                     viewModel.onAction(action)
                     navigateBack()
                 }
+                is AddLogAction.ExitForm -> navigateBack()
                 else -> viewModel.onAction(action)
             }
         }
@@ -53,6 +58,7 @@ private fun AddLogScreen(
     val logState = state.value.logState
     val context = LocalContext.current
     val update: (LogState) -> Unit = { onAction(AddLogAction.SaveProgress(it)) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     if (state.value.saveState == SavingState.Error) {
         Toast.makeText(
@@ -91,6 +97,20 @@ private fun AddLogScreen(
             }
         },
     )
+
+    BackHandler {
+        showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        LogExitDialog(
+            onConfirmation = {
+                onAction(AddLogAction.ExitForm)
+                showExitDialog = false
+            },
+            onDismiss = { showExitDialog = false }
+        )
+    }
 }
 
 @Preview(showBackground = true)

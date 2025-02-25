@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,27 +27,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.datetime.DateInput
-import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.Section
-import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.generic.ThemedInputChip
-import com.youllbecold.trustme.ui.components.generic.icontext.Tile
+import com.youllbecold.trustme.ui.components.generic.datetime.DateInput
 import com.youllbecold.trustme.ui.components.generic.datetime.TimeRangeInput
+import com.youllbecold.trustme.ui.components.generic.icontext.Tile
+import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
+import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getFeelingWithLabel
+import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.items
-import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.toSelectableItemContent
 import com.youllbecold.trustme.ui.utils.withCategory
 import com.youllbecold.trustme.ui.viewmodels.FeelingState
@@ -67,7 +70,6 @@ fun AddLogForm(
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
 ) {
-    val context = LocalContext.current
     val formScrollState = rememberScrollState()
 
     Box {
@@ -275,7 +277,7 @@ private fun AddLogFormPreview() {
             onTimeToChange = { },
             onFeelingsChange = { },
             onClothesCategoryChange = { },
-            onSave = { }
+            onSave = { },
         )
     }
 }

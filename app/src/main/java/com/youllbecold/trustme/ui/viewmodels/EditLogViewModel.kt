@@ -48,6 +48,7 @@ class EditLogViewModel(
             is EditLogAction.StartEdit -> startEdit(action.id)
             is EditLogAction.SaveProgress -> logState.value = action.state
             is EditLogAction.SaveLog -> logState.value?.let { saveLog(it) }
+            else -> Unit // Handled in the screen
         }
     }
 
@@ -106,6 +107,7 @@ sealed class EditLogAction {
     data class StartEdit(val id: Int) : EditLogAction()
     data class SaveProgress(val state: LogState) : EditLogAction()
     data object SaveLog : EditLogAction()
+    data object ExitForm : EditLogAction()
 }
 
 /**
