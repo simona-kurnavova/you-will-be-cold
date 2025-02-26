@@ -5,8 +5,8 @@ import androidx.compose.ui.res.stringResource
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectableItemContent
-import com.youllbecold.trustme.ui.viewmodels.FeelingState
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
 
 /**
  * Returns the title associated with the feeling state.

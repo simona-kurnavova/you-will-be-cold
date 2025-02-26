@@ -6,6 +6,7 @@ import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
 import com.youllbecold.trustme.ui.viewmodels.LocationPermissionViewModel
 import com.youllbecold.trustme.ui.viewmodels.MainViewModel
+import com.youllbecold.trustme.ui.viewmodels.RecommendViewModel
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
 import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -20,4 +21,5 @@ val uiModule = module {
     viewModelOf(::WelcomeViewModel)
     viewModelOf(::LocationPermissionViewModel)
     viewModelOf(::EditLogViewModel)
+    viewModelOf(::RecommendViewModel)
 }

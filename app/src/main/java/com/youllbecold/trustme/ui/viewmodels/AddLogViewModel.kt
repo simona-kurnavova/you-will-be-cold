@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.toLogData
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
@@ -82,7 +84,7 @@ class AddLogViewModel(
                 return@launch
             }
 
-            val weatherState = weatherUseCase.obtainRangedWeather(
+            val weatherState = weatherUseCase.obtainRangedWeatherState(
                 geoLocationState.location,
                 logState.date.date,
                 logState.timeFrom.time,

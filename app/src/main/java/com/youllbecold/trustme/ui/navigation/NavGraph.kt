@@ -11,6 +11,7 @@ import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
 import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
+import com.youllbecold.trustme.ui.screens.RecommendScreenRoot
 import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
 import com.youllbecold.trustme.ui.utils.popAllAndNavigate
 
@@ -21,6 +22,7 @@ import com.youllbecold.trustme.ui.utils.popAllAndNavigate
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = NavRoute.Home.route, modifier = modifier) {
         composable(NavRoute.Home.route) { HomeScreenRoot() }
+        composable(NavRoute.Recommendation.route) { RecommendScreenRoot() }
         composable(NavRoute.History.route) {
             HistoryScreenRoot(
                 navigateToEdit = { id ->

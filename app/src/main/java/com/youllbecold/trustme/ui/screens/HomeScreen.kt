@@ -43,8 +43,8 @@ import com.youllbecold.trustme.ui.viewmodels.Forecast
 import com.youllbecold.trustme.ui.viewmodels.HomeAction
 import com.youllbecold.trustme.ui.viewmodels.HomeUiState
 import com.youllbecold.trustme.ui.viewmodels.HomeViewModel
-import com.youllbecold.trustme.ui.viewmodels.LoadingStatus
-import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
+import com.youllbecold.trustme.ui.viewmodels.state.LoadingStatus
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation

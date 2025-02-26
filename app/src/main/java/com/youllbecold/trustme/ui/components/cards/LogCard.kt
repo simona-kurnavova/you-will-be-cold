@@ -43,9 +43,9 @@ import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.labeled
 import com.youllbecold.trustme.ui.utils.worstFeeling
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
-import com.youllbecold.trustme.ui.viewmodels.LogState
-import com.youllbecold.trustme.ui.viewmodels.WeatherState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherState
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate
 import java.time.LocalTime

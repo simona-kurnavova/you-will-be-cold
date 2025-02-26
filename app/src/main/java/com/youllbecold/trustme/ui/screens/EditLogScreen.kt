@@ -19,14 +19,13 @@ import com.youllbecold.trustme.ui.components.LogExitDialog
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.viewmodels.AddLogAction
 import com.youllbecold.trustme.ui.viewmodels.EditLogAction
 import com.youllbecold.trustme.ui.viewmodels.EditLogUiState
 import com.youllbecold.trustme.ui.viewmodels.EditLogViewModel
 import com.youllbecold.trustme.ui.viewmodels.EditingState
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
-import com.youllbecold.trustme.ui.viewmodels.LogState
-import com.youllbecold.trustme.ui.viewmodels.validate
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.validate
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate

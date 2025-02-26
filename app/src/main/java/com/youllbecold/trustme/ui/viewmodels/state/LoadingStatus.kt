@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.viewmodels
+package com.youllbecold.trustme.ui.viewmodels.state
 
 /**
  * General UI status for screens.

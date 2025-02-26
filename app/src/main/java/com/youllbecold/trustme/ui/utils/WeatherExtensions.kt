@@ -9,7 +9,7 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 

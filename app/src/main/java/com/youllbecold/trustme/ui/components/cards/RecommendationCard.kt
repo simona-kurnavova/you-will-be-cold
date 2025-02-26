@@ -27,7 +27,7 @@ import com.youllbecold.trustme.ui.utils.feelLikeDescription
 import com.youllbecold.trustme.ui.utils.getTitle
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.temperatureRangeDescription
-import com.youllbecold.trustme.ui.viewmodels.WeatherWithRecommendation
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation

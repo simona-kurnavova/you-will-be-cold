@@ -176,5 +176,7 @@
     <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
     <string name="dialog_exit_title">Stop logging?</string>
     <string name="dialog_exit_message">All progress will be lost.</string>
+    <string name="toolbar_title_recommendation"><![CDATA[Predictions & recommendation]]></string>
+    <string name="menu_recommendation">Recommend</string>
 
 </resources>

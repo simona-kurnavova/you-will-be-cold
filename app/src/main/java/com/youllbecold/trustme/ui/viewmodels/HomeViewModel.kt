@@ -5,7 +5,9 @@ import android.app.Application
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youllbecold.trustme.usecases.recommendation.Recommendation
+import com.youllbecold.trustme.ui.viewmodels.state.LoadingStatus
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
+import com.youllbecold.trustme.ui.viewmodels.state.isIdle
 import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
@@ -228,8 +230,3 @@ data class Forecast(
             )
         }?.toPersistentList() ?: persistentListOf()
 }
-
-data class WeatherWithRecommendation(
-    val weather: PersistentList<Weather>,
-    val recommendation: Recommendation?
-)

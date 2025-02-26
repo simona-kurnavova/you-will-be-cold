@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.ui.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,8 +45,8 @@ import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.items
 import com.youllbecold.trustme.ui.utils.toSelectableItemContent
 import com.youllbecold.trustme.ui.utils.withCategory
-import com.youllbecold.trustme.ui.viewmodels.FeelingState
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate

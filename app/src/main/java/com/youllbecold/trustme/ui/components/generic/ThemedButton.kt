@@ -23,8 +23,8 @@ fun ThemedButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor =  when(type) {
-                ButtonType.PRIMARY -> MaterialTheme.colorScheme.primary
-                ButtonType.SECONDARY -> MaterialTheme.colorScheme.secondary
+                ButtonType.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
+                ButtonType.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
             }
         ),
         modifier = modifier
@@ -33,8 +33,8 @@ fun ThemedButton(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = when(type) {
-                ButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimary
-                ButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondary
+                ButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimaryContainer
+                ButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondaryContainer
             }
         )
     }

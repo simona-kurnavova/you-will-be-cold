@@ -1,13 +1,13 @@
 package com.youllbecold.trustme.usecases.weather
 
 import android.Manifest
-import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.youllbecold.trustme.ui.viewmodels.WeatherState
+import com.youllbecold.trustme.ui.viewmodels.state.WeatherState
 import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
+import com.youllbecold.weather.model.Weather
 import java.time.Duration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +24,35 @@ class RangedWeatherUseCase(
     private val networkHelper: NetworkHelper
 ) {
     /**
-     * Obtains the weather for a specific time range.
+     * Obtains the weather for a specific time range. Returns simplified weather data.
+     *
+     * @param location The location to obtain the weather for.
+     * @param date The date to obtain the weather for.
+     * @param timeFrom The start time of the range.
+     * @param timeTo The end time of the range.
+     * @param useCelsiusUnits Whether to use Celsius units.
+     */
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    suspend fun obtainRangedWeatherState(
+        location: GeoLocation,
+        date: LocalDate,
+        timeFrom: LocalTime,
+        timeTo: LocalTime,
+        useCelsiusUnits: Boolean = true
+    ): Result<WeatherState> = withContext(Dispatchers.IO) {
+        val weatherList = obtainRangedWeather(location, date, timeFrom, timeTo, useCelsiusUnits)
+
+        return@withContext weatherList.map { rangedWeather ->
+            WeatherState(
+                apparentTemperatureMin = rangedWeather.minOf { it.apparentTemperature },
+                apparentTemperatureMax = rangedWeather.maxOf { it.apparentTemperature },
+                avgTemperature = rangedWeather.sumOf { it.temperature } / rangedWeather.size.toDouble()
+            )
+        }
+    }
+
+    /**
+     * Obtains the weather for a specific time range. Returns a list of weather data.
      *
      * @param location The location to obtain the weather for.
      * @param date The date to obtain the weather for.
@@ -39,7 +67,7 @@ class RangedWeatherUseCase(
         timeFrom: LocalTime,
         timeTo: LocalTime,
         useCelsiusUnits: Boolean = true
-    ): Result<WeatherState> = withContext(Dispatchers.IO) {
+    ): Result<List<Weather>> = withContext(Dispatchers.IO) {
         if (!networkHelper.hasInternet()) {
             return@withContext Result.failure(Exception("No internet connection"))
         }
@@ -61,16 +89,10 @@ class RangedWeatherUseCase(
 
                 val adjustedTimeRange = adjustTimeRange(timeFrom, timeTo)
 
-                val range = data.filter { weather ->
+                return@withContext data.filter { weather ->
                     val time = weather.time.toLocalTime()
                     time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second)
-                }
-
-                return@withContext WeatherState(
-                    apparentTemperatureMin = range.minOf { it.apparentTemperature },
-                    apparentTemperatureMax = range.maxOf { it.apparentTemperature },
-                    avgTemperature = range.sumOf { it.temperature } / range.size.toDouble()
-                ).let { Result.success(it) }
+                }.let { Result.success(it) }
             }
 
             else -> Result.failure(Exception("Error fetching weather data"))

@@ -4,6 +4,9 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.toLogData
+import com.youllbecold.trustme.ui.viewmodels.state.toLogState
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList

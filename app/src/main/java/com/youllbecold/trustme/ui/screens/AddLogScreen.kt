@@ -21,10 +21,10 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.AddLogAction
 import com.youllbecold.trustme.ui.viewmodels.AddLogUiState
 import com.youllbecold.trustme.ui.viewmodels.AddLogViewModel
-import com.youllbecold.trustme.ui.viewmodels.FeelingsState
-import com.youllbecold.trustme.ui.viewmodels.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import com.youllbecold.trustme.ui.viewmodels.SavingState
-import com.youllbecold.trustme.ui.viewmodels.validate
+import com.youllbecold.trustme.ui.viewmodels.state.validate
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate

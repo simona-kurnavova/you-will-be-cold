@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.viewmodels
+package com.youllbecold.trustme.ui.viewmodels.state
 
 import android.content.Context
 import android.widget.Toast

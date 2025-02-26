@@ -27,7 +27,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HistoryAction
 import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
-import com.youllbecold.trustme.ui.viewmodels.LogState
+import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate

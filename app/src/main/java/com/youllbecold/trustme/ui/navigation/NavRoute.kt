@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,6 +20,11 @@ sealed class NavRoute(val baseRoot: String, val route: String = baseRoot) {
      * Home screen - default screen.
      */
     data object Home : NavRoute("home")
+
+    /**
+     * Recommendation screen.
+     */
+    data object Recommendation : NavRoute("recommendation")
 
     /**
      * History screen.
@@ -77,6 +83,15 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
         override val floatingActionTo: NavRoute = NavRoute.AddLog
     }
 
+    data object RecommendationItem : NavRouteItem(
+        navRoute = NavRoute.Recommendation
+    ), MenuItem, Toolbar {
+        override val toolbarTitle: Int = R.string.toolbar_title_recommendation
+
+        override val menuTitle: Int = R.string.menu_recommendation
+        override val menuIcon: ImageVector = Icons.Filled.FavoriteBorder
+    }
+
     data object HistoryItem : NavRouteItem(
         navRoute = NavRoute.History
     ), MenuItem, FloatingAction, Toolbar {
@@ -129,6 +144,7 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     companion object {
         fun fromRoute(route: String): NavRouteItem = when (route.split("/").first()) {
             NavRoute.Home.baseRoot -> HomeItem
+            NavRoute.Recommendation.baseRoot -> RecommendationItem
             NavRoute.History.baseRoot -> HistoryItem
             NavRoute.Settings.baseRoot -> SettingsItem
             NavRoute.AddLog.baseRoot -> AddLogItem
@@ -140,12 +156,13 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
 
         fun allNavRouteItems(): List<NavRouteItem> = listOf(
             HomeItem,
+            RecommendationItem,
             HistoryItem,
             SettingsItem,
             AddLogItem,
             EditLogItem,
             WelcomeItem,
-            LocationPermissionItem
+            LocationPermissionItem,
         )
     }
 }
@@ -166,10 +183,6 @@ interface Toolbar {
     val toolbarTitle: Int
     val toolbarIcon: IconType?
         get() = null
-
-    // TODO: Setup menu
-    val toolbarMenu: List<ToolbarMenuItem>
-        get() = emptyList()
 }
 
 data class ToolbarMenuItem(
