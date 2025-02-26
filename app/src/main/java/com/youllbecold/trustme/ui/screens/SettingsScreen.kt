@@ -91,7 +91,6 @@ fun SettingsScreen(
                 if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     && notificationPermState?.status?.isGranted == false) {
                     dailyNotifRequested = true
-                    Toast.makeText(context, context.getString(R.string.toast_ask_notification_perm), Toast.LENGTH_SHORT).show()
                     permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 } else {
                     onAction(SettingsAction.SetAllowDailyNotification(isChecked))
@@ -109,7 +108,6 @@ fun SettingsScreen(
                 if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     && notificationPermState?.status?.isGranted == false) {
                     recommendNotifRequested = true
-                    Toast.makeText(context, context.getString(R.string.toast_ask_notification_perm), Toast.LENGTH_SHORT).show()
                     permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 } else {
                     onAction(SettingsAction.SetAllowRecommendNotification(isChecked))

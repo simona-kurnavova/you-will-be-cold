@@ -2,21 +2,37 @@
     <!-- App name. -->
     <string name="app_name">You\'ll Be Cold</string>
 
-    <!-- Settings/Preferences -->
-    <!-- Title of toggle to allow/deny daily notification. -->
-    <string name="settings_daily_notification">Allow daily notification</string>
-    <!-- Subtitle of toggle to allow/deny daily notification. -->
-    <string name="settings_daily_notification_subtitle">You will be reminded every day to log your experience</string>
+    <!-- Bottom navigation item titles. -->
+    <!-- Home screen. -->
+    <string name="menu_home">Home</string>
+    <!-- Log history screen. -->
+    <string name="menu_history">Log history</string>
+    <!-- Settings screen. -->
+    <string name="menu_settings">Settings</string>
+    <!-- Recommendation screen. -->
+    <string name="menu_recommendation">Recommend</string>
 
-    <!-- Title of toggle to allow/deny recommendation notification. -->
-    <string name="settings_recommend_notification">Allow morning recommendation notification</string>
-    <!-- Subtitle of toggle to allow/deny recommendation notification. -->
-    <string name="settings_recommend_notification_subtitle">You will get notification each morning</string>
+    <!-- Toolbar titles -->
+    <!-- Add log screen. -->
+    <string name="toolbar_title_add_log">Create new log</string>
+    <!-- Settings screen. -->
+    <string name="toolbar_title_settings">Settings</string>
+    <!-- Home screen. -->
+    <string name="toolbar_title_home">Will you be cold today?</string>
+    <!-- Log history screen. -->
+    <string name="toolbar_title_log_history">Your logs</string>
+    <!-- Edit log screen. -->
+    <string name="toolbar_title_edit_log">Edit your log</string>
+    <!-- Recommendation screen. -->
+    <string name="toolbar_title_recommendation"><![CDATA[Predictions & recommendation]]></string>
 
-    <!-- Title of toggle to use Celsius/Fahrenheit. -->
-    <string name="settings_use_celsius">Temperature in Celsius</string>
-    <!-- Subtitle of toggle to use Celsius/Fahrenheit. -->
-    <string name="settings_use_celsius_subtitle">Use Celsius with temperature values.</string>
+    <!-- Welcome screen -->
+    <!-- Title of the welcome screen. -->
+    <string name="welcome_screen_title">Welcome to You\'ll Be Cold, trust me!</string>
+    <!-- Description of the welcome screen. -->
+    <string name="welcome_screen_description">Where, ironically, if everything goes well, you won\'t be cold.\n\nHow it works?\nThe app suggests what to wear and bring based on the weather. The more you log what you wore and how you felt, the better the recommendations get—helping you stay comfortable no matter the forecast!</string>
+    <!-- Button text of the welcome screen. -->
+    <string name="welcome_screen_button_text">Get Started</string>
 
     <!-- Location permission overlay -->
     <!-- Screen title. -->
@@ -30,6 +46,20 @@
     <!-- Text of a toast shown after user denies permission. -->
     <string name="location_permission_deny_toast">Location permission is required, please</string>
 
+    <!-- Settings/Preferences -->
+    <!-- Title of toggle to allow/deny daily notification. -->
+    <string name="settings_daily_notification">Allow daily notification</string>
+    <!-- Subtitle of toggle to allow/deny daily notification. -->
+    <string name="settings_daily_notification_subtitle">You will be reminded every day to log your experience</string>
+    <!-- Title of toggle to allow/deny recommendation notification. -->
+    <string name="settings_recommend_notification">Allow morning recommendation notification</string>
+    <!-- Subtitle of toggle to allow/deny recommendation notification. -->
+    <string name="settings_recommend_notification_subtitle">You will get notification each morning</string>
+    <!-- Title of toggle to use Celsius/Fahrenheit. -->
+    <string name="settings_use_celsius">Temperature in Celsius</string>
+    <!-- Subtitle of toggle to use Celsius/Fahrenheit. -->
+    <string name="settings_use_celsius_subtitle">Use Celsius with temperature values.</string>
+
     <!-- Home screen -->
     <!-- Temperature view with degrees up to 1 decimal point - Fahrenheit. -->
     <string name="temperature_fahrenheit">%1$.1f°F</string>
@@ -37,48 +67,93 @@
     <string name="temperature_celsius">%1$.1f°C</string>
     <!-- Temperature view with general degrees using int. -->
     <string name="temperature_degrees_short">%d°</string>
-
-    <!-- Welcome screen -->
-    <!-- Title of the welcome screen. -->
-    <string name="welcome_screen_title">Welcome to You\'ll Be Cold, trust me!</string>
-    <!-- Description of the welcome screen. -->
-    <string name="welcome_screen_description">Where, ironically, if everything goes well, you won\'t be cold.\n\nHow it works?\nThe app suggests what to wear and bring based on the weather. The more you log what you wore and how you felt, the better the recommendations get—helping you stay comfortable no matter the forecast!</string>
-    <!-- Button text of the welcome screen. -->
-    <string name="welcome_screen_button_text">Get Started</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_history">Log history</string>
-    <string name="menu_settings">Settings</string>
+    <!-- Just now chip title. -->
+    <string name="recommendation_chip_now">Now</string>
+    <!-- Whole today chip title. -->
+    <string name="recommendation_chip_today">Today</string>
+    <!-- Whole tomorrow chip title. -->
+    <string name="recommendation_chip_tomorrow">Tomorrow</string>
+    <!-- Add log floating button action text -->
     <string name="add_log_action">Log</string>
 
-    <string name="add_log_action_history">Add log</string>
+    <!-- Feelings -->
+    <!-- Feeling very cold. -->
     <string name="feeling_very_cold">Freezing</string>
+    <!-- Feeling cold. -->
     <string name="feeling_cold">A little cold</string>
+    <!-- Feeling normal. -->
     <string name="feeling_normal">Just Perfect</string>
+    <!-- Feeling hot. -->
     <string name="feeling_hot">A little warm</string>
+    <!-- Feeling very hot. -->
     <string name="feeling_very_hot">Too hot</string>
-    <string name="dialog_dismiss">Dismiss</string>
-    <string name="dialog_ok">OK</string>
+
+    <!-- Add/Edit log screen -->
+    <!-- Add clothes button. -->
     <string name="add_clothes">Add</string>
+    <!-- Title of log form section to specify date and time. -->
     <string name="add_log_form_when">When were you out?</string>
+    <!-- Title of log form section to specify how user felt. -->
     <string name="add_log_feeling">How did you feel today?</string>
+    <!-- Title of log form section to specify what user wore. -->
     <string name="add_log_wearing">What did you wear?</string>
+    <!-- Title of save button -->
     <string name="add_log_save">Save</string>
+    <!-- Label of time range form - from -->
     <string name="time_range_from">from:</string>
+    <!-- Label of time range form - to -->
     <string name="time_range_to">to:</string>
-    <string name="toast_select_date">Please select a date</string>
-    <string name="offline_state_message">You are offline.</string>
-    <string name="generic_error_message">Ooops, something gone aloof.</string>
+    <!-- Content description for "x" button in clothing chips. -->
     <string name="content_desc_x_remove">Remove</string>
-    <string name="toast_saved_log">Your log was saved</string>
+    <!-- Label for neck feeling prompt. -->
     <string name="label_neck">Neck:</string>
+    <!-- Label for head feeling prompt. -->
     <string name="label_head">Head:</string>
+    <!-- Label for top feeling prompt. -->
     <string name="label_top">Top:</string>
+    <!-- Label for bottom feeling prompt. -->
     <string name="label_bottom">Bottom:</string>
+    <!-- Label for feet feeling prompt. -->
     <string name="label_feet">Feet:</string>
+    <!-- Label for hands feeling prompt. -->
     <string name="label_hands">Hands:</string>
 
+    <!-- Messaging -->
+    <!-- Toast message to ask user to select a date -->
+    <string name="toast_select_date">Please select a date</string>
+    <!-- Offline state message -->
+    <string name="offline_state_message">You are offline.</string>
+    <!-- Generic error message -->
+    <string name="generic_error_message">Ooops, something gone aloof.</string>
+    <!-- Toast message to inform user that log was saved -->
+    <string name="toast_saved_log">Your log was saved</string>
+
+    <!-- Generic Error message -->
+    <string name="message_error_editing_log">There was an unexpected error</string>
+    <!-- Toast message to inform user that log was not saved -->
+    <string name="toast_error_saving_log">There was an unexpected error saving the log.</string>
+    <!-- Toast message to ask user to specify valid time range -->
+    <string name="toast_invalid_time_range">Please specify correct time range.</string>
+    <!-- Toast message to ask user to select at least one piece of clothing. -->
+    <string name="toast_no_clothes_selected">Please select some clothes.</string>
+    <!-- Toast message to inform user there was some issue while editing log. -->
+    <string name="toast_error_editing_log">There was an unexpected error while editing log.</string>
+
+    <!-- Log history screen -->
+    <!-- Feeling description text. %s will be replaced by feeling. -->
     <string name="log_item_label">You were \'%s\'</string>
+    <!-- Content description for expand card button -->
     <string name="expand_card_action">Expand card</string>
+    <!-- Edit log action -->
+    <string name="action_edit">Edit</string>
+    <!-- Delete log action -->
+    <string name="action_delete">Delete</string>
+    <!-- Message when no logs are available -->
+    <string name="message_no_logs_available">No logs available</string>
+    <!-- Average temperature label -->
+    <string name="log_detail_weather_info">Average temperature: %s</string>
+
+    <!-- Clothes -->
     <string name="clothes_short_sleeve">Short sleeve</string>
     <string name="clothes_long_sleeve">Long sleeve</string>
     <string name="clothes_short_skirt">Short skirt</string>
@@ -94,62 +169,20 @@
     <string name="clothes_category_hats">Hats</string>
     <string name="clothes_category_accessories">Accessories</string>
     <string name="clothes_category_dresses_and_overalls">Dresses and overalls</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_delete">Delete</string>
-    <string name="message_no_logs_available">No logs available</string>
-    <string name="toolbar_title_add_log">Create new log</string>
-    <string name="toolbar_title_settings">Settings</string>
-    <string name="toolbar_title_home">Will you be cold today?</string>
-    <string name="toolbar_title_log_history">Your logs</string>
-    <string name="toolbar_title_edit_log">Edit your log</string>
-    <string name="message_error_editing_log">There was an unexpected error</string>
-    <string name="log_detail_weather_info">Average temperature: %s</string>
-    <string name="toast_error_saving_log">There was an unexpected error saving the log.</string>
-    <string name="toast_invalid_time_range">Please specify correct time range.</string>
-    <string name="toast_no_clothes_selected">Please select some clothes.</string>
-    <string name="toast_error_editing_log">There was an unexpected error while editing log.</string>
-    <string name="recommendation_chip_now">Now</string>
-    <string name="recommendation_chip_today">Today</string>
-    <string name="recommendation_chip_tomorrow">Tomorrow</string>
-    <string name="uv_recom_low">It will be a little sunny, consider using sunscreen</string>
-    <string name="uv_recom_medium">It will be sunny, use sunscreen, sunglasses and a hat</string>
-    <string name="uv_recom_high">The world is on fire, use sunscreen, sunglasses, a hat and stay in the shade</string>
-    <string name="uv_recom_none">No sun anywhere, just have a blast</string>
-    <string name="rain_recom_none">No rain, no problem</string>
-    <string name="rain_recom_low">There is a non-zero chance of rain. Don\'t say I didn\'t warn you!</string>
-    <string name="rain_recom_medium">There is some pretty decent chance of rain. Take an umbrella or a raincoat. Or just don\'t bother washing your hair, up to you.</string>
-    <string name="rain_recom_high">It\'s raining men, Halleluuujah it\'s raining men. Oh no, it\'s not, just regular rain. Are we in London? Is apocalypse coming? Even umbrella won\'t save you, but take one anyway.</string>
-    <string name="recom_description_single">Temperature is around %s.</string>
-    <string name="recom_description_range">Temperatures will be between %1$s and %2$s.</string>
-    <string name="recom_apparent_description_single">It feels like %s</string>
-    <string name="recom_apparent_description">It will feel like %1$s - %2$s</string>
-    <string name="recom_clothes_title">Recommended clothes</string>
     <string name="baseball_hat">Baseball hat</string>
     <string name="winter_hat">Winter hat</string>
     <string name="sunglasses">Sunglasses</string>
     <string name="gloves">Gloves</string>
     <string name="scarf">Scarf</string>
     <string name="tights">Tights</string>
+    <string name="clothes_dress_long">Long dress</string>
+    <string name="clothes_long_skirt">Long skirt</string>
     <string name="winter_shoes">Winter shoes</string>
     <string name="warm_pants">Warm pants</string>
     <string name="legging">Leggings</string>
     <string name="winter_jacker">Winter jacket</string>
     <string name="light_jacket">Light jacket</string>
     <string name="tank_top">Tank top</string>
-    <string name="clothes_dress_long">Long dress</string>
-    <string name="recom_certainty_description">Certainty of this suggestion is %s. Improve it by logging more often!</string>
-    <string name="certainity_low">low</string>
-    <string name="certainity_medium">medium</string>
-    <string name="certainity_high">high</string>
-    <string name="clothes_long_skirt">Long skirt</string>
-    <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
-    <string name="toast_ask_notification_perm">Please grant notification permission</string>
-
-    <string name="daily_notification_channel_name">Daily reminder</string>
-    <string name="daily_notification_channel_descr">Notification channel for daily reminder notifications.</string>
-    <string name="notif_daily_log_desc">Tell me more about your day so that I can make better recommendations!</string>
-    <string name="notif_daily_log_title">Were you cold? What did you wear?</string>
-    <string name="recom_no_recommendation">No recommendation available.</string>
     <string name="clothes_category_hoodies">Hoodies</string>
     <string name="clothes_head_scarf">Head scarf</string>
     <string name="clothes_beanie">Beanie</string>
@@ -170,13 +203,81 @@
     <string name="clothes_jean_jacket">Jean jacket</string>
     <string name="clothes_hoodie">Hoodie</string>
     <string name="clothes_jumper">Jumper</string>
+
+    <!-- UV recommendations -->
+    <!-- UV index low. -->
+    <string name="uv_recom_low">It will be a little sunny, consider using sunscreen</string>
+    <!-- UV index medium. -->
+    <string name="uv_recom_medium">It will be sunny, use sunscreen, sunglasses and a hat</string>
+    <!-- UV index high. -->
+    <string name="uv_recom_high">The world is on fire, use sunscreen, sunglasses, a hat and stay in the shade</string>
+    <!-- No sun. -->
+    <string name="uv_recom_none">No sun anywhere, just have a blast</string>
+
+    <!-- Rain related recommendations -->
+    <!-- No rain. -->
+    <string name="rain_recom_none">No rain, no problem</string>
+    <!-- Low chance of rain. -->
+    <string name="rain_recom_low">There is a non-zero chance of rain. Don\'t say I didn\'t warn you!</string>
+    <!-- Medium chance of rain. -->
+    <string name="rain_recom_medium">There is some pretty decent chance of rain. Take an umbrella or a raincoat. Or just don\'t bother washing your hair, up to you.</string>
+    <!-- High chance of rain. -->
+    <string name="rain_recom_high">It\'s raining men, Halleluuujah it\'s raining men. Oh no, it\'s not, just regular rain. Are we in London? Is apocalypse coming? Even umbrella won\'t save you, but take one anyway.</string>
+
+    <!-- Recommendation card -->
+    <!-- Information about current temperature. -->
+    <string name="recom_description_single">Temperature is around %s.</string>
+    <!-- Information about future temperature range. -->
+    <string name="recom_description_range">Temperatures will be between %1$s and %2$s.</string>
+    <!-- Information about apparent temperature. -->
+    <string name="recom_apparent_description_single">It feels like %s</string>
+    <!-- Information about apparent temperature range. -->
+    <string name="recom_apparent_description">It will feel like %1$s - %2$s</string>
+    <!-- Title for recommended clothes section. -->
+    <string name="recom_clothes_title">Recommended clothes</string>
+    <!-- Message when no recommendations are available. -->
+    <string name="recom_no_recommendation">No recommendation available.</string>
+    <!-- Description of certainty of recommendation. Will contain one of strings: certainity_low, certainity_medium, certainity_high -->
+    <string name="recom_certainty_description">Certainty of this suggestion is %s. Improve it by logging more often!</string>
+    <!-- Low certainty -->
+    <string name="certainity_low">low</string>
+    <!-- Medium certainty -->
+    <string name="certainity_medium">medium</string>
+    <!-- High certainty -->
+    <string name="certainity_high">high</string>
+
+    <!-- Daily Notification channel description -->
+    <!-- Name of the daily reminder notification channel. -->
+    <string name="daily_notification_channel_name">Daily reminder</string>
+    <!-- Description of the daily reminder notification channel. -->
+    <string name="daily_notification_channel_descr">Notification channel for daily reminder notifications.</string>
+
+    <!-- Daily reminder to log notification -->
+    <!-- Title of the daily reminder notification. -->
+    <string name="notif_daily_log_desc">Tell me more about your day so that I can make better recommendations!</string>
+    <!-- Description of the daily reminder notification. -->
+    <string name="notif_daily_log_title">Were you cold? What did you wear?</string>
+
+    <!-- Recommendation notification -->
+    <!-- Title of the recommendation notification. -->
     <string name="notif_recommend_title">Let me help you decide what to wear today</string>
+    <!-- Description of the recommendation notification. -->
     <string name="notif_recommend_desc">It is now %1$.1f degrees. Tap to see the recommendation!</string>
+
+    <!-- Exit dialog for adding/editing log. -->
+    <!-- Title of the dialog. -->
+    <string name="dialog_exit_title">Stop logging?</string>
+    <!-- Message of the dialog. -->
+    <string name="dialog_exit_message">All progress will be lost.</string>
+
+    <!-- Generic strings -->
+    <!-- Dismiss button. -->
+    <string name="dialog_dismiss">Dismiss</string>
+    <!-- Confirming button. -->
+    <string name="dialog_ok">OK</string>
+
+    <!-- Location permission background -->
     <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>
     <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
-    <string name="dialog_exit_title">Stop logging?</string>
-    <string name="dialog_exit_message">All progress will be lost.</string>
-    <string name="toolbar_title_recommendation"><![CDATA[Predictions & recommendation]]></string>
-    <string name="menu_recommendation">Recommend</string>
-
+    <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
 </resources>
