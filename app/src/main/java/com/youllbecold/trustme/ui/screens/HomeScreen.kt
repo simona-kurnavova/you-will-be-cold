@@ -36,7 +36,7 @@ import com.youllbecold.trustme.ui.components.cards.ErrorCardType
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.RecommendationCard
 import com.youllbecold.trustme.ui.components.cards.WeatherCard
-import com.youllbecold.trustme.ui.components.generic.ChipSelectCard
+import com.youllbecold.trustme.ui.components.generic.chips.ChipSelectCard
 import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.Forecast
@@ -89,7 +89,6 @@ private fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(CONTENT_PADDING.dp)
                 .verticalScroll(scrollState)  // Note: SwipeRefresh needs scrollable content to function
         ) {
             if (state.isInitialLoading()) {

@@ -66,9 +66,7 @@ private fun HistoryScreen(
     val state = uiState.value
 
     LazyColumn(
-        Modifier
-            .padding(horizontal = CONTENT_PADDING.dp)
-            .fillMaxSize()
+        Modifier.fillMaxSize()
     ) {
         item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
 
@@ -105,7 +103,6 @@ private fun HistoryScreen(
     }
 }
 
-private const val CONTENT_PADDING = 12
 private const val BETWEEN_ITEM_PADDING = 4
 private const val END_SPACE = 48
 private const val EMPTY_PADDING = 24

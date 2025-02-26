@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.chips
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.wrapContentSize

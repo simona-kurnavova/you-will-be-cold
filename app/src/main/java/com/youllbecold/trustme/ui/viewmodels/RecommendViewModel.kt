@@ -56,7 +56,7 @@ class RecommendViewModel(
         timeFrom: LocalTime,
         timeTo: LocalTime,
     ) {
-        _uiState.update { it.copy(status = LoadingStatus.Loading) }
+        _uiState.update { RecommendUiState(status = LoadingStatus.Loading) }
 
         viewModelScope.launch {
             if (!PermissionHelper.hasLocationPermission(app)) {

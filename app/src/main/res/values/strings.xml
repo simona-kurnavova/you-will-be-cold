@@ -272,9 +272,9 @@
 
     <!-- Generic strings -->
     <!-- Dismiss button. -->
-    <string name="dialog_dismiss">Dismiss</string>
+    <string name="dialog_dismiss">Keep logging</string>
     <!-- Confirming button. -->
-    <string name="dialog_ok">OK</string>
+    <string name="dialog_ok">I understand</string>
 
     <!-- Location permission background -->
     <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>

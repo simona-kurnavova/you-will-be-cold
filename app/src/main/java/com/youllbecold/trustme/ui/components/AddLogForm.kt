@@ -30,9 +30,8 @@ import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.Section
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
-import com.youllbecold.trustme.ui.components.generic.ThemedInputChip
-import com.youllbecold.trustme.ui.components.generic.datetime.DateInput
-import com.youllbecold.trustme.ui.components.generic.datetime.TimeRangeInput
+import com.youllbecold.trustme.ui.components.generic.chips.ThemedInputChip
+import com.youllbecold.trustme.ui.components.generic.datetime.DateTimeInput
 import com.youllbecold.trustme.ui.components.generic.icontext.Tile
 import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
@@ -119,26 +118,16 @@ private fun DateTimeSection(
         title = stringResource(R.string.add_log_form_when),
         modifier = modifier.fillMaxWidth()
     ) {
-        Column {
-            DateInput(
-                date = date,
-                onDateSelected = { onDateChanged(it) },
-            )
-
-            Spacer(modifier = Modifier.height(PADDING_BETWEEN_DATETIME.dp))
-
-            TimeRangeInput(
-                fromTime = timeFrom,
-                toTime = timeTo,
-                onFromTimeSelected = onFromTimeSelected,
-                onToTimeSelected = onToTimeSelected,
-            )
-        }
-
+        DateTimeInput(
+            date = date,
+            timeFrom = timeFrom,
+            timeTo = timeTo,
+            onDateChanged = onDateChanged,
+            onFromTimeSelected = onFromTimeSelected,
+            onToTimeSelected = onToTimeSelected,
+        )
     }
 }
-
-private const val PADDING_BETWEEN_DATETIME = 8
 
 @Composable
 private fun FeelingSection(

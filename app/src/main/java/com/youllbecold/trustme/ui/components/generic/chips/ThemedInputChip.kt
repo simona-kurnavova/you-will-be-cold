@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.chips
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.size
@@ -19,6 +19,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
+import com.youllbecold.trustme.ui.components.generic.ThemedIcon
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 

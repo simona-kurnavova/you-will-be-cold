@@ -35,6 +35,7 @@ fun DateInput(
     date: ImmutableDate,
     onDateSelected: (ImmutableDate) -> Unit,
     modifier: Modifier = Modifier,
+    allowFuture: Boolean = false,
 ) {
     val context = LocalContext.current
 
@@ -43,12 +44,11 @@ fun DateInput(
 
     val selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis <= todayMillis // Only allow today and past dates
+            return allowFuture || utcTimeMillis <= todayMillis // Only allow today and past dates
         }
 
         override fun isSelectableYear(year: Int): Boolean {
-            val currentYear = ZonedDateTime.now().year
-            return year <= currentYear // Prevent selecting future years
+            return allowFuture || year <= ZonedDateTime.now().year
         }
     }
 

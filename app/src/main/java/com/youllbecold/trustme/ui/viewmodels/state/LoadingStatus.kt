@@ -19,3 +19,9 @@ fun LoadingStatus.isError() = this in listOf(LoadingStatus.GenericError, Loading
  * Returns true if status is Idle.
  */
 fun LoadingStatus.isIdle() = this == LoadingStatus.Idle
+
+/**
+ * Returns true if status is Loading.
+ */
+fun LoadingStatus.isLoading() = this == LoadingStatus.Loading
+

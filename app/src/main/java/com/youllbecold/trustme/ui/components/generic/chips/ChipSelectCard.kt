@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.ui.components.generic
+package com.youllbecold.trustme.ui.components.generic.chips
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +51,7 @@ fun ChipSelectCard(
 
                         // Scroll to the clicked tab in the pager
                         scope.launch { pagerState.scrollToPage(index) }
-                     },
+                    },
                     selected = index == selectedOption
                 )
             }
