@@ -48,6 +48,10 @@ class SettingsViewModel(
             setAllowDailyNotification(false)
             setAllowRecommendNotification(false)
         }
+
+        if (!PermissionHelper.hasBgLocationPermission(app)) {
+            setAllowRecommendNotification(false)
+        }
     }
 
     /**
@@ -58,6 +62,7 @@ class SettingsViewModel(
             is SettingsAction.SetAllowDailyNotification -> setAllowDailyNotification(action.allow)
             is SettingsAction.SetAllowRecommendNotification -> setAllowRecommendNotification(action.allow)
             is SettingsAction.SetUseCelsiusUnits -> setUseCelsiusUnits(action.useCelsius)
+            else -> Unit // Handled in the UI
         }
     }
 
@@ -123,4 +128,6 @@ sealed class SettingsAction {
     data class SetAllowDailyNotification(val allow: Boolean) : SettingsAction()
     data class SetAllowRecommendNotification(val allow: Boolean) : SettingsAction()
     data class SetUseCelsiusUnits(val useCelsius: Boolean) : SettingsAction()
+    data object SetupDailyNotification : SettingsAction()
+    data object SetupRecommendNotification : SettingsAction()
 }

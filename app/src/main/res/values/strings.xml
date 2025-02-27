@@ -293,4 +293,9 @@
     <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
     <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
     <string name="help">Information</string>
+    <string name="notification_grant_permission">Grant permission</string>
+    <string name="notification_perm_title">Notification permission needed</string>
+    <string name="notification_perm_descr">I need permission to show notification, please gimme.</string>
+    <string name="notification_bg_loc_perm_title">Background location</string>
+    <string name="notification_bg_loc_perm_descr">I need access to background location in order to recommend clothes based on your location.</string>
 </resources>

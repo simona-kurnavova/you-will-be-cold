@@ -64,6 +64,16 @@ sealed class NavRoute(val baseRoot: String, val route: String = baseRoot) {
      * Info screen.
      */
     data object Info : NavRoute("info")
+
+    /**
+     * Recommendation notification permission screen.
+     */
+    data object RecommendNotificationPerm : NavRoute("recommend_notification_perm")
+
+    /**
+     * Log remind notification permission screen.
+     */
+    data object LogRemindNotificationPerm : NavRoute("log_remind_notification_perm")
 }
 
 sealed class NavRouteItem(val navRoute: NavRoute) {
@@ -155,6 +165,14 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
         override val toolbarIcon: IconType = IconType.Thermometer
     }
 
+    data object RecommendNotificationPermItem : NavRouteItem(
+        navRoute = NavRoute.RecommendNotificationPerm
+    )
+
+    data object LogRemindNotificationPermItem : NavRouteItem(
+        navRoute = NavRoute.LogRemindNotificationPerm
+    )
+
     fun isMenuItem(): Boolean = this is MenuItem
 
     fun getToolbar(): Toolbar? = this as? Toolbar
@@ -172,6 +190,8 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
             NavRoute.Welcome.baseRoot -> WelcomeItem
             NavRoute.LocationPermission.baseRoot -> LocationPermissionItem
             NavRoute.Info.baseRoot -> InfoItem
+            NavRoute.RecommendNotificationPerm.baseRoot -> RecommendNotificationPermItem
+            NavRoute.LogRemindNotificationPerm.baseRoot -> LogRemindNotificationPermItem
             else -> throw IllegalArgumentException("Route $route not found")
         }
 

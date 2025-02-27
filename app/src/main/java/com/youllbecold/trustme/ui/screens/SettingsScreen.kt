@@ -1,10 +1,6 @@
 package com.youllbecold.trustme.ui.screens
 
-import android.Manifest
 import android.os.Build
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -24,23 +17,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.inputs.ToggleRow
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.SettingsAction
 import com.youllbecold.trustme.ui.viewmodels.SettingsUiState
 import com.youllbecold.trustme.ui.viewmodels.SettingsViewModel
+import com.youllbecold.trustme.utils.PermissionHelper
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreenRoot(
-    viewModel: SettingsViewModel = koinViewModel()
+    viewModel: SettingsViewModel = koinViewModel(),
+    navigateToLogRemindSetup: () -> Unit,
+    navigateToRecommendSetup: () -> Unit
 ) {
     SettingsScreen(
         uiState = viewModel.uiState.collectAsStateWithLifecycle(),
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when(action) {
+                is SettingsAction.SetupDailyNotification -> navigateToLogRemindSetup()
+                is SettingsAction.SetupRecommendNotification -> navigateToRecommendSetup()
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
@@ -55,29 +55,6 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val state = uiState.value
-    var dailyNotifRequested: Boolean by rememberSaveable { mutableStateOf(false) }
-    var recommendNotifRequested: Boolean by rememberSaveable { mutableStateOf(false) }
-
-    val notificationPermState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-    } else {
-        null // Not needed on lower APIs
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            when {
-                dailyNotifRequested -> onAction(SettingsAction.SetAllowDailyNotification(true))
-                recommendNotifRequested -> onAction(SettingsAction.SetAllowRecommendNotification(true))
-            }
-        } else {
-            Toast.makeText(context, context.getString(R.string.toast_notification_perm_denied), Toast.LENGTH_SHORT).show()
-        }
-        dailyNotifRequested = false
-        recommendNotifRequested = false
-    }
 
     Column(
         modifier = Modifier
@@ -92,9 +69,8 @@ fun SettingsScreen(
             checked = state.allowDailyNotification,
             onChecked = { isChecked ->
                 if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                    && notificationPermState?.status?.isGranted == false) {
-                    dailyNotifRequested = true
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    && !PermissionHelper.hasNotificationPermission(context)) {
+                    onAction(SettingsAction.SetupDailyNotification)
                 } else {
                     onAction(SettingsAction.SetAllowDailyNotification(isChecked))
                 }
@@ -109,9 +85,10 @@ fun SettingsScreen(
             checked = state.allowRecommendNotification,
             onChecked = { isChecked ->
                 if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                    && notificationPermState?.status?.isGranted == false) {
-                    recommendNotifRequested = true
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    && !PermissionHelper.hasNotificationPermission(context)
+                    || !PermissionHelper.hasBgLocationPermission(context)
+                ) {
+                    onAction(SettingsAction.SetupRecommendNotification)
                 } else {
                     onAction(SettingsAction.SetAllowRecommendNotification(isChecked))
                 }
@@ -128,8 +105,6 @@ fun SettingsScreen(
                 onAction(SettingsAction.SetUseCelsiusUnits(isChecked))
             }
         )
-
-        // TODO: Add toggle for morning recommendation notification
     }
 }
 

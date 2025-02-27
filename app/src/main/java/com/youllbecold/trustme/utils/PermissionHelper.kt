@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,22 +48,29 @@ class PermissionHelper(
         /**
          * Background location permission required by the app.
          */
-        val bgLocationPermission = arrayOf(
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        )
+        val bgLocationPermission = Manifest.permission.ACCESS_BACKGROUND_LOCATION
+
+        /**
+         * Notification permission required by the app.
+         */
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
 
         /**
          * Whether location permission is granted.
          */
         fun hasLocationPermission(context: Context): Boolean =
-            (locationPermissions + bgLocationPermission).all { hasPermission(context, it) }
+            locationPermissions.all { hasPermission(context, it) }
 
         /**
          * Whether notification permission is granted.
          */
         fun hasNotificationPermission(context: Context): Boolean =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                    hasPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                    hasPermission(context, notificationPermission)
+
+        fun hasBgLocationPermission(context: Context): Boolean =
+            hasPermission(context, bgLocationPermission)
 
         private fun hasPermission(context: Context, permission: String): Boolean =
             ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED

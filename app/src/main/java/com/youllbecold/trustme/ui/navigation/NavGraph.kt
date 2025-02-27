@@ -12,6 +12,8 @@ import com.youllbecold.trustme.ui.screens.HomeScreenRoot
 import com.youllbecold.trustme.ui.screens.InfoScreen
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
+import com.youllbecold.trustme.ui.screens.NotificationScreenRoot
+import com.youllbecold.trustme.ui.screens.NotificationType
 import com.youllbecold.trustme.ui.screens.RecommendScreenRoot
 import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
 import com.youllbecold.trustme.ui.utils.popAllAndNavigate
@@ -31,7 +33,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 }
             )
         }
-        composable(NavRoute.Settings.route) { SettingsScreenRoot() }
+        composable(NavRoute.Settings.route) {
+            SettingsScreenRoot(
+                navigateToLogRemindSetup = { navController.navigate(NavRoute.LogRemindNotificationPerm.route) },
+                navigateToRecommendSetup = { navController.navigate(NavRoute.RecommendNotificationPerm.route) }
+            )
+        }
         composable(NavRoute.AddLog.route) {
             AddLogRoot(
                 navigateBack = { navController.popBackStack() }
@@ -55,5 +62,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             )
         }
         composable(NavRoute.Info.route) { InfoScreen() }
+        composable(NavRoute.RecommendNotificationPerm.route) {
+            NotificationScreenRoot(
+                notification = NotificationType.RECOMMEND,
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(NavRoute.LogRemindNotificationPerm.route) {
+            NotificationScreenRoot(
+                notification = NotificationType.LOG_REMINDER,
+                navigateBack = { navController.popBackStack() }
+            )
+        }
     }
 }
