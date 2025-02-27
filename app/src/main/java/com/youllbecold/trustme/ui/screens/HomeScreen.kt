@@ -118,6 +118,7 @@ private fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                        .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
                 )
             }
 
@@ -128,6 +129,7 @@ private fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
                     )
                 }
             }
@@ -136,7 +138,8 @@ private fun HomeScreen(
                 state.weather?.let { weather ->
                     RecommendSection(
                         weather = weather,
-                        modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                        horizontalPadding = HORIZONTAL_SCREEN_PADDING,
+                        modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
                     )
                 }
             }
@@ -146,10 +149,10 @@ private fun HomeScreen(
     }
 }
 
-private const val CONTENT_PADDING = 8
 private const val PADDING_BETWEEN_ITEMS = 8
 private const val PROGRESS_INDICATOR_PADDING = 32
 private const val END_SPACE = 48
+private const val HORIZONTAL_SCREEN_PADDING = 12
 
 @Composable
 private fun WeatherNowSection(
@@ -181,6 +184,7 @@ private fun WeatherNowSection(
 @Composable
 private fun RecommendSection(
     weather: Forecast,
+    horizontalPadding: Int,
     modifier: Modifier = Modifier,
 ) {
     var selectedOption by remember { mutableIntStateOf(RecommendationChip.NOW.ordinal) }
@@ -191,14 +195,15 @@ private fun RecommendSection(
         Text(
             text = "Recommendations",
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = PADDING_BETWEEN_ITEMS.dp)
+            modifier = Modifier.padding(vertical = PADDING_BETWEEN_ITEMS.dp, horizontal = horizontalPadding.dp)
         )
 
         ChipSelectCard(
             options = RecommendationChip.entries.map { stringResource(it.stringId) },
             onOptionSelected = { selectedOption = it },
             selectedOption = selectedOption,
-            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
+            horizontalPadding = horizontalPadding,
         ) { page ->
             val weather = when (RecommendationChip.entries[page]) {
                 RecommendationChip.NOW -> weather.current

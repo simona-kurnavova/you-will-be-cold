@@ -19,7 +19,9 @@ import com.youllbecold.trustme.ui.components.generic.Section
 @Composable
 fun InfoScreen() {
     Column(
-        modifier = Modifier.padding(top = PADDING_BETWEEN_SECTIONS.dp)
+        modifier = Modifier
+            .padding(top = PADDING_BETWEEN_SECTIONS.dp)
+            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
         Section(
             title = stringResource(id = R.string.info_title_how_section),
@@ -46,6 +48,7 @@ fun InfoScreen() {
 }
 
 private const val PADDING_BETWEEN_SECTIONS = 8
+private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

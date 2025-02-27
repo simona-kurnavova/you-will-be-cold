@@ -94,16 +94,11 @@ private fun Main() {
             }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                NavGraph(
-                    navController,
-                    Modifier.padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
-                )
+                NavGraph(navController)
             }
         }
     }
 }
-
-private const val HORIZONTAL_SCREEN_PADDING = 12
 
 @Composable
 private fun showBottomBar(currentRoute: String?): Boolean {

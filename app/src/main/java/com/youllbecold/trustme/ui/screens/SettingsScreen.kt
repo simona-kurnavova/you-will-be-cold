@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -79,7 +80,9 @@ fun SettingsScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
 
@@ -131,6 +134,7 @@ fun SettingsScreen(
 }
 
 private const val SPACE_BETWEEN_TOGGLES: Int = 16
+private const val HORIZONTAL_SCREEN_PADDING: Int = 16
 
 @Preview
 @Composable

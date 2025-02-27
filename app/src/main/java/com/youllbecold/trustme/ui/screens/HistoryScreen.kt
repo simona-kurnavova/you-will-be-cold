@@ -55,6 +55,7 @@ fun HistoryScreenRoot(
         }
     )
 }
+
 /**
  * History screen.
  */
@@ -66,7 +67,9 @@ private fun HistoryScreen(
     val state = uiState.value
 
     LazyColumn(
-        Modifier.fillMaxSize()
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
         item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
 
@@ -106,6 +109,7 @@ private fun HistoryScreen(
 private const val BETWEEN_ITEM_PADDING = 4
 private const val END_SPACE = 48
 private const val EMPTY_PADDING = 24
+private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Preview(showBackground = true)
 @Composable

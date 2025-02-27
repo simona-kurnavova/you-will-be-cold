@@ -64,10 +64,13 @@ fun AddLogForm(
     onFeelingsChange: (FeelingsState) -> Unit,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val formScrollState = rememberScrollState()
 
-    Box {
+    Box(
+       modifier = modifier.padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(formScrollState)
@@ -103,6 +106,8 @@ fun AddLogForm(
         }
     }
 }
+
+private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Composable
 private fun DateTimeSection(

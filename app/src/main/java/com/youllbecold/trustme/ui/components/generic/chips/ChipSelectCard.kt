@@ -2,11 +2,13 @@ package com.youllbecold.trustme.ui.components.generic.chips
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ fun ChipSelectCard(
     onOptionSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     selectedOption: Int = 0,
+    horizontalPadding: Int = 0,
     content: @Composable (Int) -> Unit,
 ) {
     val pagerState = rememberPagerState(
@@ -41,6 +44,7 @@ fun ChipSelectCard(
 
     Column(modifier = modifier) {
         Row(
+            modifier = Modifier.padding(horizontal = horizontalPadding.dp),
             horizontalArrangement = Arrangement.spacedBy(SPACE_BETWEEN_CHIPS.dp)
         ) {
             options.forEachIndexed { index, option ->
@@ -52,7 +56,7 @@ fun ChipSelectCard(
                         // Scroll to the clicked tab in the pager
                         scope.launch { pagerState.scrollToPage(index) }
                     },
-                    selected = index == selectedOption
+                    selected = index == selectedOption,
                 )
             }
         }
@@ -61,16 +65,24 @@ fun ChipSelectCard(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = (horizontalPadding - PADDING_BETWEEN_PAGES).dp),
             verticalAlignment = Alignment.Top,
         ) { page ->
-            content(page)
+            Box(
+                modifier = Modifier.padding(horizontal = PADDING_BETWEEN_PAGES.dp),
+            ) {
+                content(page)
+            }
+
         }
     }
 }
 
 private const val SPACE_BETWEEN_CHIPS = 4
 private const val PADDING_UNDER_CHIPS = 4
+private const val PADDING_BETWEEN_PAGES = 4
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
