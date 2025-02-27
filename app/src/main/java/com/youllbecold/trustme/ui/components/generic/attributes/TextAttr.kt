@@ -17,6 +17,12 @@ fun defaultMediumTextAttr(): TextAttr = TextAttr(
 )
 
 @Composable
+fun defaultLargeTextAttr(): TextAttr = TextAttr(
+    style = MaterialTheme.typography.bodyLarge,
+    color = MaterialTheme.colorScheme.onBackground
+)
+
+@Composable
 fun defaultSmallTextAttr(): TextAttr = TextAttr(
     style = MaterialTheme.typography.bodySmall,
     color = MaterialTheme.colorScheme.onBackground

@@ -25,6 +25,8 @@
     <string name="toolbar_title_edit_log">Edit your log</string>
     <!-- Recommendation screen. -->
     <string name="toolbar_title_recommendation"><![CDATA[Predictions & recommendation]]></string>
+    <!-- Info screen. -->
+    <string name="toolbar_title_info">About this app</string>
 
     <!-- Welcome screen -->
     <!-- Title of the welcome screen. -->
@@ -246,6 +248,16 @@
     <!-- High certainty -->
     <string name="certainity_high">high</string>
 
+    <!-- Info screen -->
+    <!-- Title of the info screen how section. -->
+    <string name="info_title_how_section">How it works</string>
+    <!-- Description of the info screen how section. -->
+    <string name="info_desc_how_section">Check the Forecast: Open the app in the morning to see what to wear. We factor in temperature, UV index, wind, and rain so you don’t end up wet, frozen, or sunburned.\n\nLog Your Feels: At the end of the day, tell us how your outfit held up. Too warm? Too cold? Just right? The more you log, the smarter we get!\n\nGet Reminders: We\'ll nudge you in the morning to check your outfit suggestions and in the evening to log your experience.</string>
+    <!-- Title of the info screen why section. -->
+    <string name="info_title_why_section">Why bother?</string>
+    <!-- Description of the info screen why section. -->
+    <string name="info_desc_why_section">Because guessing is overrated! With time, our predictions will be tailored exactly to you. No more shivering in surprise cold fronts or sweating through sunny days. Stay comfy, stay dry, and trust us — you\'ll never be cold (unless you want to be).</string>
+
     <!-- Daily Notification channel description -->
     <!-- Name of the daily reminder notification channel. -->
     <string name="daily_notification_channel_name">Daily reminder</string>
@@ -280,4 +292,5 @@
     <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>
     <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
     <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
+    <string name="help">Information</string>
 </resources>

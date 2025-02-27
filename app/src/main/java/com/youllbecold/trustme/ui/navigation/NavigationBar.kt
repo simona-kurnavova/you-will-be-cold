@@ -14,6 +14,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.youllbecold.trustme.ui.navigation.NavRouteItem
+import kotlin.collections.List
 
 /**
  * Bottom navigation bar.
@@ -23,11 +25,9 @@ fun NavigationBar(navController: NavController) {
     androidx.compose.material3.NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        NavRouteItem.allNavRouteItems()
+        NavRouteItem.getMenuItems()
             .forEach {
-                if (it is MenuItem) {
-                    BottomNavItem(it.navRoute, it, navController, currentDestination)
-                }
+                BottomNavItem((it as NavRouteItem).navRoute, it, navController, currentDestination)
             }
     }
 }

@@ -9,6 +9,7 @@ import com.youllbecold.trustme.ui.screens.AddLogRoot
 import com.youllbecold.trustme.ui.screens.EditLogRoot
 import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
 import com.youllbecold.trustme.ui.screens.HomeScreenRoot
+import com.youllbecold.trustme.ui.screens.InfoScreen
 import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
 import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
 import com.youllbecold.trustme.ui.screens.RecommendScreenRoot
@@ -53,5 +54,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 navigateBack = { navController.popBackStack() },
             )
         }
+        composable(NavRoute.Info.route) { InfoScreen() }
     }
 }

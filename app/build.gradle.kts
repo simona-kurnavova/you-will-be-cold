@@ -94,6 +94,9 @@ dependencies {
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
 
+    // Reflection
+    implementation(libs.kotlin.reflect)
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

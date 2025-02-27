@@ -75,7 +75,9 @@ private fun Main() {
                     toolbar?.let {
                         Toolbar(
                             title = stringResource(it.toolbarTitle),
-                            iconType = it.toolbarIcon
+                            iconType = it.toolbarIcon,
+                            showInfoAction = it.showInfoAction,
+                            navigateToInfo = { navController.navigate(NavRoute.Info.route) }
                         )
                     }
                 }
