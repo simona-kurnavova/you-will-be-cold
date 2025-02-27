@@ -80,14 +80,9 @@ private fun LocationPermissionScreen(
         }
     }
 
-    val description = when {
-        !locationPermissionState.allPermissionsGranted -> R.string.location_screen_description
-        else -> R.string.location_screen_bg_description
-    }
-
     OverlaySkeleton(
         title = R.string.location_screen_title,
-        subtitle = description,
+        subtitle = R.string.location_screen_description,
         buttonText = R.string.location_screen_grant_permission_button,
         action = action,
         image = R.drawable.location_purple,

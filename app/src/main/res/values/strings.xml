@@ -287,15 +287,20 @@
     <string name="dialog_dismiss">Keep logging</string>
     <!-- Confirming button. -->
     <string name="dialog_ok">I understand</string>
-
-    <!-- Location permission background -->
-    <string name="location_permission_bg_ask_toast">Please grant all time location permission</string>
-    <string name="location_screen_bg_description">In order to inform you about the weather through notification, I also need background permission.</string>
-    <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
+    <!-- Content description of information icon in toolbar. -->
     <string name="help">Information</string>
+
+    <!-- Notification permissions setup scree -->
+    <!-- Text of grant permission button - for both notification and bg location. -->
     <string name="notification_grant_permission">Grant permission</string>
+    <!-- Title of notification permission screen. -->
     <string name="notification_perm_title">Notification permission needed</string>
+    <!-- Description of notification permission screen. -->
     <string name="notification_perm_descr">I need permission to show notification, please gimme.</string>
+    <!-- Title of notification bg location permission screen (for notification). -->
     <string name="notification_bg_loc_perm_title">Background location</string>
+    <!-- Description of notification bg location permission screen (for notification). -->
     <string name="notification_bg_loc_perm_descr">I need access to background location in order to recommend clothes based on your location.</string>
+    <!-- Toast for when permission is denied. -->
+    <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
 </resources>
