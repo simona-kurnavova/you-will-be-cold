@@ -2,7 +2,6 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -60,7 +59,6 @@ class HomeViewModel(
         currentWeatherUseCase.weatherState,
         hourlyWeatherUseCase.weatherState,
     ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
-        Log.d("HomeViewModel", "combine: hasPermission=$hasPermission, locationState=$locationState, hasInternet=$hasInternet, weatherState=$weatherState, hourlyWeatherState=$hourlyWeatherState")
         HomeUiState(
             hasPermission = hasPermission,
             status = when {
@@ -75,7 +73,7 @@ class HomeViewModel(
     }.stateIn(viewModelScope, SharingStarted.Lazily, HomeUiState())
 
     init {
-        refreshLocation()
+        locationHelper.refresh()
 
         // Wait for permission and internet connection to fetch the weather.
         combine(
@@ -148,10 +146,6 @@ class HomeViewModel(
         WeatherUseCaseStatus.Success -> LoadingStatus.Idle
         WeatherUseCaseStatus.Loading -> LoadingStatus.Loading
         is WeatherUseCaseStatus.Error -> LoadingStatus.GenericError
-    }
-
-    private fun refreshLocation() {
-        locationHelper.refresh()
     }
 }
 

@@ -9,7 +9,6 @@ import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import android.location.Location
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.LocationServices
@@ -58,6 +57,12 @@ class LocationHelper(
      */
     val geoLocationState: StateFlow<GeoLocationState> = _geoLocation
 
+    /**
+     * Current value of location. Will be null if the location is not available.
+     */
+    val simpleLocation: GeoLocation?
+        get() = geoLocationState.value.location
+
     init {
         coroutineScope.launch {
             permissionHelper.hasLocationPermission.collectLatest { hasPermission ->
@@ -71,7 +76,6 @@ class LocationHelper(
     /**
      * Refreshes the device's location.
      */
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun refresh() {
         if (!PermissionHelper.hasLocationPermission(app)) {
             return // Sanity check

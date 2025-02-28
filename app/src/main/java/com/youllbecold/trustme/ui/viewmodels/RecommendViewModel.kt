@@ -11,6 +11,7 @@ import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
+import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,13 +23,17 @@ import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 
+/**
+ * ViewModel for the recommendation screen.
+ */
 @KoinViewModel
 class RecommendViewModel(
     private val app: Application,
     private val weatherUseCase: RangedWeatherUseCase,
     private val dataStorePreferences: DataStorePreferences,
     private val recommendUseCase: RecommendationUseCase,
-    private val locationHelper: LocationHelper
+    private val locationHelper: LocationHelper,
+    private val networkHelper: NetworkHelper,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<RecommendUiState> = MutableStateFlow(RecommendUiState())
 
@@ -36,6 +41,11 @@ class RecommendViewModel(
      * UI state for the recommendation screen.
      */
     val uiState: StateFlow<RecommendUiState> = _uiState
+
+    init {
+        // We probably already have location, but just in case, refresh it.
+        locationHelper.refresh()
+    }
 
     /**
      * Handles [RecommendAction].
@@ -58,36 +68,41 @@ class RecommendViewModel(
     ) {
         _uiState.update { RecommendUiState(status = LoadingStatus.Loading) }
 
-        viewModelScope.launch {
-            if (!PermissionHelper.hasLocationPermission(app)) {
+        when {
+            !PermissionHelper.hasLocationPermission(app) -> {
                 _uiState.update { it.copy(status = LoadingStatus.GenericError) }
-                return@launch
+                return
             }
 
-            // TODO: refresh location when needed
-            val location = locationHelper.geoLocationState.first()
+            !networkHelper.hasInternet() -> {
+                _uiState.update { it.copy(status = LoadingStatus.NoInternet) }
+                return
+            }
+        }
 
-            if (location.location == null) {
+        viewModelScope.launch {
+            val location = locationHelper.simpleLocation // Readily available
+                ?: LocationHelper.getLastLocation(app) // Ask for it otherwise
+
+            if (location == null) {
                 _uiState.update { it.copy(status = LoadingStatus.GenericError) }
                 return@launch
             }
 
             val weather = weatherUseCase.obtainRangedWeather(
-                location.location,
-                date,
-                timeFrom,
-                timeTo,
-                dataStorePreferences.useCelsiusUnits.first()
-            )
+                location = location,
+                date = date,
+                timeFrom = timeFrom,
+                timeTo = timeTo,
+                useCelsiusUnits = dataStorePreferences.useCelsiusUnits.first()
+            ).getOrNull()
 
-            val weatherRes = weather.getOrNull()
-
-            if (weatherRes == null) {
+            if (weather == null) {
                 _uiState.update { it.copy(status = LoadingStatus.GenericError) }
                 return@launch
             }
 
-            val recommendation = recommendUseCase.recommend(weatherRes)
+            val recommendation = recommendUseCase.recommend(weather)
 
             if (recommendation == null) {
                 _uiState.update { it.copy(status = LoadingStatus.GenericError) }
@@ -97,7 +112,7 @@ class RecommendViewModel(
             _uiState.update {
                 it.copy(
                     weatherWithRecommendation = WeatherWithRecommendation(
-                        weather = weatherRes.toPersistentList(),
+                        weather = weather.toPersistentList(),
                         recommendation = recommendation
                     ),
                     status = LoadingStatus.Idle

@@ -24,12 +24,12 @@ fun LogExitDialog(
         onDismissRequest = { onDismiss() },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text(stringResource(R.string.dialog_dismiss))
+                Text(stringResource(R.string.dialog_continue_logging))
             }
         },
         confirmButton = {
             TextButton(onClick = { onConfirmation() }) {
-                Text(stringResource(R.string.dialog_ok))
+                Text(stringResource(R.string.dialog_stop_logging))
             }
         },
 

@@ -151,7 +151,7 @@
     <!-- Delete log action -->
     <string name="action_delete">Delete</string>
     <!-- Message when no logs are available -->
-    <string name="message_no_logs_available">No logs available</string>
+    <string name="message_no_logs_available">You have no logs.</string>
     <!-- Average temperature label -->
     <string name="log_detail_weather_info">Average temperature: %s</string>
 
@@ -282,11 +282,12 @@
     <!-- Message of the dialog. -->
     <string name="dialog_exit_message">All progress will be lost.</string>
 
-    <!-- Generic strings -->
-    <!-- Dismiss button. -->
-    <string name="dialog_dismiss">Keep logging</string>
-    <!-- Confirming button. -->
-    <string name="dialog_ok">I understand</string>
+    <!-- Exit dialog for adding/editing log. -->
+    <!-- Dismiss logging button. -->
+    <string name="dialog_continue_logging">Keep logging</string>
+    <!-- Confirm leaving logging screen button. -->
+    <string name="dialog_stop_logging">Leave</string>
+
     <!-- Content description of information icon in toolbar. -->
     <string name="help">Information</string>
 
@@ -303,4 +304,10 @@
     <string name="notification_bg_loc_perm_descr">I need access to background location in order to recommend clothes based on your location.</string>
     <!-- Toast for when permission is denied. -->
     <string name="toast_notification_perm_denied">We cannot show notification without permission</string>
+
+    <!-- Generic strings -->
+    <!-- Dismiss button. -->
+    <string name="dialog_dismiss">Dismiss</string>
+    <!-- Confirming button. -->
+    <string name="dialog_ok">Ok</string>
 </resources>
