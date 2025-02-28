@@ -63,7 +63,7 @@ fun RecommendScreenRoot(
 }
 
 @Composable
-fun RecommendScreen(
+private fun RecommendScreen(
     uiState: State<RecommendUiState>,
     onAction: (RecommendAction) -> Unit
 ) {

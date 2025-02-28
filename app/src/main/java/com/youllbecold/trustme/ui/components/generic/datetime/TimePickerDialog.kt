@@ -55,7 +55,7 @@ fun TimePicker(
 
 @Preview
 @Composable
-fun DialWithDialogExamplePreview() {
+private fun DialWithDialogExamplePreview() {
     YoullBeColdTheme {
         TimePicker(
             initial = ImmutableTime(LocalTime.now()),

@@ -48,7 +48,7 @@ enum class ButtonType {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun PrimaryButtonPreview() {
+private fun PrimaryButtonPreview() {
     YoullBeColdTheme {
         ThemedButton(
             text = stringResource(R.string.app_name),

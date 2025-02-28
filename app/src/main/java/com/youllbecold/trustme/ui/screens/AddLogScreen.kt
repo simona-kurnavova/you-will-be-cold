@@ -115,7 +115,7 @@ private fun AddLogScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun AdLogScreenPreview() {
+private fun AdLogScreenPreview() {
     val state = remember {
         mutableStateOf(
             AddLogUiState(

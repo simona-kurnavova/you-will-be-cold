@@ -29,8 +29,9 @@ fun ErrorCard(
             ErrorCardType.OFFLINE -> stringResource(R.string.offline_state_message)
             ErrorCardType.GENERIC -> stringResource(R.string.generic_error_message)
         }
+
         IconTextVertical(
-            title = stringResource(R.string.offline_state_message),
+            title = text,
             iconType = IconType.SadEmoji,
             titleAttr = defaultSmallTextAttr().copy(
                 color = MaterialTheme.colorScheme.onErrorContainer

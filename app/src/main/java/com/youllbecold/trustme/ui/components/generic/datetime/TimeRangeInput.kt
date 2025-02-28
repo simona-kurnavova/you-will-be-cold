@@ -49,7 +49,7 @@ fun TimeRangeInput(
 private const val PADDING_BETWEEN_ITEMS = 8
 
 @Composable
-fun LabeledTimeInput(
+private fun LabeledTimeInput(
     label: String,
     time: ImmutableTime,
     onTimeSelected: (ImmutableTime) -> Unit,

@@ -87,7 +87,7 @@ private const val DIVIDER_PADDING = 8
 private const val SPACER_UNDER_CITY = 8
 
 @Composable
-fun CurrentTemperatureView(
+private fun CurrentTemperatureView(
     temperature: Double,
     useCelsius: Boolean,
     iconType: IconType,
@@ -121,7 +121,7 @@ private const val TEMPERATURE_FONT_SIZE = 64
 private const val SPACER_WIDTH = 8
 
 @Composable
-fun WeatherParameters(
+private fun WeatherParameters(
     windSpeed: Double,
     precipitationProbability: Int,
     uvIndex: Double,

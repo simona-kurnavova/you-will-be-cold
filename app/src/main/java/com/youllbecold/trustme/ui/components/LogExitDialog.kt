@@ -39,7 +39,7 @@ fun LogExitDialog(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-private fun XPreview() {
+private fun LogExitDialogPreview() {
     YoullBeColdTheme {
         LogExitDialog(
             onConfirmation = {},
