@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.inputs.ToggleRow
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -47,9 +48,8 @@ fun SettingsScreenRoot(
 /**
  * Settings screen.
  */
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun SettingsScreen(
+private fun SettingsScreen(
     uiState: State<SettingsUiState>,
     onAction: (SettingsAction) -> Unit,
 ) {
@@ -59,6 +59,7 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_TOGGLES.dp))
@@ -113,7 +114,7 @@ private const val HORIZONTAL_SCREEN_PADDING: Int = 16
 
 @Preview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     YoullBeColdTheme {
         SettingsScreen(
             remember { mutableStateOf(SettingsUiState()) },
