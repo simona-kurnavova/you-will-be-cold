@@ -9,18 +9,21 @@ import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import android.location.Location
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.youllbecold.trustme.ui.viewmodels.state.LoadingStatus
+import com.youllbecold.trustme.ui.viewmodels.state.isIdle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,7 +44,14 @@ class LocationHelper(
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(app) }
 
-    private val _geoLocation: MutableStateFlow<GeoLocationState> = MutableStateFlow(GeoLocationState())
+    private val _geoLocation: MutableStateFlow<GeoLocationState> = MutableStateFlow(GeoLocationState()).apply {
+        onEach { state ->
+            // Update the city if the location changes.
+            if (state.status.isIdle() && state.city == null) {
+                state.location?.let { updateAddress(it) }
+            }
+        }.launchIn(coroutineScope)
+    }
 
     /**
      * State flow for the device's location.
@@ -50,15 +60,10 @@ class LocationHelper(
 
     init {
         coroutineScope.launch {
-            val hasPermission = permissionHelper.hasLocationPermission.first()
-
-            if (hasPermission) {
-                refresh()
-            }
-
-            // Update address when location changes.
-            _geoLocation.collectLatest { geo ->
-                geo.location?.let { updateAddress(it) }
+            permissionHelper.hasLocationPermission.collectLatest { hasPermission ->
+                if (hasPermission) {
+                    refresh()
+                }
             }
         }
     }
@@ -68,6 +73,10 @@ class LocationHelper(
      */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun refresh() {
+        if (!PermissionHelper.hasLocationPermission(app)) {
+            return // Sanity check
+        }
+
         _geoLocation.update { it.copy(status = LoadingStatus.Loading) }
 
         locationClient.lastLocation.addOnCompleteListener { task: Task<Location> ->

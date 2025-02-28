@@ -71,31 +71,27 @@ private fun HomeScreen(
     onAction: (HomeAction) -> Unit,
 ) {
     val state = uiState.value
-
     if (!state.hasPermission) {
         return
     }
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing())
+    val scrollState = rememberScrollState()
 
     SwipeRefresh(
-        modifier = Modifier.fillMaxWidth(),
         state = swipeRefreshState,
         swipeEnabled = true,
         onRefresh = { onAction(HomeAction.RefreshWeather) }
     ) {
-        val scrollState = rememberScrollState()
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(scrollState)  // Note: SwipeRefresh needs scrollable content to function
+                .verticalScroll(scrollState),  // Note: SwipeRefresh needs scrollable content to function
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (state.isInitialLoading()) {
+            FadingItem(visible = state.isInitialLoading()) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = PROGRESS_INDICATOR_PADDING.dp)
+                    modifier = Modifier.padding(top = PROGRESS_INDICATOR_PADDING.dp)
                 )
             }
 
@@ -112,35 +108,31 @@ private fun HomeScreen(
             val showWeather = state.weather != null
 
             FadingItem(visible = showWeather) {
-                WeatherNowSection(
-                    currentWeather = state.weather?.current?.weather?.first(),
-                    city = state.city,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                        .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
-                )
-            }
-
-            FadingItem(visible = showWeather) {
-                state.weather?.next24Hours()?.let { hourlyTemperatures ->
-                    HourlyWeatherCard(
-                        hourlyTemperatures = hourlyTemperatures,
+                Column {
+                    WeatherNowSection(
+                        currentWeather = state.weather?.current?.weather?.first(),
+                        city = state.city,
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
                             .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
                     )
-                }
-            }
 
-            FadingItem(visible = showWeather) {
-                state.weather?.let { weather ->
-                    RecommendSection(
-                        weather = weather,
-                        horizontalPadding = HORIZONTAL_SCREEN_PADDING,
-                        modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
-                    )
+                    state.weather?.next24Hours()?.let { hourlyTemperatures ->
+                        HourlyWeatherCard(
+                            hourlyTemperatures = hourlyTemperatures,
+                            modifier = Modifier
+                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                                .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
+                        )
+                    }
+
+                    state.weather?.let { weather ->
+                        RecommendSection(
+                            weather = weather,
+                            horizontalPadding = HORIZONTAL_SCREEN_PADDING,
+                            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
+                        )
+                    }
                 }
             }
 
@@ -218,7 +210,7 @@ private fun RecommendSection(
     }
 }
 
-enum class RecommendationChip(@StringRes val stringId: Int) {
+private enum class RecommendationChip(@StringRes val stringId: Int) {
     NOW(R.string.recommendation_chip_now),
     TODAY(R.string.recommendation_chip_today),
     TOMORROW(R.string.recommendation_chip_tomorrow)
@@ -226,7 +218,7 @@ enum class RecommendationChip(@StringRes val stringId: Int) {
 
 @Preview
 @Composable
-fun HomeScreenPreview() {
+private fun HomeScreenPreview() {
     val weather = Weather(
         time = LocalDateTime.now(),
         unitsCelsius = true,

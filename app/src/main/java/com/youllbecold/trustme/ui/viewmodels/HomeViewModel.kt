@@ -2,6 +2,7 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,11 +45,14 @@ class HomeViewModel(
     private val currentWeatherUseCase: CurrentWeatherUseCase,
     private val hourlyWeatherUseCase: HourlyWeatherUseCase,
     private val recommendUseCase: RecommendationUseCase,
-    private val networkHelper: NetworkHelper,
     private val locationHelper: LocationHelper,
     permissionHelper: PermissionHelper,
+    networkHelper: NetworkHelper,
 ) : ViewModel() {
 
+    /**
+     * The UI state for the home screen.
+     */
     val uiState: StateFlow<HomeUiState> = combine(
         permissionHelper.hasLocationPermission,
         locationHelper.geoLocationState,
@@ -56,9 +60,11 @@ class HomeViewModel(
         currentWeatherUseCase.weatherState,
         hourlyWeatherUseCase.weatherState,
     ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
+        Log.d("HomeViewModel", "combine: hasPermission=$hasPermission, locationState=$locationState, hasInternet=$hasInternet, weatherState=$weatherState, hourlyWeatherState=$hourlyWeatherState")
         HomeUiState(
             hasPermission = hasPermission,
             status = when {
+                !hasPermission -> LoadingStatus.Loading
                 !hasInternet -> LoadingStatus.NoInternet
                 !locationState.status.isIdle() -> locationState.status
                 else -> weatherState.status.toWeatherStatus()
@@ -66,7 +72,7 @@ class HomeViewModel(
             city = locationState.city,
             weather = obtainWeatherWithRecommendations(weatherState.weather, hourlyWeatherState.weather)
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
+    }.stateIn(viewModelScope, SharingStarted.Lazily, HomeUiState())
 
     init {
         refreshLocation()
@@ -217,7 +223,7 @@ data class Forecast(
      */
     fun next24Hours(): PersistentList<HourlyTemperature> =
         (today.weather + tomorrow.weather)
-            .take(24)
+            .take(HOURS_IN_HOURLY_WEATHER)
             .toHourlyTemperature()
             .toPersistentList()
 
@@ -230,3 +236,5 @@ data class Forecast(
             )
         }?.toPersistentList() ?: persistentListOf()
 }
+
+private const val HOURS_IN_HOURLY_WEATHER = 24
