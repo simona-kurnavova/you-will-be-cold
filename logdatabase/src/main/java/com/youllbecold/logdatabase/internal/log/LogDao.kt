@@ -1,5 +1,6 @@
 package com.youllbecold.logdatabase.internal.log
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -10,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface LogDao {
-    @Query("SELECT * FROM log ORDER BY datetime(date_from) DESC LIMIT :limit")
-    fun getAll(limit: Int = DEFAULT_LIMIT): Flow<List<LogEntity>>
+    @Query("SELECT * FROM log ORDER BY datetime(date_from) DESC")
+    fun getAllPaging(): PagingSource<Int, LogEntity>
 
     @Query("SELECT * FROM log WHERE " +
             "apparentTemperatureMinC >= :apparentTempLower AND " +

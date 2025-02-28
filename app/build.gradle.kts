@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    // Paging
+    implementation(libs.bundles.paging)
+
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
 

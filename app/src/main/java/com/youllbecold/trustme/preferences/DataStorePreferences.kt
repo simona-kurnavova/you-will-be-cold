@@ -13,10 +13,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Singleton
 
 /**
  * Object for accessing data store preferences.
  */
+@Singleton
 class DataStorePreferences(private val context: Context) {
     private val dailyNotificationKey = booleanPreferencesKey(PREFERENCES_DAILY_NOTIF)
     private val recommendNotificationKey = booleanPreferencesKey(PREFERENCES_RECOMMEND_NOTIF)

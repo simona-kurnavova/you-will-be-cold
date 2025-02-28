@@ -3,32 +3,33 @@ package com.youllbecold.trustme.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.LogCard
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
 import com.youllbecold.trustme.ui.components.utils.ImmutableTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HistoryAction
-import com.youllbecold.trustme.ui.viewmodels.HistoryUiState
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.state.LogState
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -41,7 +42,7 @@ fun HistoryScreenRoot(
     val context = LocalContext.current
 
     HistoryScreen(
-        uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+        logs = viewModel.uiState.collectAsLazyPagingItems(),
         onAction = { action ->
             when(action) {
                 is HistoryAction.Edit -> action.state.id?.let { navigateToEdit(it) }
@@ -61,11 +62,9 @@ fun HistoryScreenRoot(
  */
 @Composable
 private fun HistoryScreen(
-    uiState: State<HistoryUiState>,
+    logs: LazyPagingItems<LogState>,
     onAction: (HistoryAction) -> Unit
 ) {
-    val state = uiState.value
-
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -73,16 +72,18 @@ private fun HistoryScreen(
     ) {
         item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
 
-        items(state.logs.size) { index ->
-            key(state.logs[index].id) {
+        items(logs.itemCount) { index ->
+            val log = logs[index] ?: return@items
+
+            key(log.id) {
                 LogCard(
-                    log = state.logs[index],
+                    log = log,
                     modifier = Modifier.padding(vertical = BETWEEN_ITEM_PADDING.dp),
                     editAction = {
-                        onAction(HistoryAction.Edit(state.logs[index]))
+                        onAction(HistoryAction.Edit(log))
                     },
                     deleteAction = {
-                        onAction(HistoryAction.Delete(state.logs[index]))
+                        onAction(HistoryAction.Delete(log))
                     },
                 )
 
@@ -90,14 +91,38 @@ private fun HistoryScreen(
             }
         }
 
-        if (state.logs.isEmpty()) {
+        if (logs.itemCount <= 0 && logs.loadState.isIdle) {
             item {
                 Text(
                     text = stringResource(R.string.message_no_logs_available),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(EMPTY_PADDING.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+
+        when {
+            logs.loadState.hasError -> item {
+                Text(
+                    text = stringResource(R.string.generic_error_message),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(EMPTY_PADDING.dp),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            !logs.loadState.isIdle -> item {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(EMPTY_PADDING.dp),
                 )
             }
         }
@@ -113,7 +138,7 @@ private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Preview(showBackground = true)
 @Composable
-fun HistoryScreenPreview() {
+private fun HistoryScreenPreview() {
     YoullBeColdTheme {
         val log = LogState(
             id = null,
@@ -121,14 +146,12 @@ fun HistoryScreenPreview() {
             ImmutableTime(LocalTime.now()),
             ImmutableTime(LocalTime.now()),
         )
-        val state = remember {
-            mutableStateOf(HistoryUiState(
-                persistentListOf(log, log, log)
-            ))
+        val state = flow {
+            emit(PagingData.from(listOf(log, log, log)))
         }
 
         HistoryScreen(
-            uiState = state,
+            logs = state.collectAsLazyPagingItems(),
             onAction = {}
         )
     }
@@ -136,14 +159,12 @@ fun HistoryScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun HistoryScreenEmptyPreview() {
-    val state = remember {
-        mutableStateOf(HistoryUiState(persistentListOf()))
-    }
-
+private fun HistoryScreenEmptyPreview() {
     YoullBeColdTheme {
         HistoryScreen(
-            uiState = state,
+            logs = flow {
+                emit(PagingData.empty<LogState>())
+            }.collectAsLazyPagingItems(),
             onAction = {}
         )
     }

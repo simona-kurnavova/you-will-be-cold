@@ -1,5 +1,9 @@
 package com.youllbecold.logdatabase.internal.log
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.logdatabase.internal.log.entity.ClothesId
 import com.youllbecold.logdatabase.internal.log.entity.FeelingEntity
@@ -20,10 +24,15 @@ internal class LogRepositoryImpl(
 ) : LogRepository {
     private val dispatchers = Dispatchers.IO
 
-    override val logs: Flow<List<LogData>>
-        get() = logDao.getAll().map { logs ->
-            logs.map { it.toModel() }
-        }
+    override fun getAllWithPaging(pageSize: Int): Flow<PagingData<LogData>> = Pager(
+        config = PagingConfig(
+            pageSize = pageSize,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { logDao.getAllPaging() }
+    ).flow.map { pagingData ->
+        pagingData.map { logEntity -> logEntity.toModel() }
+    }
 
     override suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData> {
         return withContext(dispatchers) {
@@ -42,7 +51,6 @@ internal class LogRepositoryImpl(
 
     override suspend fun addLog(log: LogData) {
         withContext(dispatchers) {
-            val entity = log.toEntity()
             logDao.insert(log.toEntity())
         }
     }
