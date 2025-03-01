@@ -32,7 +32,7 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.RecommendationCard
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.components.generic.datetime.DateTimeInput
@@ -84,10 +84,9 @@ private fun RecommendScreen(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(state = rememberScrollState())
-            .padding(bottom = BOTTOM_PADDING.dp)
-            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
+            .padding(vertical = VERTICAL_PADDING.dp, horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
-        OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+        ThemedCard(modifier = Modifier.fillMaxWidth()) {
             Column {
                 DateTimeInput(
                     date = dateTimeState.date,
@@ -149,7 +148,7 @@ private fun RecommendScreen(
 private const val PROGRESS_INDICATOR_PADDING = 24
 private const val CARD_INTERNAL_PADDING = 12
 private const val SPACE_BETWEEN_ITEMS = 12
-private const val BOTTOM_PADDING = 16
+private const val VERTICAL_PADDING = 16
 private const val HORIZONTAL_SCREEN_PADDING = 12
 
 @Stable

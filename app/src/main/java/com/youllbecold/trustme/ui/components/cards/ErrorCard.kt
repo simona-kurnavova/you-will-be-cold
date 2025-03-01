@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.icontext.IconTextVertical
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
@@ -21,8 +21,8 @@ fun ErrorCard(
     errorCardType: ErrorCardType,
     modifier: Modifier = Modifier
 ) {
-    OutlinedCard(
-        containerColor = MaterialTheme.colorScheme.errorContainer,
+    ThemedCard(
+        bgColor = MaterialTheme.colorScheme.errorContainer,
         modifier = modifier
     ) {
         val text = when(errorCardType) {

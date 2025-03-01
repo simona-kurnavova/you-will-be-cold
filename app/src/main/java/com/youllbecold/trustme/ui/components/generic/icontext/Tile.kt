@@ -2,11 +2,12 @@ package com.youllbecold.trustme.ui.components.generic.icontext
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
@@ -24,12 +25,11 @@ fun Tile(
     iconAttr: IconAttr = defaultSmallIconAttr(),
     titleAttr: TextAttr = defaultMediumTextAttr(),
     subtitleAttr: TextAttr = defaultSmallTextAttr(),
-    borderAttr: BorderAttr = defaultBorderAttr(),
     subtitle: String? = null,
     onClick: (() -> Unit)? = null
 ) {
-    OutlinedCard(
-        borderAttr = borderAttr,
+    ThemedCard(
+        bgColor = MaterialTheme.colorScheme.background,
         modifier = modifier
             .then(
                 if (onClick != null) {

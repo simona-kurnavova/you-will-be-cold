@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -36,6 +34,7 @@ import com.youllbecold.trustme.ui.components.cards.ErrorCardType
 import com.youllbecold.trustme.ui.components.cards.HourlyWeatherCard
 import com.youllbecold.trustme.ui.components.cards.RecommendationCard
 import com.youllbecold.trustme.ui.components.cards.WeatherCard
+import com.youllbecold.trustme.ui.components.generic.ThemedText
 import com.youllbecold.trustme.ui.components.generic.chips.ChipSelectCard
 import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -158,10 +157,9 @@ private fun WeatherNowSection(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(
-            text = "Current weather",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+        ThemedText(
+            text = stringResource(R.string.home_section_current_weather),
+            modifier = Modifier.padding(vertical = PADDING_BETWEEN_ITEMS.dp)
         )
 
         currentWeather?.let {
@@ -187,9 +185,8 @@ private fun RecommendSection(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(
-            text = "Recommendations",
-            style = MaterialTheme.typography.bodyMedium,
+        ThemedText(
+            text = stringResource(R.string.home_section_recommendations),
             modifier = Modifier.padding(vertical = PADDING_BETWEEN_ITEMS.dp, horizontal = horizontalPadding.dp)
         )
 

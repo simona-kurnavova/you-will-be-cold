@@ -310,4 +310,6 @@
     <string name="dialog_dismiss">Dismiss</string>
     <!-- Confirming button. -->
     <string name="dialog_ok">Ok</string>
+    <string name="home_section_current_weather">Current weather</string>
+    <string name="home_section_recommendations">Recommendations</string>
 </resources>

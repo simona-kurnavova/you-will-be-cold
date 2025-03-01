@@ -15,15 +15,18 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = White,
 
     primary = PrettyBlue,
-    secondary = PastelPurple,
+    secondary = WarmOrange,
+
+    surface = DarkGrey,
+    onSurface = White,
 
     // Floating action button
-    primaryContainer = PastelBlue,
-    onPrimaryContainer = Black,
+    primaryContainer = WarmOrange,
+    onPrimaryContainer = White,
 
     // Menu highlight
-    secondaryContainer = PastelBlue,
-    onSecondaryContainer = Black,
+    secondaryContainer = WarmOrange,
+    onSecondaryContainer = White,
 
     errorContainer = FadedRed,
     onErrorContainer = White,
@@ -37,11 +40,11 @@ private val LightColorScheme = lightColorScheme(
     secondary = PrettyBlue,
 
     // Floating action button
-    primaryContainer = PrettyBlue,
+    primaryContainer = PastelFire,
     onPrimaryContainer = White,
 
     // Menu highlight
-    secondaryContainer = PrettyBlue,
+    secondaryContainer = PastelFire,
     onSecondaryContainer = White,
 )
 

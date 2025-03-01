@@ -1,5 +1,6 @@
 package com.youllbecold.trustme
 
+import android.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.youllbecold.trustme.ui.components.Toolbar
+import com.youllbecold.trustme.ui.components.generic.ThemedText
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.ui.navigation.NavGraph
 import com.youllbecold.trustme.ui.navigation.NavRoute
 import com.youllbecold.trustme.ui.navigation.NavRouteItem
@@ -104,10 +108,19 @@ private fun SetupFloatingButton(navController: NavController,  currentRoute: Nav
         ExtendedFloatingActionButton(
             onClick = { navController.navigate(action.floatingActionTo.route) },
             icon = {
-                Icon(action.floatingActionIcon, null)
+                Icon(
+                    action.floatingActionIcon,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             },
             text = {
-                Text(text = stringResource(id = action.floatingActionTitle))
+                ThemedText(
+                    text = stringResource(id = action.floatingActionTitle),
+                    textAttr = defaultMediumTextAttr().copy(
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                )
             },
         )
     }

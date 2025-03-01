@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,12 +20,11 @@ import com.youllbecold.trustme.ui.components.generic.icontext.IconRowData
 import com.youllbecold.trustme.ui.components.generic.icontext.IconText
 import com.youllbecold.trustme.ui.components.generic.icontext.IconTextRow
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedIcon
 import com.youllbecold.trustme.ui.components.generic.ThemedText
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultBigIconAttr
-import com.youllbecold.trustme.ui.components.generic.attributes.defaultLargeTextAttr
 import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
@@ -36,7 +33,6 @@ import com.youllbecold.trustme.ui.utils.thermometer
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDateTime
 
 @Composable
@@ -45,7 +41,7 @@ fun WeatherCard(
     city: String?,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedCard(modifier = modifier) {
+    ThemedCard(modifier = modifier) {
         Row {
             Image(
                 painter = rememberVector(weather.thermometer),

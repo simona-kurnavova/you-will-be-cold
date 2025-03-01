@@ -10,7 +10,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,17 +19,15 @@ import com.youllbecold.trustme.ui.components.generic.attributes.defaultBorderAtt
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable
-fun OutlinedCard(
+fun ThemedCard(
     modifier: Modifier = Modifier,
-    borderAttr: BorderAttr = defaultBorderAttr(),
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    bgColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit,
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = containerColor,
+            containerColor = bgColor,
         ),
-        border = BorderStroke(borderAttr.width.dp, borderAttr.color),
         modifier = modifier,
     ) {
         Box(
@@ -50,7 +47,7 @@ private const val INSIDE_PADDING = 12
 @Composable
 private fun OutlinedCardPreview() {
     YoullBeColdTheme {
-        OutlinedCard {
+        ThemedCard {
             Text(text = "This is an outlined card")
         }
     }

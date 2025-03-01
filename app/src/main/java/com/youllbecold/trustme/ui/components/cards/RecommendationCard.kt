@@ -17,7 +17,7 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.OutlinedCard
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedHorizontalDivider
 import com.youllbecold.trustme.ui.components.generic.ThemedText
 import com.youllbecold.trustme.ui.components.generic.attributes.copyWithAlpha
@@ -40,7 +40,7 @@ fun RecommendationCard(
     weatherWithRecommendation: WeatherWithRecommendation,
     modifier: Modifier = Modifier
 ) {
-    OutlinedCard(modifier = modifier) {
+    ThemedCard(modifier = modifier) {
         Column {
             val recommendation = weatherWithRecommendation.recommendation
 

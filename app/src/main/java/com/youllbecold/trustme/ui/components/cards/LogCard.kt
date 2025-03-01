@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.icontext.ClickableText
 import com.youllbecold.trustme.ui.components.generic.icontext.IconText
 import com.youllbecold.trustme.ui.components.utils.ImmutableDate
@@ -59,7 +60,7 @@ fun LogCard(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    Card(
+    ThemedCard(
         modifier = modifier.clickable(onClick = { expanded = !expanded }),
     ) {
         if (expanded) {

@@ -70,7 +70,7 @@ private fun HistoryScreen(
             .fillMaxSize()
             .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
-        item { Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp)) }
+        item { Spacer(modifier = Modifier.height(SPACE_ON_TOP.dp)) }
 
         items(logs.itemCount) { index ->
             val log = logs[index] ?: return@items
@@ -135,6 +135,7 @@ private const val BETWEEN_ITEM_PADDING = 4
 private const val END_SPACE = 48
 private const val EMPTY_PADDING = 24
 private const val HORIZONTAL_SCREEN_PADDING = 16
+private const val SPACE_ON_TOP = 16
 
 @Preview(showBackground = true)
 @Composable
