@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Singleton
 
+/**
+ * Helper class for checking network connectivity.
+ */
 @Singleton
 class NetworkHelper(private val app: Application) {
     private val connectivityManager by lazy {

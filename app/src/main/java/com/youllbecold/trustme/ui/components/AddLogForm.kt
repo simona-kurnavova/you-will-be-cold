@@ -48,6 +48,7 @@ import com.youllbecold.trustme.ui.viewmodels.state.FeelingState
 import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toPersistentList
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -144,7 +145,10 @@ private fun FeelingSection(
         title = stringResource(R.string.add_log_feeling),
         modifier = modifier
     ) {
-        val options = FeelingState.entries.toSelectableItemContent().map { it.title }
+        val options = FeelingState.entries
+            .toSelectableItemContent()
+            .map { it.title }
+            .toPersistentList()
 
         Column {
             feelings.getFeelingWithLabel(onFeelingsChange)
@@ -228,6 +232,7 @@ private fun ClothesSection(
                 val preSelected = clothes
                     .withCategory(category)
                     .map { allClothesInCategory.indexOf(it) }
+                    .toPersistentList()
 
                 SelectRowWithButton(
                     items = allClothesInCategory.toSelectableItemContent(),

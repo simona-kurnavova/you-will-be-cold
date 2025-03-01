@@ -23,13 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabeledSlider(
     label: String,
-    options: List<String>,
+    options: PersistentList<String>,
     selected: Int,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -108,7 +110,7 @@ private fun LabeledSliderPreview() {
     YoullBeColdTheme {
         LabeledSlider(
             label = "Label",
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            options = persistentListOf("Option 1", "Option 2", "Option 3"),
             selected = 2,
             onSelected = {},
         )

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedIcon
+import com.youllbecold.trustme.ui.components.generic.ThemedText
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
@@ -38,7 +38,6 @@ fun IconTextVertical(
         modifier = modifier
             .fillMaxWidth()
             .padding(INSIDE_PADDING.dp)
-
     ) {
 
         ThemedIcon(
@@ -48,19 +47,17 @@ fun IconTextVertical(
 
         Spacer(modifier = Modifier.height(SPACE_INSIDE_ITEM.dp))
 
-        Text(
+        ThemedText(
             text = title,
-            style = titleAttr.style,
-            color = titleAttr.color,
+            textAttr = titleAttr
         )
 
         subtitle?.let {
             Spacer(modifier = Modifier.height(SPACE_INSIDE_ITEM.dp))
 
-            Text(
+            ThemedText(
                 text = subtitle,
-                style = subtitleAttr.style,
-                color = subtitleAttr.color
+                textAttr = subtitleAttr,
             )
         }
     }

@@ -6,25 +6,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentSet
 
 @Composable
 fun SelectRowWithButton(
-    items: List<SelectableItemContent>,
+    items: PersistentList<SelectableItemContent>,
     buttonText: String,
-    onButtonClick: (List<Int>) -> Unit,
+    onButtonClick: (PersistentList<Int>) -> Unit,
     modifier: Modifier = Modifier,
-    selected: List<Int> = emptyList(),
+    selected: PersistentList<Int> = persistentListOf(),
 ) {
-    var selectedState by rememberSaveable { mutableStateOf(selected) }
+    var selectedState = remember { mutableStateOf(selected) }
 
     Column(
         modifier = modifier
@@ -32,18 +34,18 @@ fun SelectRowWithButton(
         SelectRows(
             items = items,
             onItemsSelected = { selectedItems ->
-                selectedState = selectedItems
+                selectedState.value = selectedItems
             },
             allowMultipleSelection = true,
             maxSelectedItems = items.size,
-            preSelected = selected.toSet(),
+            preSelected = selected.toPersistentSet(),
         )
 
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
 
         ThemedButton(
             text = buttonText,
-            onClick = { onButtonClick(selectedState) },
+            onClick = { onButtonClick(selectedState.value.toPersistentList()) },
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -56,7 +58,7 @@ private const val SPACE_BETWEEN_ITEMS = 12
 @Composable
 fun SelectRowWithButtonPreview() {
     SelectRowWithButton(
-        items = listOf(
+        items = persistentListOf(
                 SelectableItemContent(IconType.Hat, "T-shirt"),
                 SelectableItemContent(IconType.TShirt, "Long sleeve"),
                 SelectableItemContent(IconType.Dress, "Sweater"),

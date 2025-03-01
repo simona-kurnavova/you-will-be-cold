@@ -20,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 @Composable
 fun ChipSelectCard(
-    options: List<String>,
+    options: PersistentList<String>,
     onOptionSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     selectedOption: Int = 0,
@@ -35,12 +37,11 @@ fun ChipSelectCard(
         initialPage = selectedOption,
         pageCount = options::size
     )
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
         onOptionSelected(pagerState.currentPage) // Pager state changed
     }
-
-    val scope = rememberCoroutineScope()
 
     Column(modifier = modifier) {
         Row(
@@ -70,12 +71,9 @@ fun ChipSelectCard(
                 .padding(horizontal = (horizontalPadding - PADDING_BETWEEN_PAGES).dp),
             verticalAlignment = Alignment.Top,
         ) { page ->
-            Box(
-                modifier = Modifier.padding(horizontal = PADDING_BETWEEN_PAGES.dp),
-            ) {
+            Box(modifier = Modifier.padding(horizontal = PADDING_BETWEEN_PAGES.dp)) {
                 content(page)
             }
-
         }
     }
 }
@@ -90,7 +88,7 @@ private const val PADDING_BETWEEN_PAGES = 4
 private fun ChipSelectCardPreview() {
     YoullBeColdTheme {
         ChipSelectCard(
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            options = persistentListOf("Option 1", "Option 2", "Option 3"),
             onOptionSelected = {},
             selectedOption = 1,
             content = {

@@ -40,8 +40,14 @@ class CurrentWeatherUseCase(
             )
         )
 
+    /**
+     * State flow for the current weather.
+     */
     val weatherState: StateFlow<WeatherState<Weather?>> = _weatherState
 
+    /**
+     * Refreshes the current weather for the given location.
+     */
     fun refreshCurrentWeather(location: GeoLocation) {
         _weatherState.update { it.copyWithLoading()  }
 

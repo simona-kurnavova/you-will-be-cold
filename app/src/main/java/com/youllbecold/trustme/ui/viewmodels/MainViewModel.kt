@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import org.koin.android.annotation.KoinViewModel
 
+/**
+ * ViewModel for the main composable.
+ */
 @KoinViewModel
 class MainViewModel(
     permissionHelper: PermissionHelper,
@@ -25,20 +28,24 @@ class MainViewModel(
         dataStorePreferences.welcomeScreenShown
     ) { locationState, welcomeScreenShown ->
         Log.d("MainViewModel", "Location state: $locationState, welcome screen shown: $welcomeScreenShown")
+
         when {
             !welcomeScreenShown -> OverlayState.NEW_USER
             !locationState -> OverlayState.LOCATION_PERM_MISSING
             else -> OverlayState.NONE
         }
-    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, OverlayState.IDLE)
+    }.stateIn(viewModelScope, SharingStarted.Companion.Lazily, OverlayState.UNDEFINED)
 
     init {
         permissionHelper.refreshLocationPermissionState()
     }
 }
 
+/**
+ * Enum class for different overlay states.
+ */
 enum class OverlayState {
-    IDLE,
+    UNDEFINED,
     NEW_USER,
     LOCATION_PERM_MISSING,
     NONE

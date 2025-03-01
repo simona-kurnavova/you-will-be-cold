@@ -13,10 +13,12 @@ import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun IconTextRow(
-    items: List<IconRowData>,
+    items: PersistentList<IconRowData>,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -49,7 +51,7 @@ data class IconRowData(
 private fun IconTextRowPreview() {
     YoullBeColdTheme {
          IconTextRow(
-            items = listOf(
+            items = persistentListOf(
                 IconRowData(
                     iconType = IconType.Location,
                     text = "Location",

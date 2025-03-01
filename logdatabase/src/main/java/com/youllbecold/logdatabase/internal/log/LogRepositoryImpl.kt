@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+/**
+ * Implementation of [LogRepository].
+ */
 internal class LogRepositoryImpl(
     private val logDao: LogDao
 ) : LogRepository {
@@ -34,19 +37,16 @@ internal class LogRepositoryImpl(
         pagingData.map { logEntity -> logEntity.toModel() }
     }
 
-    override suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData> {
-        return withContext(dispatchers) {
+    override suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData> =
+        withContext(dispatchers) {
             logDao.getAllInRange(
                 apparentTempRange.first,
                 apparentTempRange.second
             ).map { it.toModel() }
         }
-    }
 
-    override suspend fun getLog(id: Int): LogData? {
-        return withContext(dispatchers) {
-            logDao.getById(id).first()?.toModel()
-        }
+    override suspend fun getLog(id: Int): LogData? = withContext(dispatchers) {
+        logDao.getById(id).first()?.toModel()
     }
 
     override suspend fun addLog(log: LogData) {
@@ -67,7 +67,7 @@ internal class LogRepositoryImpl(
         }
     }
 
-    private fun LogEntity.toModel() = LogData(
+    private fun LogEntity.toModel(): LogData = LogData(
         id = id,
         dateFrom = dateFrom,
         dateTo = dateTo,

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ThemedDivider(modifier: Modifier = Modifier) {
+fun ThemedHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
         color = MaterialTheme.colorScheme.onBackground,
         thickness = DIVIDER_THICKNESS.dp,

@@ -48,9 +48,12 @@ import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
+import kotlin.collections.map
 
 @Composable
 fun HomeScreenRoot(
@@ -191,7 +194,7 @@ private fun RecommendSection(
         )
 
         ChipSelectCard(
-            options = RecommendationChip.entries.map { stringResource(it.stringId) },
+            options = getRecomOptions(),
             onOptionSelected = { selectedOption = it },
             selectedOption = selectedOption,
             modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
@@ -213,8 +216,14 @@ private fun RecommendSection(
 private enum class RecommendationChip(@StringRes val stringId: Int) {
     NOW(R.string.recommendation_chip_now),
     TODAY(R.string.recommendation_chip_today),
-    TOMORROW(R.string.recommendation_chip_tomorrow)
+    TOMORROW(R.string.recommendation_chip_tomorrow);
 }
+
+@Composable
+private fun getRecomOptions(): PersistentList<String> =
+    RecommendationChip.entries
+        .map { stringResource(it.stringId) }
+        .toPersistentList()
 
 @Preview
 @Composable

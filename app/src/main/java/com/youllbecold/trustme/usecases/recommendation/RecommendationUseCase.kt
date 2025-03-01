@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
 
+/**
+ * Use case for recommendation.
+ */
 @Singleton
 class RecommendationUseCase(
     private val recommendRepository: RecommendRepository,
@@ -22,6 +25,9 @@ class RecommendationUseCase(
 ) {
     private val dispatchers = Dispatchers.IO
 
+    /**
+     * Recommends clothes based on the weather.
+     */
     suspend fun recommend(hourlyWeather: List<Weather>): Recommendation? =
         withContext(dispatchers) {
             val rec = recommendRepository.recommend(
@@ -44,6 +50,9 @@ class RecommendationUseCase(
         }
 }
 
+/**
+ * Data class for recommendation.
+ */
 @Stable
 data class Recommendation(
     val uvLevel: UvRecommendation,

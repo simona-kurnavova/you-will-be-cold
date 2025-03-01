@@ -34,6 +34,7 @@ enum class FeelingState {
     VERY_WARM,
 }
 
+@Stable
 data class FeelingsState(
     val head: FeelingState = FeelingState.NORMAL,
     val neck: FeelingState = FeelingState.NORMAL,
@@ -43,6 +44,7 @@ data class FeelingsState(
     val hand: FeelingState = FeelingState.NORMAL,
 )
 
+@Stable
 data class WeatherState(
     val apparentTemperatureMin: Double,
     val apparentTemperatureMax: Double,

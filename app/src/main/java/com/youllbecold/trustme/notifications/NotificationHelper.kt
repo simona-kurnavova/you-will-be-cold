@@ -18,7 +18,7 @@ import org.koin.core.annotation.Singleton
  * Helper class for showing notifications and setting up notification channels.
  */
 @Singleton
-class NotificationHelper(
+internal class NotificationHelper(
     private val app: Application,
 ) {
     private val notificationManager: NotificationManager by lazy {

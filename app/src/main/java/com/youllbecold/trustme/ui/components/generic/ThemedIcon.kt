@@ -6,10 +6,10 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
@@ -30,6 +30,7 @@ fun ThemedIcon(
     )
 }
 
+@Stable
 enum class IconType(
     @DrawableRes val resource: Int,
     @ColorRes val color: Int,
@@ -83,6 +84,8 @@ enum class IconType(
 @Composable
 private fun ThemedIconPreview() {
     YoullBeColdTheme {
-
+        ThemedIcon(
+            iconType = IconType.Sun,
+        )
     }
 }

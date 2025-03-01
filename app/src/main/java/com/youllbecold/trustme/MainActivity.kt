@@ -16,13 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.youllbecold.trustme.ui.components.Toolbar
-import com.youllbecold.trustme.ui.navigation.FloatingAction
 import com.youllbecold.trustme.ui.navigation.NavGraph
 import com.youllbecold.trustme.ui.navigation.NavRoute
 import com.youllbecold.trustme.ui.navigation.NavRouteItem
@@ -56,6 +54,7 @@ private fun Main() {
 
     val overlayState by viewModel.overlayState.collectAsStateWithLifecycle()
 
+    // Handle different overlays: welcome screen or location permission.
     LaunchedEffect(overlayState) {
         when(overlayState) {
             OverlayState.NEW_USER -> navController.popAllAndNavigate(NavRoute.Welcome.route)
@@ -65,62 +64,51 @@ private fun Main() {
         }
     }
 
-    Box {
-        // Setup main navigation structure
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                navController.currentRoute()?.let { route ->
-                    val toolbar = NavRouteItem.fromRoute(route).getToolbar()
-                    toolbar?.let {
-                        Toolbar(
-                            title = stringResource(it.toolbarTitle),
-                            iconType = it.toolbarIcon,
-                            showInfoAction = it.showInfoAction,
-                            navigateToInfo = { navController.navigate(NavRoute.Info.route) }
-                        )
-                    }
-                }
-            },
-            bottomBar = {
-                if (showBottomBar(navController.currentRoute())) {
-                    NavigationBar(navController)
-                }
-            },
-            floatingActionButton = {
-                getFloatingButton(navController.currentRoute())?.let { action ->
-                    SetupFloatingButton(navController, action)
-                }
-            }
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                NavGraph(navController)
-            }
+    val route = navController.currentRoute()?.let { NavRouteItem.fromRoute(it) }
+
+    // Setup main navigation structure
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { SetupToolbar(navController, route) },
+        bottomBar = { SetupBottomBar(navController, route) },
+        floatingActionButton = { SetupFloatingButton(navController, route) }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            NavGraph(navController)
         }
     }
 }
 
 @Composable
-private fun showBottomBar(currentRoute: String?): Boolean {
-    val route = currentRoute ?: return false
-    return NavRouteItem.fromRoute(route).isMenuItem()
+private fun SetupToolbar(navController: NavController, currentRoute: NavRouteItem?) {
+    currentRoute?.getToolbar()?.let {
+        Toolbar(
+            title = stringResource(it.toolbarTitle),
+            iconType = it.toolbarIcon,
+            showInfoAction = it.showInfoAction,
+            navigateToInfo = { navController.navigate(NavRoute.Info.route) }
+        )
+    }
 }
 
 @Composable
-private fun getFloatingButton(currentRoute: String?): FloatingAction? {
-    val route = currentRoute ?: return null
-    return NavRouteItem.fromRoute(route).getFloatingAction()
+private fun SetupBottomBar(navController: NavController, currentRoute: NavRouteItem?) {
+    if (currentRoute?.isMenuItem() == true) {
+        NavigationBar(navController)
+    }
 }
 
 @Composable
-private fun SetupFloatingButton(navController: NavController, action: FloatingAction) {
-    ExtendedFloatingActionButton(
-        onClick = { navController.navigate(action.floatingActionTo.route) },
-        icon = {
-            Icon(action.floatingActionIcon, null)
-        },
-        text = {
-            Text(text = stringResource(id = action.floatingActionTitle))
-         },
-    )
+private fun SetupFloatingButton(navController: NavController,  currentRoute: NavRouteItem?) {
+    currentRoute?.getFloatingAction()?.let { action ->
+        ExtendedFloatingActionButton(
+            onClick = { navController.navigate(action.floatingActionTo.route) },
+            icon = {
+                Icon(action.floatingActionIcon, null)
+            },
+            text = {
+                Text(text = stringResource(id = action.floatingActionTitle))
+            },
+        )
+    }
 }

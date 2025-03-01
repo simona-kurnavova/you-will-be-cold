@@ -7,6 +7,12 @@ import com.youllbecold.logdatabase.model.Clothes
  * Serves as placeholder before we gather enough data to make more accurate recommendations.
  */
 internal object DefaultOutfitSelector {
+    /**
+     * Creates a recommendation based on the minimum apparent temperature.
+     *
+     * @param minTemp The minimum apparent temperature.
+     * @return The recommended clothes.
+     */
     fun createRecommendation(minTemp: Double): List<Clothes> {
         return when {
             minTemp < 0 -> listOf(

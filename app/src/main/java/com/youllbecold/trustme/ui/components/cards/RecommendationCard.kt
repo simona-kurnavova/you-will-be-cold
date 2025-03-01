@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +18,10 @@ import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
-import com.youllbecold.trustme.ui.components.generic.ThemedDivider
+import com.youllbecold.trustme.ui.components.generic.ThemedHorizontalDivider
+import com.youllbecold.trustme.ui.components.generic.ThemedText
+import com.youllbecold.trustme.ui.components.generic.attributes.copyWithAlpha
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.ui.components.generic.icontext.IconText
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.feelLikeDescription
@@ -44,9 +45,8 @@ fun RecommendationCard(
             val recommendation = weatherWithRecommendation.recommendation
 
             if (recommendation == null) {
-                Text(
+                ThemedText(
                     text = stringResource(R.string.recom_no_recommendation),
-                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 return@Column
@@ -65,25 +65,26 @@ fun RecommendationCard(
                     iconType = iconType,
                 )
 
-                ThemedDivider(
+                ThemedHorizontalDivider(
                     modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
                 )
             }
 
             ClothesRecommendations(recommendation)
 
-            ThemedDivider(
+            ThemedHorizontalDivider(
                 modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
             )
 
-            Text(
+            ThemedText(
                 text = stringResource(R.string.recom_certainty_description, recommendation.certainty.getTitle()),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                textAttr = defaultMediumTextAttr().copyWithAlpha(TEXT_ALPHA),
             )
         }
     }
 }
+
+private const val TEXT_ALPHA = 0.6f
 
 @Composable
 private fun ClothesRecommendations(
@@ -91,14 +92,9 @@ private fun ClothesRecommendations(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = stringResource(R.string.recom_clothes_title),
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        ThemedText(stringResource(R.string.recom_clothes_title))
 
-        Spacer(
-            modifier = Modifier.height(ITEMS_PADDING.dp)
-        )
+        Spacer(modifier = Modifier.height(ITEMS_PADDING.dp))
 
         Column{
             recommendation.clothes.forEach {

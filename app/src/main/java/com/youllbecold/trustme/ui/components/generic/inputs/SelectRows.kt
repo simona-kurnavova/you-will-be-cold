@@ -12,9 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,13 +25,19 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.ui.components.generic.icontext.IconText
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentSet
 
 @Composable
 fun SelectRows(
-    items: List<SelectableItemContent>,
-    onItemsSelected: (List<Int>) -> Unit,
+    items: PersistentList<SelectableItemContent>,
+    onItemsSelected: (PersistentList<Int>) -> Unit,
     modifier: Modifier = Modifier,
-    preSelected: Set<Int> = emptySet(),
+    preSelected: PersistentSet<Int> = persistentSetOf(),
     allowMultipleSelection: Boolean = false,
     maxSelectedItems: Int = 1,
     bgDefinition: BackgroundDefinition = BackgroundDefinition(
@@ -40,7 +47,7 @@ fun SelectRows(
         borderWidth = 0,
     ),
 ) {
-   var selectedItems by rememberSaveable { mutableStateOf(preSelected) }
+   var selectedItems by remember { mutableStateOf(preSelected) }
 
     Column(
         modifier = modifier.fillMaxWidth()
@@ -53,17 +60,18 @@ fun SelectRows(
                 onSelect = { selected ->
                     if (!allowMultipleSelection) {
                         selectedItems = when {
-                            selected -> setOf(index)
-                            else -> setOf()
+                            selected -> persistentSetOf(index)
+                            else -> persistentSetOf()
                         }
                     } else {
                         selectedItems = when {
-                            selected && selectedItems.size < maxSelectedItems -> selectedItems + setOf(index)
+                            selected && selectedItems.size < maxSelectedItems ->
+                                (selectedItems + index).toPersistentSet<Int>()
                             selected -> selectedItems
-                            else -> selectedItems - setOf(index)
+                            else -> (selectedItems - index).toPersistentSet<Int>()
                         }
                     }
-                    onItemsSelected(selectedItems.toList())
+                    onItemsSelected(selectedItems.toPersistentList())
                 },
                 modifier = Modifier.fillMaxWidth(),
                 bgDefinition = bgDefinition,
@@ -126,11 +134,13 @@ private const val PADDING_ITEM_ICON_END = 12
 private const val ITEM_CORNER_RADIUS = 16
 private const val SELECT_BG_ALPHA = 0.25f
 
+@Stable
 data class SelectableItemContent(
     val iconType: IconType? = null,
     val title: String,
 )
 
+@Stable
 data class BackgroundDefinition(
     val bgColor: Color,
     val selectedBgColor: Color,
@@ -142,12 +152,12 @@ data class BackgroundDefinition(
 @Composable
 fun SelectRowsPreview() {
     SelectRows(
-        items = listOf(
+        items = persistentListOf(
             SelectableItemContent(title = "Item 1", iconType = IconType.Sun),
             SelectableItemContent(title = "Item 2", iconType = IconType.Snowflake),
             SelectableItemContent(title = "Item 3"),
         ),
-        preSelected = setOf(0),
+        preSelected = persistentSetOf(0),
         onItemsSelected = { },
     )
 }

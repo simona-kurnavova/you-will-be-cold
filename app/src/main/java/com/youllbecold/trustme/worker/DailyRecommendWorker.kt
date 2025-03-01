@@ -3,8 +3,11 @@ package com.youllbecold.trustme.worker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.youllbecold.trustme.notifications.NotificationHelper
@@ -13,7 +16,11 @@ import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.concurrent.TimeUnit
 
+/**
+ * Worker class for showing notification with daily weather recommendation.
+ */
 class DailyRecommendWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams), KoinComponent {
 
@@ -54,14 +61,28 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
     }
 
     companion object {
-        const val WORK_NAME = "DailyRecommendWorker"
+        private const val WORK_NAME = "DailyRecommendWorker"
 
-        fun schedule(context: Context, targetHour: Int = 7, targetMinute: Int = 0) {
+        /**
+         * Schedule the worker to run daily at the specified time.
+         */
+        fun schedule(
+            context: Context,
+            targetHour: Int = DEFAULT_HOUR_EXEC,
+            targetMinute: Int = DEFAULT_MINUTE_EXEC
+        ) {
             val delay = WorkerUtils.calculateTimeUntilNext(targetHour, targetMinute)
+            Log.d("DailyRecommendWorker", "Scheduling work with $delay ms at $targetHour:$targetMinute.")
 
-            Log.d("DailyRecommendWorker", "Scheduling work in $delay minutes at $targetHour:$targetMinute daily")
+            val constraints = Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
 
-            val request = WorkerUtils.createDailyWorkRequest(delay)
+            val request = PeriodicWorkRequestBuilder<DailyRecommendWorker>(1, TimeUnit.DAYS)
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
@@ -70,8 +91,14 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
             )
         }
 
+        /**
+         * Cancel the worker.
+         */
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
         }
     }
 }
+
+private const val DEFAULT_HOUR_EXEC = 7
+private const val DEFAULT_MINUTE_EXEC = 0

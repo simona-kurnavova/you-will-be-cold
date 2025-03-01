@@ -13,7 +13,7 @@ import com.youllbecold.trustme.ui.viewmodels.WelcomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val uiModule = module {
+internal val uiModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::HistoryViewModel)

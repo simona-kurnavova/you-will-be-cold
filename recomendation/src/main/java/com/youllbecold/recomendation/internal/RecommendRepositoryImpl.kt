@@ -14,9 +14,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.collections.distinct
 
+/**
+ * Implementation of [RecommendRepository].
+ */
 internal class RecommendRepositoryImpl(
     private val logRepository: LogRepository
 ) : RecommendRepository {
+
+    /**
+     * Recommend clothes as:
+     * - Gather most similar logs from database
+     * - Adjust based on logged feeling
+     * - Calculate certainty of recommendation
+     * - If certainty is high enough, return, else return default recommendation
+     * - Recommend UV and rain protection based on input data
+     */
     override suspend fun recommend(
         hourlyApparentTemperatures: List<Double>,
         usesCelsius: Boolean,
@@ -178,7 +190,7 @@ private const val MEDIUM_CERTAINTY_MEASURE: Double = 0.5
 private const val MAX_RANGE_EXPAND = 5.0
 private const val MAX_LOGS_PROCESSING = 50
 
-data class ClothesWithCertainty(
+private data class ClothesWithCertainty(
     val clothes: List<Clothes> = emptyList(),
     val certainty: Double = 0.0
 )

@@ -7,6 +7,9 @@ import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectableItemContent
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentSet
 
 /**
  * Gets the [IconType] for [Clothes.Category].
@@ -104,13 +107,13 @@ fun Clothes.getTitle(): String = when (this) {
  * Converts a set of [Clothes] to a list of [SelectableItemContent].
  */
 @Composable
-fun List<Clothes>.toSelectableItemContent(): List<SelectableItemContent> =
+fun List<Clothes>.toSelectableItemContent(): PersistentList<SelectableItemContent> =
     this.map { item ->
         SelectableItemContent(
             title = item.getTitle(),
             iconType = item.icon,
         )
-    }
+    }.toPersistentList()
 
 /**
  * Gets the list of [Clothes] for the [Clothes.Category].

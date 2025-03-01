@@ -42,6 +42,9 @@ class HourlyWeatherUseCase(
             )
         )
 
+    /**
+     * State flow for the hourly weather.
+     */
     val weatherState: StateFlow<WeatherState<List<Weather>>> = _weatherState
 
     /**

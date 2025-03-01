@@ -24,13 +24,19 @@ import com.youllbecold.trustme.ui.components.generic.icontext.IconTextRow
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.OutlinedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedIcon
+import com.youllbecold.trustme.ui.components.generic.ThemedText
+import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultBigIconAttr
+import com.youllbecold.trustme.ui.components.generic.attributes.defaultLargeTextAttr
+import com.youllbecold.trustme.ui.components.utils.rememberVector
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getTemperatureString
 import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.utils.thermometer
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDateTime
 
 @Composable
@@ -42,7 +48,7 @@ fun WeatherCard(
     OutlinedCard(modifier = modifier) {
         Row {
             Image(
-                painter = painterResource(id = weather.thermometer),
+                painter = rememberVector(weather.thermometer),
                 contentDescription = null,
             )
 
@@ -99,11 +105,14 @@ private fun CurrentTemperatureView(
         val temperatureWithUnits = LocalContext.current
             .getTemperatureString(temperature, useCelsius)
 
-        Text(
+        ThemedText(
             text = temperatureWithUnits,
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = TEMPERATURE_FONT_SIZE.sp,
+            textAttr = TextAttr(
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = TEMPERATURE_FONT_SIZE.sp
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+            ),
             modifier = modifier.align(Alignment.CenterVertically)
         )
 
@@ -129,7 +138,7 @@ private fun WeatherParameters(
     modifier: Modifier = Modifier,
 ) {
     IconTextRow(
-        items = listOf(
+        items = persistentListOf(
             IconRowData(
                 iconType = IconType.Wind,
                 text = windSpeed.toString(),

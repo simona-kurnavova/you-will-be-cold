@@ -2,6 +2,9 @@ package com.youllbecold.recomendation.internal.model
 
 import com.youllbecold.logdatabase.model.Clothes
 
+/**
+ * Weight of clothes for different body parts.
+ */
 internal class ClothesWeight(
     val head: Int = 0,
     val neck: Int = 0,
@@ -11,6 +14,9 @@ internal class ClothesWeight(
     val feet: Int = 0,
 )
 
+/**
+ * Weights of clothes for different clothes.
+ */
 internal val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.associateWith {
     when(it) {
         Clothes.HEAD_SCARF -> ClothesWeight(head = 1)
@@ -61,4 +67,8 @@ internal val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.assoc
     }
 }
 
-internal val categorizedClothesWeights = clothesWeights.entries.groupBy { it.key.category }
+/**
+ * Weights of clothes for different categories.
+ */
+internal val categorizedClothesWeights =
+    clothesWeights.entries.groupBy { it.key.category }

@@ -20,7 +20,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val appModule = module {
+internal val appModule = module {
     // Preferences
     singleOf(::DataStorePreferences)
 

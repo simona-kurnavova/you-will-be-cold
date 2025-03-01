@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedIcon
+import com.youllbecold.trustme.ui.components.generic.ThemedText
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
@@ -43,10 +44,10 @@ fun IconText(
         Column(
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Text(
+
+            ThemedText(
                 text = text,
-                style = textAttr.style,
-                color = textAttr.color,
+                textAttr = textAttr,
             )
 
             subtitle?.let {
