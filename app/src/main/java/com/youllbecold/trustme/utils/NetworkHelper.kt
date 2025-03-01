@@ -7,6 +7,7 @@ import android.net.NetworkRequest
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.Singleton
 
 /**
@@ -21,8 +22,9 @@ class NetworkHelper(private val app: Application) {
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            _isConnected.value =
+            _isConnected.update {
                 connectivityManager.getNetworkCapabilities(network)?.hasInternet() == true
+            }
         }
 
         override fun onCapabilitiesChanged(
@@ -30,12 +32,14 @@ class NetworkHelper(private val app: Application) {
             networkCapabilities: NetworkCapabilities
         ) {
             super.onCapabilitiesChanged(network, networkCapabilities)
-            _isConnected.value = networkCapabilities.hasInternet()
+            _isConnected.update {
+                networkCapabilities.hasInternet()
+            }
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            _isConnected.value = false
+            _isConnected.update { false }
         }
     }
 
@@ -58,7 +62,7 @@ class NetworkHelper(private val app: Application) {
         // Check initial network status
         val activeNetwork = connectivityManager.activeNetwork
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-        _isConnected.value = networkCapabilities?.hasInternet() == true
+        _isConnected.update {  networkCapabilities?.hasInternet() == true }
     }
 
     /**

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
@@ -53,7 +54,7 @@ class AddLogViewModel(
      */
     fun onAction(action: AddLogAction) {
         when (action) {
-            is AddLogAction.SaveProgress -> logState.value = action.state
+            is AddLogAction.SaveProgress -> logState.update { action.state }
             is AddLogAction.SaveLog -> saveLogWithWeather(logState.value)
             else -> Unit // Handled in the screen
         }

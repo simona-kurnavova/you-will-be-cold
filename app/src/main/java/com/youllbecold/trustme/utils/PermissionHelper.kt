@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.Singleton
 
 /**
@@ -31,7 +32,7 @@ class PermissionHelper(private val app: Application){
      * Refresh the location permission state.
      */
     fun refreshLocationPermissionState() {
-        _hasLocationPermission.value = hasLocationPermission(app)
+        _hasLocationPermission.update { hasLocationPermission(app) }
     }
 
     companion object {

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -49,7 +50,7 @@ class EditLogViewModel(
     fun onAction(action: EditLogAction) {
         when (action) {
             is EditLogAction.StartEdit -> startEdit(action.id)
-            is EditLogAction.SaveProgress -> logState.value = action.state
+            is EditLogAction.SaveProgress -> logState.update { action.state }
             is EditLogAction.SaveLog -> logState.value?.let { saveLog(it) }
             else -> Unit // Handled in the screen
         }
@@ -59,14 +60,14 @@ class EditLogViewModel(
         viewModelScope.launch {
             val log = logRepository.getLog(id)
             oldLogState = log?.toLogState()
-            logState.value = oldLogState
+            logState.update { oldLogState }
         }
     }
 
     @SuppressLint("MissingPermission") // Permission is checked
     private fun saveLog(logState: LogState) {
         if (!PermissionHelper.hasLocationPermission(app)) {
-            editState.value = EditingState.Error
+            editState.update { EditingState.Error }
             return
         }
 
@@ -79,7 +80,7 @@ class EditLogViewModel(
             ) {
                 val geoLocationState = locationHelper.geoLocationState.firstOrNull()
                 if (geoLocationState?.location == null) {
-                    editState.value = EditingState.Error
+                    editState.update { EditingState.Error }
                     return@launch
                 }
 
@@ -94,14 +95,14 @@ class EditLogViewModel(
 
                 if (weather == null) {
                     Log.d("AddLogViewModel", "Failed to get weather data")
-                    editState.value = EditingState.Error
+                    editState.update { EditingState.Error }
                     return@launch
                 }
                 log = logState.copy(weather = weather)
             }
 
             logRepository.updateLog(log.toLogData())
-            editState.value = EditingState.Updated
+            editState.update { EditingState.Updated }
         }
     }
 }
