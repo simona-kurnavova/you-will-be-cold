@@ -21,7 +21,11 @@ A weather application that provides weather forecasts and personalized outfit re
 **Recommendation notification**: User can enable recommendation notification to get weather information and outfit recommendations for the day. This notification is shown at 7:00 in the morning. In future versions we will consider customization options.
 
 ## Screenshots
-<img src="screenshots/dark_home.png" width="300" alt=""> <img src="screenshots/light_home.png" width="300" alt="">
+<img src="screenshots/dark_home.png" width="200" alt="">  <img src="screenshots/light_home.png" width="200" alt="">  
+
+<img src="screenshots/recommendations.png" width="200" alt="">  <img src="screenshots/log_history.png" width="200" alt="">
+
+<img src="screenshots/settings.png" width="200" alt="">  <img src="screenshots/add_log.png" width="200" alt=""> 
 
 ## Tech Stack
 Kotlin
