@@ -21,19 +21,25 @@ A weather application that provides weather forecasts and personalized outfit re
 **Recommendation notification**: User can enable recommendation notification to get weather information and outfit recommendations for the day. This notification is shown at 7:00 in the morning. In future versions we will consider customization options.
 
 ## Screenshots
-![img.png](img.png) ![img_1.png](img_1.png)
-
-![img_2.png](img_2.png) ![img_3.png](img_3.png) ![img_4.png](img_4.png)
+<img src="screenshots/dark_home.png" width="300" alt=""> <img src="screenshots/light_home.png" width="300" alt="">
 
 ## Tech Stack
 Kotlin
+
 Coroutines
+
 Jetpack Compose
+
 Room
+
 Data Store
+
 Koin
+
 Retrofit
+
 Work Manager
+
 Uses https://open-meteo.com/ API for weather data
 
 ## License
