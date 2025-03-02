@@ -41,5 +41,4 @@ private fun SectionPreview() {
             Text("Section content")
         }
     }
-
 }

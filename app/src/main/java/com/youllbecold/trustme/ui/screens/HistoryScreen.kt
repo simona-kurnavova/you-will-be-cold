@@ -78,12 +78,8 @@ private fun HistoryScreen(
                 LogCard(
                     log = log,
                     modifier = Modifier.padding(vertical = BETWEEN_ITEM_PADDING.dp),
-                    editAction = {
-                        onAction(HistoryAction.Edit(log))
-                    },
-                    deleteAction = {
-                        onAction(HistoryAction.Delete(log))
-                    },
+                    editAction = { onAction(HistoryAction.Edit(log)) },
+                    deleteAction = { onAction(HistoryAction.Delete(log)) },
                 )
 
                 Spacer(modifier = Modifier.height(BETWEEN_ITEM_PADDING.dp))

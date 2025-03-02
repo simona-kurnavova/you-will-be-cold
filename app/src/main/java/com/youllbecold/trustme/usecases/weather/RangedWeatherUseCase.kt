@@ -108,8 +108,8 @@ class RangedWeatherUseCase(
         val duration = Duration.between(timeFrom, timeTo)
 
         return if (duration.toMinutes() <= MINUTES_IN_HOUR) {
-            val expandedTimeFrom = timeFrom.minusMinutes(30)  // 30 minutes before
-            val expandedTimeTo = timeTo.plusMinutes(30)      // 30 minutes after
+            val expandedTimeFrom = timeFrom.minusMinutes(MINUTES_IN_HALF_HOUR)  // 30 minutes before
+            val expandedTimeTo = timeTo.plusMinutes(MINUTES_IN_HALF_HOUR)      // 30 minutes after
             Pair(expandedTimeFrom, expandedTimeTo)
         } else {
             Pair(timeFrom, timeTo)
@@ -118,3 +118,4 @@ class RangedWeatherUseCase(
 }
 
 private const val MINUTES_IN_HOUR = 60
+private const val MINUTES_IN_HALF_HOUR: Long = 30

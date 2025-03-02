@@ -15,6 +15,7 @@ internal object OutfitHelper {
     /**
      * Adjusts clothes based on feelings. Returns new set of clothes adjusted as per feeling.
      */
+    @Suppress("CyclomaticComplexMethod")
     fun adjustPerFeeling(
         clothes: List<Clothes>,
         feeling: Feeling,

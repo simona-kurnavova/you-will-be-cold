@@ -54,10 +54,12 @@ private fun AddLogScreen(
     state: State<AddLogUiState>,
     onAction: (AddLogAction) -> Unit
 ) {
-    val logState = state.value.logState
     val context = LocalContext.current
-    val update: (LogState) -> Unit = { onAction(AddLogAction.SaveProgress(it)) }
+
+    val logState = state.value.logState
     var showExitDialog by remember { mutableStateOf(false) }
+
+    val update: (LogState) -> Unit = { onAction(AddLogAction.SaveProgress(it)) }
 
     if (state.value.saveState == SavingState.Error) {
         Toast.makeText(

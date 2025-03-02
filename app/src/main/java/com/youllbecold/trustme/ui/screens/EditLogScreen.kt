@@ -60,10 +60,11 @@ private fun EditLogScreen(
     state: State<EditLogUiState>,
     onAction: (EditLogAction) -> Unit
 ) {
-    val update: (LogState) -> Unit = { onAction(EditLogAction.SaveProgress(it)) }
     val context = LocalContext.current
 
     var showExitDialog by remember { mutableStateOf(false) }
+
+    val update: (LogState) -> Unit = { onAction(EditLogAction.SaveProgress(it)) }
 
     if (state.value.editState == EditingState.Error) {
         Toast.makeText(
