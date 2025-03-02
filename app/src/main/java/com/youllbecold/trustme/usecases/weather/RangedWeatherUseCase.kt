@@ -2,6 +2,7 @@ package com.youllbecold.trustme.usecases.weather
 
 import android.Manifest
 import androidx.annotation.RequiresPermission
+import com.youllbecold.trustme.ui.components.utils.millisToDateTime
 import com.youllbecold.trustme.ui.viewmodels.state.WeatherState
 import com.youllbecold.trustme.utils.GeoLocation
 import com.youllbecold.trustme.utils.NetworkHelper
@@ -94,7 +95,7 @@ class RangedWeatherUseCase(
                 val adjustedTimeRange = adjustTimeRange(timeFrom, timeTo)
 
                 return@withContext data.filter { weather ->
-                    val time = weather.time.toLocalTime()
+                    val time = weather.time.millisToDateTime.toLocalTime()
                     time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second)
                 }.let { Result.success(it) }
             }

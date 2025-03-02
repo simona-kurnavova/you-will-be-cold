@@ -1,7 +1,6 @@
 package com.youllbecold.trustme.ui.components.cards
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -10,19 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,12 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.ExpandableCard
 import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.icontext.ClickableText
 import com.youllbecold.trustme.ui.components.generic.icontext.IconText
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateState
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.components.utils.formatDate
 import com.youllbecold.trustme.ui.components.utils.formatTime
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
@@ -48,7 +39,6 @@ import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
 import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import com.youllbecold.trustme.ui.viewmodels.state.WeatherState
 import kotlinx.collections.immutable.persistentSetOf
-import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
@@ -58,45 +48,28 @@ fun LogCard(
     deleteAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    val worstFeeling = log.feelings.worstFeeling()
 
-    ThemedCard(
-        modifier = modifier.clickable(onClick = { expanded = !expanded }),
-    ) {
-        if (expanded) {
+    ExpandableCard(
+        nonExpandedContent = {
+            NonExpandedCardContent(
+                title = stringResource(
+                    R.string.log_item_label,
+                    worstFeeling.getTitle()
+                ),
+                iconType = worstFeeling.icon,
+                formattedDate = log.date.formatDate(),
+            )
+        },
+        expandedContent = {
             ExpandedCardContent(
                 log = log,
                 editAction = editAction,
                 deleteAction = deleteAction
             )
-        } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val worstFeeling = log.feelings.worstFeeling()
-
-                NonExpandedCardContent(
-                    title = stringResource(
-                        R.string.log_item_label,
-                        worstFeeling.getTitle()
-                    ),
-                    iconType = worstFeeling.icon,
-                    date = log.date,
-                )
-
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = stringResource(R.string.expand_card_action),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .clickable(onClick = { expanded = !expanded })
-                        .padding(INSIDE_PADDING.dp)
-                )
-            }
-        }
-    }
+        },
+        modifier = modifier
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -116,7 +89,7 @@ private fun ExpandedCardContent(
             iconType = worstFeeling.icon
         )
 
-        val dateTime = "${log.date.date.formatDate()} ${log.timeFrom.time.formatTime()} - ${log.timeTo.time.formatTime()}"
+        val dateTime = "${log.date.formatDate()} ${log.timeFrom.formatTime()} - ${log.timeTo.formatTime()}"
 
         Text(
             text = dateTime,
@@ -198,12 +171,12 @@ private const val DIVIDER_THICKNESS = 0.1f
 private fun NonExpandedCardContent(
     title: String,
     iconType: IconType,
-    date: ImmutableDate,
+    formattedDate: String,
     modifier: Modifier = Modifier
 ) {
     IconText(
         text = title,
-        subtitle = date.date.formatDate(),
+        subtitle = formattedDate,
         iconType = iconType,
         modifier = modifier.padding(INSIDE_PADDING.dp)
     )
@@ -219,9 +192,11 @@ private fun LogCardPreview() {
         val time = LocalTime.now()
         LogCard(
             log = LogState(
-                date = ImmutableDate(LocalDate.now()),
-                timeFrom = ImmutableTime(time),
-                timeTo = ImmutableTime(time),
+                dateTimeState = DateTimeState(
+                    date = DateState(2022, 1, 1),
+                    timeFrom = TimeState(time.hour, time.minute),
+                    timeTo = TimeState(time.hour + 1, time.minute)
+                ),
                 feelings = FeelingsState(),
                 clothes = persistentSetOf(
                     Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES

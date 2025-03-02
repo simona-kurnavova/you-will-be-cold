@@ -33,7 +33,6 @@ import com.youllbecold.trustme.ui.utils.thermometer
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
-import java.time.LocalDateTime
 
 @Composable
 fun WeatherCard(
@@ -163,7 +162,7 @@ private fun WeatherCardPreview() {
     YoullBeColdTheme {
         WeatherCard(
             weather = Weather(
-                time = LocalDateTime.now(),
+                time = 1000,
                 unitsCelsius = true,
                 temperature = -10.0,
                 apparentTemperature = 20.0,

@@ -35,8 +35,9 @@ import com.youllbecold.trustme.ui.components.generic.datetime.DateTimeInput
 import com.youllbecold.trustme.ui.components.generic.icontext.Tile
 import com.youllbecold.trustme.ui.components.generic.inputs.LabeledSlider
 import com.youllbecold.trustme.ui.components.generic.inputs.SelectRowWithButton
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateState
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.utils.getFeelingWithLabel
 import com.youllbecold.trustme.ui.utils.getTitle
@@ -49,19 +50,13 @@ import com.youllbecold.trustme.ui.viewmodels.state.FeelingsState
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentList
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun AddLogForm(
-    date: ImmutableDate,
-    timeFrom: ImmutableTime,
-    timeTo: ImmutableTime,
+    dateTimeState: DateTimeState,
     feelings: FeelingsState,
     clothes: PersistentSet<Clothes>,
-    onDateChanged: (ImmutableDate) -> Unit,
-    onTimeFromChange: (ImmutableTime) -> Unit,
-    onTimeToChange: (ImmutableTime) -> Unit,
+    onDateTimeChanged: (DateTimeState) -> Unit,
     onFeelingsChange: (FeelingsState) -> Unit,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
@@ -78,12 +73,8 @@ fun AddLogForm(
                 .padding(PADDING_AROUND_QUESTION.dp)
         ) {
             DateTimeSection(
-                date = date,
-                timeFrom = timeFrom,
-                timeTo = timeTo,
-                onFromTimeSelected = { onTimeFromChange(it) },
-                onToTimeSelected = { onTimeToChange(it) },
-                onDateChanged = { onDateChanged(it) },
+                dateTimeState = dateTimeState,
+                onDateTimeChanged = onDateTimeChanged,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
@@ -112,12 +103,8 @@ private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Composable
 private fun DateTimeSection(
-    date: ImmutableDate,
-    timeFrom: ImmutableTime,
-    timeTo: ImmutableTime,
-    onDateChanged: (ImmutableDate) -> Unit,
-    onFromTimeSelected: (ImmutableTime) -> Unit,
-    onToTimeSelected: (ImmutableTime) -> Unit,
+    dateTimeState: DateTimeState,
+    onDateTimeChanged: (DateTimeState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Section(
@@ -125,12 +112,8 @@ private fun DateTimeSection(
         modifier = modifier.fillMaxWidth()
     ) {
         DateTimeInput(
-            date = date,
-            timeFrom = timeFrom,
-            timeTo = timeTo,
-            onDateChanged = onDateChanged,
-            onFromTimeSelected = onFromTimeSelected,
-            onToTimeSelected = onToTimeSelected,
+            dateTimeState = dateTimeState,
+            onDatetimeChanged = onDateTimeChanged,
         )
     }
 }
@@ -262,14 +245,14 @@ private const val BOTTOM_SHEET_PADDING = 12
 private fun AddLogFormPreview() {
     YoullBeColdTheme {
         AddLogForm(
-            date = ImmutableDate(LocalDate.now()),
-            timeFrom = ImmutableTime(LocalTime.now()),
-            timeTo = ImmutableTime(LocalTime.now()),
+            dateTimeState = DateTimeState(
+                date = DateState(2022, 1, 1),
+                timeFrom = TimeState(12, 0),
+                timeTo = TimeState(13, 0)
+            ),
             feelings = FeelingsState(),
             clothes = persistentSetOf(Clothes.JEANS, Clothes.SHORT_TSHIRT_DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
-            onDateChanged = { },
-            onTimeFromChange = { },
-            onTimeToChange = { },
+            onDateTimeChanged = { },
             onFeelingsChange = { },
             onClothesCategoryChange = { },
             onSave = { },

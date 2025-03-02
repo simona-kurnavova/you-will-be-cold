@@ -9,22 +9,30 @@ import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentSet
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Stable
 data class LogState(
     val id: Int? = null,
-    val date: ImmutableDate,
-    val timeFrom: ImmutableTime,
-    val timeTo: ImmutableTime,
+    val dateTimeState: DateTimeState,
     val feelings: FeelingsState = FeelingsState(),
     val clothes: PersistentSet<Clothes> = persistentSetOf(),
     val weather: WeatherState? = null
-)
+) {
+    val date: LocalDate
+        get() = dateTimeState.date.date
+
+    val timeFrom: LocalTime
+        get() = dateTimeState.timeFrom.time
+
+    val timeTo: LocalTime
+        get() = dateTimeState.timeTo.time
+}
 
 enum class FeelingState {
     VERY_COLD,
@@ -55,8 +63,8 @@ data class WeatherState(
 fun LogState.toLogData(): LogData =
     LogData(
         id = id,
-        dateFrom = date.date.atTime(timeFrom.time),
-        dateTo = date.date.atTime(timeTo.time),
+        dateFrom = date.atTime(timeFrom),
+        dateTo = date.atTime(timeTo),
         feelings = Feelings(
             head = feelings.head.toFeeling(),
             neck = feelings.neck.toFeeling(),
@@ -88,9 +96,10 @@ fun LogData.toLogState(
     useCelsiusUnits: Boolean = true
 ): LogState = LogState(
     id = id,
-    date = ImmutableDate(dateFrom.toLocalDate()),
-    timeFrom = ImmutableTime(dateFrom.toLocalTime()),
-    timeTo = ImmutableTime(dateTo.toLocalTime()),
+    dateTimeState = DateTimeState.fromDateTime(
+        dateTimeFrom = dateFrom,
+        datetimeTo = dateTo
+    ),
     feelings = feelings.toFeelingsState(),
     clothes = clothes.toPersistentSet(),
     weather = weatherData.toWeatherState(useCelsiusUnits)
@@ -136,7 +145,7 @@ private fun WeatherData.toWeatherState(useCelsiusUnits: Boolean): WeatherState =
  * Validates the log state and shows a toast if the state is invalid.
  */
 fun LogState.validate(context: Context): Boolean {
-    if (timeTo.time.isBefore(timeFrom.time) || timeTo.time == timeFrom.time) {
+    if (timeTo.isBefore(timeFrom) || timeTo == timeFrom) {
         Toast.makeText(
             context,
             context.getString(R.string.toast_invalid_time_range),

@@ -23,16 +23,15 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.LogCard
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateState
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.HistoryAction
 import com.youllbecold.trustme.ui.viewmodels.HistoryViewModel
 import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun HistoryScreenRoot(
@@ -143,9 +142,11 @@ private fun HistoryScreenPreview() {
     YoullBeColdTheme {
         val log = LogState(
             id = null,
-            ImmutableDate(LocalDate.now()),
-            ImmutableTime(LocalTime.now()),
-            ImmutableTime(LocalTime.now()),
+            dateTimeState = DateTimeState(
+                date = DateState(2022, 1, 1),
+                timeFrom = TimeState(12, 0),
+                timeTo = TimeState(13, 0)
+            ),
         )
         val state = flow {
             emit(PagingData.from(listOf(log, log, log)))

@@ -11,14 +11,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.icontext.Tile
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.HourlyTemperature
-import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import java.time.LocalDateTime
 
 @Composable
 fun HourlyWeatherCard(
@@ -35,9 +33,9 @@ fun HourlyWeatherCard(
             Tile(
                 title = stringResource(
                     R.string.temperature_degrees_short,
-                    hourItem.roundedTemperature
+                    hourItem.temperature
                 ),
-                iconType = hourItem.weatherEvaluation.icon,
+                iconType = hourItem.weatherIcon,
                 subtitle = hourItem.formattedTime,
             )
 
@@ -53,11 +51,8 @@ private const val SPACE_BETWEEN_ITEMS = 8
 @Preview(showBackground = true)
 @Composable
 private fun HourlyWeatherCardPreview() {
-    val item = HourlyTemperature(
-        LocalDateTime.now(),
-        3.5,
-        WeatherEvaluation.CLOUDY
-    )
+    val item = HourlyTemperature(100000, 5, IconType.Sun)
+
     YoullBeColdTheme {
         HourlyWeatherCard(
             persistentListOf(item, item, item, item)

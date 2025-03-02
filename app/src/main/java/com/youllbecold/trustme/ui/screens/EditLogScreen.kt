@@ -16,8 +16,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.AddLogForm
 import com.youllbecold.trustme.ui.components.LogExitDialog
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateState
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.EditLogAction
 import com.youllbecold.trustme.ui.viewmodels.EditLogUiState
@@ -28,8 +29,6 @@ import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import com.youllbecold.trustme.ui.viewmodels.state.validate
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun EditLogRoot(
@@ -76,14 +75,10 @@ private fun EditLogScreen(
 
     state.value.logState?.let { logState ->
         AddLogForm(
-            date = logState.date,
-            timeFrom = logState.timeFrom,
-            timeTo = logState.timeTo,
+            dateTimeState = logState.dateTimeState,
             feelings = logState.feelings,
             clothes = logState.clothes,
-            onDateChanged = { update(logState.copy(date = it)) },
-            onTimeFromChange = { update(logState.copy(timeFrom = it)) },
-            onTimeToChange = { update(logState.copy(timeTo = it)) },
+            onDateTimeChanged = { update(logState.copy(dateTimeState = it)) },
             onFeelingsChange = { update(logState.copy(feelings = it)) },
             onClothesCategoryChange = { update(logState.copy(clothes = it)) },
             onSave = {
@@ -129,9 +124,11 @@ private fun EditLogScreenPreview() {
             EditLogUiState(
                 logState =
                     LogState(
-                        date = ImmutableDate(LocalDate.now()),
-                        timeFrom = ImmutableTime(LocalTime.now()),
-                        timeTo = ImmutableTime(LocalTime.now()),
+                        dateTimeState = DateTimeState(
+                            date = DateState(2022, 1, 1),
+                            timeFrom = TimeState(12, 0),
+                            timeTo = TimeState(13, 0)
+                        ),
                         feelings = FeelingsState(),
                         clothes = persistentSetOf()
                     )

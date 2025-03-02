@@ -13,7 +13,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +31,11 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.cards.RecommendationCard
-import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
+import com.youllbecold.trustme.ui.components.generic.ThemedCard
 import com.youllbecold.trustme.ui.components.generic.animation.FadingItem
 import com.youllbecold.trustme.ui.components.generic.datetime.DateTimeInput
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.viewmodels.RecommendAction
 import com.youllbecold.trustme.ui.viewmodels.RecommendUiState
@@ -49,8 +47,7 @@ import com.youllbecold.trustme.ui.viewmodels.state.isLoading
 import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @Composable
 fun RecommendScreenRoot(
@@ -68,16 +65,11 @@ private fun RecommendScreen(
     onAction: (RecommendAction) -> Unit
 ) {
     val state = uiState.value
-    val timeNow = LocalTime.now()
+    val dateTimeNow = LocalDateTime.now()
 
     var dateTimeState by remember {
-        mutableStateOf(
-            DateTimeState(
-                date = ImmutableDate(LocalDate.now()),
-                timeFrom = ImmutableTime(timeNow),
-                timeTo = ImmutableTime(timeNow.plusHours(1)),
-            )
-        )
+        // Initial state
+        mutableStateOf(DateTimeState.fromDateTime(dateTimeNow, dateTimeNow.plusHours(1)))
     }
 
     Column(
@@ -89,12 +81,8 @@ private fun RecommendScreen(
         ThemedCard(modifier = Modifier.fillMaxWidth()) {
             Column {
                 DateTimeInput(
-                    date = dateTimeState.date,
-                    timeFrom = dateTimeState.timeFrom,
-                    timeTo = dateTimeState.timeTo,
-                    onDateChanged = { dateTimeState = dateTimeState.copy(date = it) },
-                    onFromTimeSelected = { dateTimeState = dateTimeState.copy(timeFrom = it) },
-                    onToTimeSelected = { dateTimeState = dateTimeState.copy(timeTo = it) },
+                    dateTimeState = dateTimeState,
+                    onDatetimeChanged = { dateTimeState = it },
                     allowFuture = true
                 )
 
@@ -104,11 +92,7 @@ private fun RecommendScreen(
                     text = stringResource(R.string.menu_recommendation),
                     onClick = {
                         onAction(
-                            RecommendAction.UpdateRecommendation(
-                                date = dateTimeState.date.date,
-                                timeFrom = dateTimeState.timeFrom.time,
-                                timeTo = dateTimeState.timeTo.time
-                            )
+                            RecommendAction.UpdateRecommendation(dateTimeState)
                         )
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -150,13 +134,6 @@ private const val CARD_INTERNAL_PADDING = 12
 private const val SPACE_BETWEEN_ITEMS = 12
 private const val VERTICAL_PADDING = 16
 private const val HORIZONTAL_SCREEN_PADDING = 12
-
-@Stable
-private data class DateTimeState(
-    val date: ImmutableDate,
-    val timeFrom: ImmutableTime,
-    val timeTo: ImmutableTime
-)
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

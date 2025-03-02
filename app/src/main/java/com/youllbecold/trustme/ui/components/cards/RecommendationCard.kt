@@ -33,7 +33,6 @@ import com.youllbecold.trustme.usecases.recommendation.Recommendation
 import com.youllbecold.weather.model.Weather
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
-import java.time.LocalDateTime
 
 @Composable
 fun RecommendationCard(
@@ -115,7 +114,7 @@ private const val ITEMS_PADDING = 8
 @Composable
 private fun RecommendationCardPreview() {
     val weather = Weather(
-        time = LocalDateTime.now(),
+        time = 1000,
         unitsCelsius = true,
         temperature = -10.0,
         apparentTemperature = 20.0,

@@ -2,9 +2,13 @@ package com.youllbecold.trustme.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.youllbecold.trustme.ui.components.generic.IconType
+import com.youllbecold.trustme.ui.components.utils.millisToDateTime
+import com.youllbecold.trustme.ui.utils.icon
 import com.youllbecold.trustme.ui.viewmodels.state.LoadingStatus
 import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.ui.viewmodels.state.isIdle
@@ -17,7 +21,6 @@ import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.NetworkHelper
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.weather.model.Weather
-import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -120,10 +123,10 @@ class HomeViewModel(
         val now = LocalDateTime.now()
 
         val (allDayTodayWeather, tomorrowWeather) = hourlyWeather
-            .partition { it.time.toLocalDate() == now.toLocalDate() }
+            .partition { it.time.millisToDateTime.toLocalDate() == now.toLocalDate() }
 
         val todayWeather = allDayTodayWeather
-            .filter { it.time.toLocalTime() >= now.toLocalTime() }
+            .filter { it.time.millisToDateTime.toLocalTime() >= now.toLocalTime() }
 
         return Forecast(
             current = WeatherWithRecommendation(
@@ -159,21 +162,18 @@ sealed class HomeAction {
 /**
  * The hourly temperature forecast for next few hours.
  */
+@Immutable
 data class HourlyTemperature(
-    val time: LocalDateTime,
-    val temperature: Double,
-    val weatherEvaluation: WeatherEvaluation
+    private val timeMillis: Long,
+    val temperature: Int,
+    val weatherIcon: IconType
 ) {
     val formattedTime: String
         get() {
             val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-            return time.format(formatter)
+            return timeMillis.millisToDateTime.format(formatter)
         }
-
-    val roundedTemperature: Int
-        get() = temperature.roundToInt()
 }
-
 
 /**
  * UI state for the home screen.
@@ -224,9 +224,9 @@ data class Forecast(
     private fun List<Weather>?.toHourlyTemperature(): PersistentList<HourlyTemperature> =
         this?.map { weather ->
             HourlyTemperature(
-                time = weather.time,
-                temperature = weather.temperature,
-                weatherEvaluation = weather.weatherEvaluation
+                timeMillis = weather.time,
+                temperature = weather.temperature.roundToInt(),
+                weatherIcon = weather.weatherEvaluation.icon
             )
         }?.toPersistentList() ?: persistentListOf()
 }

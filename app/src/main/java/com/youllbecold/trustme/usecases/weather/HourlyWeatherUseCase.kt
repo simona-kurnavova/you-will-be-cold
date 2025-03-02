@@ -1,7 +1,5 @@
 package com.youllbecold.trustme.usecases.weather
 
-import android.Manifest
-import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.weather.state.ErrorType
 import com.youllbecold.trustme.usecases.weather.state.WeatherState

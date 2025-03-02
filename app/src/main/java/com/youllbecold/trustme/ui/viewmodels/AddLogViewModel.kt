@@ -6,8 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import com.youllbecold.trustme.ui.viewmodels.state.toLogData
 import com.youllbecold.trustme.usecases.weather.RangedWeatherUseCase
@@ -22,8 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @KoinViewModel
 class AddLogViewModel(
@@ -60,13 +58,11 @@ class AddLogViewModel(
     }
 
     private fun initialiseState(): LogState {
-        val currentTime = LocalTime.now()
+        val currentDateTime = LocalDateTime.now()
 
         // Create initial log with default values.
         return LogState(
-            date = ImmutableDate(LocalDate.now()),
-            timeFrom = ImmutableTime(currentTime.minusHours(1)),
-            timeTo = ImmutableTime(currentTime)
+            dateTimeState = DateTimeState.fromDateTime(currentDateTime.minusHours(1), currentDateTime),
         )
     }
 
@@ -87,10 +83,10 @@ class AddLogViewModel(
             }
 
             val weather = weatherUseCase.obtainRangedWeatherState(
-                location,
-                logState.date.date,
-                logState.timeFrom.time,
-                logState.timeTo.time,
+                location = location,
+                date = logState.dateTimeState.date.date,
+                timeFrom = logState.dateTimeState.timeFrom.time,
+                timeTo = logState.dateTimeState.timeTo.time,
                 useCelsiusUnits = true // Always save with Celsius units
             ).getOrNull()
 

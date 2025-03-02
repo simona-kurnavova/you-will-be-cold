@@ -1,15 +1,16 @@
 package com.youllbecold.weather.model
 
-import java.time.LocalDateTime
+import androidx.compose.runtime.Stable
 
 /**
  * Weather data.
  */
+@Stable
 data class Weather(
     /**
      * Time of the weather prediction.
      */
-    val time: LocalDateTime,
+    val time: Long,
 
     /**
      * Whether the temperature is in Celsius.

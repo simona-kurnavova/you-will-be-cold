@@ -1,11 +1,13 @@
 package com.youllbecold.recomendation.model
 
+import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.LogData
 
 /**
  * Data class for recommendation.
  */
+@Stable
 data class Recommendation(
     val clothes: List<Clothes> = emptyList(),
     val certainty: Certainty = Certainty.Low,
@@ -16,6 +18,7 @@ data class Recommendation(
 /**
  * Certainty level of the recommendation.
  */
+@Stable
 enum class Certainty {
     /**
      * Default value was used, we are just guessing here.
@@ -36,6 +39,7 @@ enum class Certainty {
 /**
  * UV protection recommendation.
  */
+@Stable
 enum class UvRecommendation {
     NoProtection,
     LowProtection,
@@ -46,6 +50,7 @@ enum class UvRecommendation {
 /**
  * Rain level recommendation.
  */
+@Stable
 enum class RainRecommendation {
     NoRain,
     LightRain,

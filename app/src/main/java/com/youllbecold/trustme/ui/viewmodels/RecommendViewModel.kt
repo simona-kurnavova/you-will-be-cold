@@ -6,6 +6,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.ui.viewmodels.state.LoadingStatus
 import com.youllbecold.trustme.ui.viewmodels.state.WeatherWithRecommendation
 import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
@@ -20,8 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.time.LocalDate
-import java.time.LocalTime
 
 /**
  * ViewModel for the recommendation screen.
@@ -52,19 +51,13 @@ class RecommendViewModel(
      */
     fun onAction(action: RecommendAction) {
         when (action) {
-            is RecommendAction.UpdateRecommendation -> updateWeatherAndRecomm(
-                action.date,
-                action.timeFrom,
-                action.timeTo,
-            )
+            is RecommendAction.UpdateRecommendation -> updateWeatherAndRecomm(action.datetimeRange)
         }
     }
 
     @SuppressLint("MissingPermission") // It is checked
     private fun updateWeatherAndRecomm(
-        date: LocalDate,
-        timeFrom: LocalTime,
-        timeTo: LocalTime,
+        datetimeRange: DateTimeState
     ) {
         _uiState.update { RecommendUiState(status = LoadingStatus.Loading) }
 
@@ -91,9 +84,9 @@ class RecommendViewModel(
 
             val weather = weatherUseCase.obtainRangedWeather(
                 location = location,
-                date = date,
-                timeFrom = timeFrom,
-                timeTo = timeTo,
+                date = datetimeRange.date.date,
+                timeFrom = datetimeRange.timeFrom.time,
+                timeTo = datetimeRange.timeTo.time,
                 useCelsiusUnits = dataStorePreferences.useCelsiusUnits.first()
             ).getOrNull()
 
@@ -127,9 +120,7 @@ class RecommendViewModel(
  */
 sealed class RecommendAction {
     data class UpdateRecommendation(
-        val date: LocalDate,
-        val timeFrom: LocalTime,
-        val timeTo: LocalTime,
+        val datetimeRange: DateTimeState
     ) : RecommendAction()
 }
 

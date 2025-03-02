@@ -7,37 +7,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.DateState
+import com.youllbecold.trustme.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun DateTimeInput(
-    date: ImmutableDate,
-    timeFrom: ImmutableTime,
-    timeTo: ImmutableTime,
-    onDateChanged: (ImmutableDate) -> Unit,
-    onFromTimeSelected: (ImmutableTime) -> Unit,
-    onToTimeSelected: (ImmutableTime) -> Unit,
+    dateTimeState: DateTimeState,
+    onDatetimeChanged: (DateTimeState) -> Unit,
     modifier: Modifier = Modifier,
     allowFuture: Boolean = false,
 ) {
     Column(modifier = modifier) {
         DateInput(
-            date = date,
-            onDateSelected = { onDateChanged(it) },
+            date = dateTimeState.date,
+            onDateSelected = {
+                onDatetimeChanged(dateTimeState.copy(date = it))
+            },
             allowFuture = allowFuture,
         )
 
         Spacer(modifier = Modifier.height(PADDING_BETWEEN_DATETIME.dp))
 
         TimeRangeInput(
-            fromTime = timeFrom,
-            toTime = timeTo,
-            onFromTimeSelected = onFromTimeSelected,
-            onToTimeSelected = onToTimeSelected,
+            fromTime = dateTimeState.timeFrom,
+            toTime = dateTimeState.timeTo,
+            onFromTimeSelected = { fromTime ->
+                onDatetimeChanged(dateTimeState.copy(timeFrom = fromTime))
+            },
+            onToTimeSelected = { toTime ->
+                onDatetimeChanged(dateTimeState.copy(timeTo = toTime))
+            }
         )
     }
 }
@@ -49,12 +50,12 @@ private const val PADDING_BETWEEN_DATETIME = 8
 private fun DateTimeInputPreview() {
     YoullBeColdTheme {
         DateTimeInput(
-            date = ImmutableDate(LocalDate.now()),
-            timeFrom = ImmutableTime(LocalTime.now()),
-            timeTo = ImmutableTime(LocalTime.now().plusHours(1)),
-            onDateChanged = {},
-            onFromTimeSelected = {},
-            onToTimeSelected = {},
+            dateTimeState = DateTimeState(
+                date = DateState(2022, 1, 1),
+                timeFrom = TimeState(12, 0),
+                timeTo = TimeState(13, 0)
+            ),
+            onDatetimeChanged = {}
         )
     }
 }

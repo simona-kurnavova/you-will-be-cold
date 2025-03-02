@@ -20,20 +20,17 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.components.generic.icontext.ClickableText
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedButton
-import com.youllbecold.trustme.ui.components.utils.ImmutableDate
-import com.youllbecold.trustme.ui.components.utils.formatDate
-import com.youllbecold.trustme.ui.components.utils.toMillis
+import com.youllbecold.trustme.ui.components.utils.DateState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateInput(
-    date: ImmutableDate,
-    onDateSelected: (ImmutableDate) -> Unit,
+    date: DateState,
+    onDateSelected: (DateState) -> Unit,
     modifier: Modifier = Modifier,
     allowFuture: Boolean = false,
 ) {
@@ -58,7 +55,7 @@ fun DateInput(
     )
 
     ClickableText(
-        text = date.date.formatDate(),
+        text = date.formatDate(),
         iconType = IconType.Calendar,
         onClick = { showDatePicker = true },
         modifier = modifier,
@@ -76,7 +73,13 @@ fun DateInput(
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate()
 
-                        onDateSelected(ImmutableDate(localDate))
+                        onDateSelected(
+                            DateState(
+                                year = localDate.year,
+                                month = localDate.monthValue,
+                                day = localDate.dayOfMonth
+                            )
+                        )
                     } else {
                         Toast.makeText(
                             context,
@@ -107,7 +110,7 @@ fun DateInput(
 private fun DateInputPreview() {
     YoullBeColdTheme {
         DateInput(
-            date = ImmutableDate(LocalDate.now()),
+            date = DateState(2022, 1, 1),
             onDateSelected = { }
         )
     }

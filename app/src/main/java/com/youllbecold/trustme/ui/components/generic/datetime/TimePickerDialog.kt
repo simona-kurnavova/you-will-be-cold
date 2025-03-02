@@ -7,24 +7,24 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePicker(
-    initial: ImmutableTime,
+    initialTime: TimeState,
     onDismiss: () -> Unit,
-    onChange: (ImmutableTime) -> Unit,
+    onChange: (TimeState) -> Unit,
     showPicker: Boolean,
 ) {
     val timePickerState = rememberTimePickerState(
-        initialHour = initial.time.hour,
-        initialMinute = initial.time.minute,
+        initialHour = initialTime.hour,
+        initialMinute = initialTime.minute,
     )
 
     if (showPicker) {
@@ -39,8 +39,9 @@ fun TimePicker(
                 TextButton(
                     onClick = {
                         onChange(
-                            ImmutableTime(
-                                LocalTime.of(timePickerState.hour, timePickerState.minute)
+                            TimeState(
+                                timePickerState.hour,
+                                timePickerState.minute
                             )
                         )
                     }
@@ -58,7 +59,7 @@ fun TimePicker(
 private fun DialWithDialogExamplePreview() {
     YoullBeColdTheme {
         TimePicker(
-            initial = ImmutableTime(LocalTime.now()),
+            initialTime = TimeState(12, 30),
             showPicker = true,
             onChange = {},
             onDismiss = {},

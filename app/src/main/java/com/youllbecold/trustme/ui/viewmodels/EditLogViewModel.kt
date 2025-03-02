@@ -87,10 +87,10 @@ class EditLogViewModel(
                 }
 
                 val weatherState = weatherUseCase.obtainRangedWeatherState(
-                    location,
-                    logState.date.date,
-                    logState.timeFrom.time,
-                    logState.timeTo.time,
+                    location = location,
+                    date = logState.dateTimeState.date.date,
+                    timeFrom = logState.dateTimeState.timeFrom.time,
+                    timeTo = logState.dateTimeState.timeTo.time,
                     useCelsiusUnits = true
                 )
 

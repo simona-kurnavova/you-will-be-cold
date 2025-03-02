@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import com.youllbecold.trustme.MainActivity
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.utils.icon
-import com.youllbecold.trustme.ui.viewmodels.SettingsAction
 import com.youllbecold.weather.model.WeatherEvaluation
 import org.koin.core.annotation.Singleton
 

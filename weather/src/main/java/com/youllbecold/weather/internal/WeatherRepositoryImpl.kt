@@ -13,6 +13,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
@@ -91,7 +92,7 @@ internal class WeatherRepositoryImpl(
     }
 
     private fun CurrentWeatherResponse.toWeather(): Weather = Weather(
-        time = LocalDateTime.parse(current.time),
+        time = LocalDateTime.parse(current.time).toMillis(),
         unitsCelsius = units.temperatureUnit == TemperatureUnit.CELSIUS,
         temperature = current.temperature2m,
         apparentTemperature = current.apparentTemperature,
@@ -119,7 +120,7 @@ internal class WeatherRepositoryImpl(
 
         return hourly.time.mapIndexed { index, time ->
             Weather(
-                time = LocalDateTime.parse(time),
+                time = LocalDateTime.parse(time).toMillis(),
                 unitsCelsius = unitsCelsius,
                 temperature = hourly.temperature2m[index],
                 apparentTemperature = hourly.apparentTemperature[index],
@@ -131,4 +132,7 @@ internal class WeatherRepositoryImpl(
             )
         }
     }
+
+    private fun LocalDateTime.toMillis(): Long =
+        atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

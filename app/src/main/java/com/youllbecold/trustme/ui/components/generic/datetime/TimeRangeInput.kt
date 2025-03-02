@@ -15,16 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.utils.ImmutableTime
+import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
-import java.time.LocalTime
 
 @Composable
 fun TimeRangeInput(
-    fromTime: ImmutableTime,
-    toTime: ImmutableTime,
-    onFromTimeSelected: (ImmutableTime) -> Unit,
-    onToTimeSelected: (ImmutableTime) -> Unit,
+    fromTime: TimeState,
+    toTime: TimeState,
+    onFromTimeSelected: (TimeState) -> Unit,
+    onToTimeSelected: (TimeState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -51,8 +50,8 @@ private const val PADDING_BETWEEN_ITEMS = 8
 @Composable
 private fun LabeledTimeInput(
     label: String,
-    time: ImmutableTime,
-    onTimeSelected: (ImmutableTime) -> Unit,
+    time: TimeState,
+    onTimeSelected: (TimeState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -68,7 +67,7 @@ private fun LabeledTimeInput(
         Spacer(modifier = Modifier.width(PADDING_UNDER_LABEL.dp))
 
         TimeInput(
-            time = time,
+            initialTime = time,
             onTimeSelected = onTimeSelected,
         )
     }
@@ -82,8 +81,8 @@ private const val PADDING_UNDER_LABEL = 8
 private fun TimeRangeInputPreview() {
     YoullBeColdTheme {
         TimeRangeInput(
-            fromTime = ImmutableTime(LocalTime.now()),
-            toTime = ImmutableTime(LocalTime.now()),
+            fromTime = TimeState(12, 0),
+            toTime = TimeState(13, 0),
             onFromTimeSelected = {},
             onToTimeSelected = {}
         )

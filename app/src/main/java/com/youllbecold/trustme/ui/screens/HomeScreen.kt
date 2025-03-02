@@ -51,7 +51,6 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
 import kotlin.collections.map
 
 @Composable
@@ -226,7 +225,7 @@ private fun getRecomOptions(): PersistentList<String> =
 @Composable
 private fun HomeScreenPreview() {
     val weather = Weather(
-        time = LocalDateTime.now(),
+        time = 1000,
         unitsCelsius = true,
         temperature = 2.0,
         apparentTemperature = 20.0,
