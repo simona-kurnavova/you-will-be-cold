@@ -27,7 +27,7 @@ class EditLogViewModel(
     private val app: Application,
     private val logRepository: LogRepository,
     private val locationHelper: LocationHelper,
-    private val weatherUseCase: RangedWeatherUseCase
+    private val weatherUseCase: RangedWeatherUseCase,
 ) : ViewModel() {
     private var oldLogState: LogState? = null
 
@@ -78,17 +78,20 @@ class EditLogViewModel(
                 oldLogState?.timeFrom != logState.timeFrom ||
                 oldLogState?.timeTo != logState.timeTo
             ) {
-                val geoLocationState = locationHelper.geoLocationState.firstOrNull()
-                if (geoLocationState?.location == null) {
+                val location = locationHelper.geoLocationState.firstOrNull()?.location
+                    ?: LocationHelper.getLastLocation(app)
+
+                if (location == null) {
                     editState.update { EditingState.Error }
                     return@launch
                 }
 
                 val weatherState = weatherUseCase.obtainRangedWeatherState(
-                    geoLocationState.location,
+                    location,
                     logState.date.date,
                     logState.timeFrom.time,
-                    logState.timeTo.time
+                    logState.timeTo.time,
+                    useCelsiusUnits = true
                 )
 
                 val weather = weatherState.getOrNull()

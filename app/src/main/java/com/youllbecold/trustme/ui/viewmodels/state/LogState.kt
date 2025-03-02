@@ -48,7 +48,8 @@ data class FeelingsState(
 data class WeatherState(
     val apparentTemperatureMin: Double,
     val apparentTemperatureMax: Double,
-    val avgTemperature: Double
+    val avgTemperature: Double,
+    val useCelsiusUnits: Boolean
 )
 
 fun LogState.toLogData(): LogData =
@@ -80,17 +81,19 @@ private fun FeelingState.toFeeling(): Feeling = when (this) {
 fun WeatherState.toWeatherData(): WeatherData = WeatherData(
     apparentTemperatureMinC = apparentTemperatureMin,
     apparentTemperatureMaxC = apparentTemperatureMax,
-    avgTemperatureC = avgTemperature
+    avgTemperatureC = avgTemperature,
 )
 
-fun LogData.toLogState(): LogState = LogState(
+fun LogData.toLogState(
+    useCelsiusUnits: Boolean = true
+): LogState = LogState(
     id = id,
     date = ImmutableDate(dateFrom.toLocalDate()),
     timeFrom = ImmutableTime(dateFrom.toLocalTime()),
     timeTo = ImmutableTime(dateTo.toLocalTime()),
     feelings = feelings.toFeelingsState(),
     clothes = clothes.toPersistentSet(),
-    weather = weatherData.toWeatherState()
+    weather = weatherData.toWeatherState(useCelsiusUnits)
 )
 
 private fun Feelings.toFeelingsState(): FeelingsState = FeelingsState(
@@ -110,10 +113,23 @@ private fun Feeling.toFeelingState(): FeelingState = when (this) {
     Feeling.VERY_WARM -> FeelingState.VERY_WARM
 }
 
-private fun WeatherData.toWeatherState(): WeatherState = WeatherState(
-    apparentTemperatureMin = apparentTemperatureMinC,
-    apparentTemperatureMax = apparentTemperatureMaxC,
-    avgTemperature = avgTemperatureC,
+private fun WeatherData.toWeatherState(useCelsiusUnits: Boolean): WeatherState = WeatherState(
+    apparentTemperatureMin = if (useCelsiusUnits) {
+        apparentTemperatureMinC
+    } else {
+        celsiusToFahrenheit(apparentTemperatureMinC)
+    },
+    apparentTemperatureMax = if (useCelsiusUnits) {
+        apparentTemperatureMaxC
+    } else {
+        celsiusToFahrenheit(apparentTemperatureMaxC)
+    },
+    avgTemperature = if (useCelsiusUnits) {
+        avgTemperatureC
+    } else {
+        celsiusToFahrenheit(avgTemperatureC)
+    },
+    useCelsiusUnits = useCelsiusUnits
 )
 
 /**
@@ -140,3 +156,6 @@ fun LogState.validate(context: Context): Boolean {
 
     return true
 }
+
+private fun celsiusToFahrenheit(celsius: Double): Double =
+    (celsius * 9 / 5) + 32

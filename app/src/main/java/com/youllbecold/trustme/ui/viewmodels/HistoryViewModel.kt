@@ -6,10 +6,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.youllbecold.logdatabase.api.LogRepository
+import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.ui.viewmodels.state.LogState
 import com.youllbecold.trustme.ui.viewmodels.state.toLogData
 import com.youllbecold.trustme.ui.viewmodels.state.toLogState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -19,7 +21,8 @@ import org.koin.android.annotation.KoinViewModel
  */
 @KoinViewModel
 class HistoryViewModel(
-    private val logRepository: LogRepository
+    private val logRepository: LogRepository,
+    private val dataStorePreferences: DataStorePreferences
 ) : ViewModel() {
 
     /**
@@ -27,7 +30,9 @@ class HistoryViewModel(
      */
     val uiState: Flow<PagingData<LogState>> = logRepository
         .getAllWithPaging()
-        .map { pagingData -> pagingData.map { it.toLogState() } }
+        .map { pagingData ->
+            pagingData.map { it.toLogState(dataStorePreferences.useCelsiusUnits.first()) }
+        }
         .cachedIn(viewModelScope)
 
     fun onAction(action: HistoryAction) {

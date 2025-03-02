@@ -125,9 +125,7 @@ private fun ExpandedCardContent(
         )
 
         log.weather?.let {
-            // Always obtaining temperature in Celsius
-            // TODO: Support conversion to Fahrenheit
-            val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, true)
+            val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, it.useCelsiusUnits)
             val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
 
             Text(
@@ -231,7 +229,8 @@ private fun LogCardPreview() {
                 weather = WeatherState(
                     avgTemperature = 20.0,
                     apparentTemperatureMin = 15.0,
-                    apparentTemperatureMax = 25.0
+                    apparentTemperatureMax = 25.0,
+                    useCelsiusUnits = true
                 )
             ),
             editAction = {},

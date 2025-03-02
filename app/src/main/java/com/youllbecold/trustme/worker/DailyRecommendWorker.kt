@@ -11,6 +11,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.youllbecold.trustme.notifications.NotificationHelper
+import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
 import com.youllbecold.trustme.utils.PermissionHelper
@@ -28,11 +29,18 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
     private val notificationHelper: NotificationHelper by inject()
 
+    private val dataStorePreferences: DataStorePreferences by inject()
+
     @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result {
         if (!PermissionHelper.hasNotificationPermission(appContext) ||
             !PermissionHelper.hasLocationPermission(appContext)) {
             Log.d("DailyRecommendWorker", "Some permissions are missing, aborting")
+
+            // Disable notification and cancel this worker
+            dataStorePreferences.setAllowRecommendNotification(false)
+            cancel(appContext)
+
             return Result.success()
         }
 
@@ -54,6 +62,7 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
         notificationHelper.showRecommendNotification(
             temperature = weather.temperature,
+            useCelsiusUnits = weather.unitsCelsius,
             weatherEvaluation = weather.weatherEvaluation
         )
 

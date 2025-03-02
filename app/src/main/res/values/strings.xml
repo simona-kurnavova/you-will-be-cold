@@ -274,7 +274,7 @@
     <!-- Title of the recommendation notification. -->
     <string name="notif_recommend_title">Let me help you decide what to wear today</string>
     <!-- Description of the recommendation notification. -->
-    <string name="notif_recommend_desc">It is now %1$.1f degrees. Tap to see the recommendation!</string>
+    <string name="notif_recommend_desc">It is now %s degrees. Tap to see the recommendation!</string>
 
     <!-- Exit dialog for adding/editing log. -->
     <!-- Title of the dialog. -->

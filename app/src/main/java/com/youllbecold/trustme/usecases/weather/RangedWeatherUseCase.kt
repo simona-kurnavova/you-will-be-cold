@@ -23,6 +23,8 @@ class RangedWeatherUseCase(
     private val weatherRepository: WeatherRepository,
     private val networkHelper: NetworkHelper
 ) {
+    private val dispatchers = Dispatchers.IO
+
     /**
      * Obtains the weather for a specific time range. Returns simplified weather data.
      *
@@ -38,15 +40,16 @@ class RangedWeatherUseCase(
         date: LocalDate,
         timeFrom: LocalTime,
         timeTo: LocalTime,
-        useCelsiusUnits: Boolean = true
-    ): Result<WeatherState> = withContext(Dispatchers.IO) {
+        useCelsiusUnits: Boolean
+    ): Result<WeatherState> = withContext(dispatchers) {
         val weatherList = obtainRangedWeather(location, date, timeFrom, timeTo, useCelsiusUnits)
 
         return@withContext weatherList.map { rangedWeather ->
             WeatherState(
                 apparentTemperatureMin = rangedWeather.minOf { it.apparentTemperature },
                 apparentTemperatureMax = rangedWeather.maxOf { it.apparentTemperature },
-                avgTemperature = rangedWeather.sumOf { it.temperature } / rangedWeather.size.toDouble()
+                avgTemperature = rangedWeather.sumOf { it.temperature } / rangedWeather.size.toDouble(),
+                useCelsiusUnits = useCelsiusUnits
             )
         }
     }
@@ -66,8 +69,8 @@ class RangedWeatherUseCase(
         date: LocalDate,
         timeFrom: LocalTime,
         timeTo: LocalTime,
-        useCelsiusUnits: Boolean = true
-    ): Result<List<Weather>> = withContext(Dispatchers.IO) {
+        useCelsiusUnits: Boolean
+    ): Result<List<Weather>> = withContext(dispatchers) {
         if (!networkHelper.hasInternet()) {
             return@withContext Result.failure(Exception("No internet connection"))
         }
@@ -87,6 +90,7 @@ class RangedWeatherUseCase(
                     return@withContext Result.failure(Exception("No weather data"))
                 }
 
+                // In case the difference is smaller than hour, expand range as API cannot provide less than hourly.
                 val adjustedTimeRange = adjustTimeRange(timeFrom, timeTo)
 
                 return@withContext data.filter { weather ->

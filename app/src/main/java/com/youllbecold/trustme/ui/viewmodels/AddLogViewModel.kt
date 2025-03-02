@@ -32,7 +32,6 @@ class AddLogViewModel(
     private val weatherUseCase: RangedWeatherUseCase,
     private val locationHelper: LocationHelper
 ) : ViewModel() {
-
     private val saveState: MutableStateFlow<SavingState> = MutableStateFlow(SavingState.None)
     private val logState: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
 
@@ -47,7 +46,7 @@ class AddLogViewModel(
             logState = log,
             saveState = saveState
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AddLogUiState(logState.value))
+    }.stateIn(viewModelScope, SharingStarted.Lazily, AddLogUiState(logState.value))
 
     /**
      * Handles [AddLogAction].
@@ -79,20 +78,21 @@ class AddLogViewModel(
         }
 
         viewModelScope.launch {
-            val geoLocationState = locationHelper.geoLocationState.firstOrNull()
-            if (geoLocationState?.location == null) {
+            val location = locationHelper.geoLocationState.firstOrNull()?.location
+                ?: LocationHelper.getLastLocation(app)
+
+            if (location == null) {
                 saveState.value = SavingState.Error
                 return@launch
             }
 
-            val weatherState = weatherUseCase.obtainRangedWeatherState(
-                geoLocationState.location,
+            val weather = weatherUseCase.obtainRangedWeatherState(
+                location,
                 logState.date.date,
                 logState.timeFrom.time,
-                logState.timeTo.time
-            )
-
-            val weather = weatherState.getOrNull()
+                logState.timeTo.time,
+                useCelsiusUnits = true // Always save with Celsius units
+            ).getOrNull()
 
             if(weather == null) {
                 Log.d("AddLogViewModel", "Failed to get weather data")

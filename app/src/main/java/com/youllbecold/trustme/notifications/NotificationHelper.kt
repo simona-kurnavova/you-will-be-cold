@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.youllbecold.trustme.MainActivity
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.ui.utils.icon
+import com.youllbecold.trustme.ui.viewmodels.SettingsAction
 import com.youllbecold.weather.model.WeatherEvaluation
 import org.koin.core.annotation.Singleton
 
@@ -44,10 +45,16 @@ internal class NotificationHelper(
     /**
      * Show a notification with a recommendation based on the current weather.
      */
-    fun showRecommendNotification(temperature: Double, weatherEvaluation: WeatherEvaluation) {
+    fun showRecommendNotification(temperature: Double, useCelsiusUnits: Boolean, weatherEvaluation: WeatherEvaluation) {
+        val temperatureWithUnits = if (useCelsiusUnits) {
+            app.getString(R.string.temperature_celsius, temperature)
+        } else {
+            app.getString(R.string.temperature_fahrenheit, temperature)
+        }
+
         createAndShowNotification(
             title =  app.getString(R.string.notif_recommend_title),
-            description = app.getString(R.string.notif_recommend_desc, temperature),
+            description = app.getString(R.string.notif_recommend_desc, temperatureWithUnits),
             notificationId = DAILY_RECOMMEND_NOTIFICATION_ID,
             smallIcon = weatherEvaluation.icon.resource
         )
