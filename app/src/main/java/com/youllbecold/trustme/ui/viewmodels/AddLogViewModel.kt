@@ -84,9 +84,9 @@ class AddLogViewModel(
 
             val weather = weatherUseCase.obtainRangedWeatherState(
                 location = location,
-                date = logState.dateTimeState.date.date,
-                timeFrom = logState.dateTimeState.timeFrom.time,
-                timeTo = logState.dateTimeState.timeTo.time,
+                date = logState.dateTimeState.date.localDate,
+                timeFrom = logState.dateTimeState.timeFrom.localTime,
+                timeTo = logState.dateTimeState.timeTo.localTime,
                 useCelsiusUnits = true // Always save with Celsius units
             ).getOrNull()
 

@@ -28,12 +28,6 @@ fun LocalDate.formatDate(): String {
 /**
  * Converts milliseconds to [LocalDateTime].
  */
-val LocalDateTime.dateTimeToMillis: Long
-    get() = atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-/**
- * Converts milliseconds to [LocalDateTime].
- */
 val Long.millisToDateTime: LocalDateTime
     get() = Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
@@ -47,41 +41,50 @@ fun LocalDate.toMillis(): Long = atTime(LocalTime.NOON) // Set time to noon to a
     .toInstant()
     .toEpochMilli()
 
+/**
+ * Time state holder.
+ */
 @Stable
 data class TimeState(
     val hour: Int,
     val minute: Int,
 ) {
-    val time: LocalTime
+    /**
+     * Converts time to [LocalTime].
+     */
+    val localTime: LocalTime
         get() = LocalTime.of(hour, minute)
 }
 
+/**
+ * Date state holder.
+ */
 @Stable
 data class DateState(
     val year: Int,
     val month: Int,
     val day: Int,
 ) {
-    val date: LocalDate
+    /**
+     * Converts date to [LocalDate].
+     */
+    val localDate: LocalDate
         get() = LocalDate.of(year, month, day)
 
-    fun toMillis(): Long = date.toMillis()
+    /**
+     * Converts date to milliseconds.
+     */
+    fun toMillis(): Long = localDate.toMillis()
 
-    fun formatDate(): String = date.formatDate()
+    /**
+     * Formats date to string.
+     */
+    fun formatDate(): String = localDate.formatDate()
 
     companion object {
-        fun fromMillis(millis: Long): DateState {
-            val localDate = Instant.ofEpochMilli(millis)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-
-            return DateState(
-                year = localDate.year,
-                month = localDate.monthValue,
-                day = localDate.dayOfMonth
-            )
-        }
-
+        /**
+         * Creates [DateState] from [LocalDate].
+         */
         fun fromLocalDate(localDate: LocalDate): DateState {
             return DateState(
                 year = localDate.year,
@@ -92,6 +95,9 @@ data class DateState(
     }
 }
 
+/**
+ * Date and time range state holder.
+ */
 @Stable
 data class DateTimeState(
     val date: DateState,
@@ -99,6 +105,9 @@ data class DateTimeState(
     val timeTo: TimeState
 ) {
     companion object {
+        /**
+         * Creates [DateTimeState] from [LocalDateTime]s.
+         */
         fun fromDateTime(
             dateTimeFrom: LocalDateTime,
             datetimeTo: LocalDateTime

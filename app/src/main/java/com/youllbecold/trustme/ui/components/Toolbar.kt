@@ -23,7 +23,7 @@ import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 fun Toolbar(
     title: String = stringResource(R.string.app_name),
     iconType: IconType? = null,
-showInfoAction: Boolean = false,
+    showInfoAction: Boolean = false,
     navigateToInfo: () -> Unit
 ) {
     TopAppBar(

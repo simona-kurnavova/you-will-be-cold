@@ -8,10 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.ui.components.generic.IconType
 import com.youllbecold.trustme.ui.components.generic.ThemedCard
-import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.IconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.TextAttr
-import com.youllbecold.trustme.ui.components.generic.attributes.defaultBorderAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallIconAttr
 import com.youllbecold.trustme.ui.components.generic.attributes.defaultSmallTextAttr

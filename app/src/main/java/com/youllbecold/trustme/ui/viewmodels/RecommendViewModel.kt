@@ -84,9 +84,9 @@ class RecommendViewModel(
 
             val weather = weatherUseCase.obtainRangedWeather(
                 location = location,
-                date = datetimeRange.date.date,
-                timeFrom = datetimeRange.timeFrom.time,
-                timeTo = datetimeRange.timeTo.time,
+                date = datetimeRange.date.localDate,
+                timeFrom = datetimeRange.timeFrom.localTime,
+                timeTo = datetimeRange.timeTo.localTime,
                 useCelsiusUnits = dataStorePreferences.useCelsiusUnits.first()
             ).getOrNull()
 

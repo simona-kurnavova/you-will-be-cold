@@ -35,8 +35,6 @@ fun WelcomeScreenRoot(
 private fun WelcomeScreen(
     onAction: (WelcomeAction) -> Unit
 ) {
-    // TODO: add how does it works section
-
     OverlaySkeleton(
         title = R.string.welcome_screen_title,
         subtitle = R.string.welcome_screen_description,

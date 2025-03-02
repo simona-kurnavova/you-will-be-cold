@@ -25,13 +25,13 @@ data class LogState(
     val weather: WeatherState? = null
 ) {
     val date: LocalDate
-        get() = dateTimeState.date.date
+        get() = dateTimeState.date.localDate
 
     val timeFrom: LocalTime
-        get() = dateTimeState.timeFrom.time
+        get() = dateTimeState.timeFrom.localTime
 
     val timeTo: LocalTime
-        get() = dateTimeState.timeTo.time
+        get() = dateTimeState.timeTo.localTime
 }
 
 enum class FeelingState {
