@@ -32,6 +32,8 @@ class CurrentWeatherUseCase(
 ) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    private var currentLocation: GeoLocation? = null
+
     private val _weatherState: MutableStateFlow<WeatherState<Weather?>> =
         MutableStateFlow(
             WeatherState(
@@ -49,6 +51,7 @@ class CurrentWeatherUseCase(
      * Refreshes the current weather for the given location.
      */
     fun refreshCurrentWeather(location: GeoLocation) {
+        currentLocation = location
         _weatherState.update { it.copyWithLoading()  }
 
         if (!networkHelper.hasInternet()) {
@@ -65,6 +68,13 @@ class CurrentWeatherUseCase(
 
             _weatherState.update { it.copyWithNetworkResult(result) }
         }
+    }
+
+    /**
+     * Called when the units are changed, to quick refresh the current weather.
+     */
+    fun onUnitsChanged() {
+        currentLocation?.let { refreshCurrentWeather(it) }
     }
 
     /**

@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.preferences.DataStorePreferences
+import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
+import com.youllbecold.trustme.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.utils.PermissionHelper
 import com.youllbecold.trustme.worker.DailyLogWorker
 import com.youllbecold.trustme.worker.DailyRecommendWorker
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -20,7 +23,9 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class SettingsViewModel(
     private val app: Application,
-    private val dataStore: DataStorePreferences
+    private val dataStore: DataStorePreferences,
+    private val currentWeatherUseCase: CurrentWeatherUseCase,
+    private val hourlyWeatherUseCase: HourlyWeatherUseCase
 ) : ViewModel() {
 
     /**
@@ -107,7 +112,12 @@ class SettingsViewModel(
      */
     private fun setUseCelsiusUnits(useCelsius: Boolean) {
         viewModelScope.launch {
-            dataStore.setUseCelsiusUnits(useCelsius)
+            if (dataStore.useCelsiusUnits.first() != useCelsius) {
+                dataStore.setUseCelsiusUnits(useCelsius)
+
+                currentWeatherUseCase.onUnitsChanged()
+                hourlyWeatherUseCase.onUnitsChanged()
+            }
         }
     }
 }

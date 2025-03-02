@@ -34,6 +34,8 @@ class HourlyWeatherUseCase(
 ) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    private var currentLocationAndDays: Pair<GeoLocation, Int>? = null
+
     private val _weatherState: MutableStateFlow<WeatherState<List<Weather>>> =
         MutableStateFlow(
             WeatherState(
@@ -50,8 +52,8 @@ class HourlyWeatherUseCase(
     /**
      * Refreshes the hourly weather for the given location.
      */
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun refreshHourlyWeather(location: GeoLocation, days: Int) {
+        currentLocationAndDays = location to days
         _weatherState.update { it.copyWithLoading() }
 
         if (!networkHelper.hasInternet()) {
@@ -69,5 +71,12 @@ class HourlyWeatherUseCase(
 
             _weatherState.update { it.copyWithNetworkResult(result) }
         }
+    }
+
+    /**
+     * Called when the units are changed, to quick refresh the hourly weather.
+     */
+    fun onUnitsChanged() {
+        currentLocationAndDays?.let { refreshHourlyWeather(it.first, it.second) }
     }
 }

@@ -31,8 +31,8 @@ internal val appModule = module {
     singleOf(::NotificationHelper)
     
     // UseCases
-    factoryOf(::CurrentWeatherUseCase)
-    factoryOf(::HourlyWeatherUseCase)
+    singleOf(::CurrentWeatherUseCase)
+    singleOf(::HourlyWeatherUseCase)
     factoryOf(::RangedWeatherUseCase)
     factoryOf(::RecommendationUseCase)
 
