@@ -138,7 +138,6 @@ class LocationHelper(
         val addresses = geocoder.getFromLocation(latitude, longitude, 1)
         addresses?.firstOrNull()
     } catch (e: Exception) {
-        e.printStackTrace()
         null
     }
 

@@ -36,7 +36,7 @@ internal class NotificationHelper(
         createAndShowNotification(
             title = app.getString(R.string.notif_daily_log_title),
             description = app.getString(R.string.notif_daily_log_desc),
-            notificationId = DAILY_LOG_NOTIFICATION_ID,
+            notificationId = DAILY_LOG_NOTIF_ID,
             smallIcon = R.drawable.ic_snowflake
         )
     }
@@ -54,7 +54,7 @@ internal class NotificationHelper(
         createAndShowNotification(
             title =  app.getString(R.string.notif_recommend_title),
             description = app.getString(R.string.notif_recommend_desc, temperatureWithUnits),
-            notificationId = DAILY_RECOMMEND_NOTIFICATION_ID,
+            notificationId = DAILY_RECOMMEND_NOTIF_ID,
             smallIcon = weatherEvaluation.icon.resource
         )
     }
@@ -103,5 +103,5 @@ internal class NotificationHelper(
 
 private const val CHANNEL_ID = "daily_reminders_channel"
 
-private const val DAILY_LOG_NOTIFICATION_ID = 1
-private const val DAILY_RECOMMEND_NOTIFICATION_ID = 2
+private const val DAILY_LOG_NOTIF_ID = 1
+private const val DAILY_RECOMMEND_NOTIF_ID = 2

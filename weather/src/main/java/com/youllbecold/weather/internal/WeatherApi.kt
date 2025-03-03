@@ -47,4 +47,3 @@ internal interface WeatherApi {
         @Query("current") categories: List<String> = WeatherCategoriesRequest.entries.map { it.value },
     ): Response<CurrentWeatherResponse>
 }
-

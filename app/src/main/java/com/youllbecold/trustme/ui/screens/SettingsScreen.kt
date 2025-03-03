@@ -85,6 +85,7 @@ private fun SettingsScreen(
             subtitle = stringResource(R.string.settings_recommend_notification_subtitle),
             checked = state.allowRecommendNotification,
             onChecked = { isChecked ->
+                @Suppress("ComplexCondition")
                 if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     && !PermissionHelper.hasNotificationPermission(context)
                     || !PermissionHelper.hasBgLocationPermission(context)

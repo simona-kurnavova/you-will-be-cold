@@ -122,6 +122,7 @@ internal class LogRepositoryImpl(
             FeelingEntity.VERY_WARM -> Feeling.VERY_WARM
         }
     }
+
     private fun ClothesId.toClothes(): Clothes = when (this) {
         ClothesId.SHORT_SLEEVE -> Clothes.SHORT_SLEEVE
         ClothesId.LONG_SLEEVE -> Clothes.LONG_SLEEVE

@@ -2,7 +2,6 @@ package com.youllbecold.weather.api
 
 import com.youllbecold.weather.model.Weather
 import java.time.LocalDate
-import java.time.LocalTime
 
 /**
  * Repository for weather data.

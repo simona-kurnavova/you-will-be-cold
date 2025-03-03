@@ -20,10 +20,10 @@ import org.koin.core.annotation.Singleton
  */
 @Singleton
 class DataStorePreferences(private val context: Context) {
-    private val dailyNotificationKey = booleanPreferencesKey(PREFERENCES_DAILY_NOTIF)
-    private val recommendNotificationKey = booleanPreferencesKey(PREFERENCES_RECOMMEND_NOTIF)
-    private val useCelsiusUnitsKey = booleanPreferencesKey(PREFERENCES_USE_CELSIUS_UNITS)
-    private val welcomeScreenShownKey = booleanPreferencesKey(PREFERENCES_WELCOME_SCREEN_SHOWN)
+    private val dailyNotificationKey = booleanPreferencesKey(PREFS_DAILY_NOTIF)
+    private val recommendNotificationKey = booleanPreferencesKey(PREFS_RECOMMEND_NOTIF)
+    private val useCelsiusUnitsKey = booleanPreferencesKey(PREFS_USE_CELSIUS_UNITS)
+    private val welcomeScreenShownKey = booleanPreferencesKey(PREFS_WELCOME_SCREEN_SHOWN)
 
     /**
      * Flow denoting whether daily notification is enabled.
@@ -95,9 +95,9 @@ class DataStorePreferences(private val context: Context) {
 }
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
-private const val PREFERENCES_DAILY_NOTIF = "allow_daily_notif"
-private const val PREFERENCES_RECOMMEND_NOTIF = "allow_recom_notif"
-private const val PREFERENCES_USE_CELSIUS_UNITS = "use_celsius_units"
-private const val PREFERENCES_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
+private const val PREFS_DAILY_NOTIF = "allow_daily_notif"
+private const val PREFS_RECOMMEND_NOTIF = "allow_recom_notif"
+private const val PREFS_USE_CELSIUS_UNITS = "use_celsius_units"
+private const val PREFS_WELCOME_SCREEN_SHOWN = "welcome_screen_shown"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)
