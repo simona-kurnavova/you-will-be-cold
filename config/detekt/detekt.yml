@@ -104,3 +104,7 @@ naming:
   FunctionMaxLength:
     active: true
     maximumFunctionNameLength: 50
+
+style:
+  UnusedImports:
+    active: true

@@ -1,7 +1,6 @@
 package com.youllbecold.trustme.ui.components.generic
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.trustme.ui.components.generic.attributes.BorderAttr
-import com.youllbecold.trustme.ui.components.generic.attributes.defaultBorderAttr
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
 @Composable

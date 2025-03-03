@@ -2,7 +2,6 @@ package com.youllbecold.recomendation.model
 
 import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes
-import com.youllbecold.logdatabase.model.LogData
 
 /**
  * Data class for recommendation.
