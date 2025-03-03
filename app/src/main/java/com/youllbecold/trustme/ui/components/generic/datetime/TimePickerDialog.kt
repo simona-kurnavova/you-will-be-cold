@@ -1,15 +1,18 @@
 package com.youllbecold.trustme.ui.components.generic.datetime
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.ui.components.generic.ThemedButton
 import com.youllbecold.trustme.ui.components.utils.TimeState
 import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
 
@@ -30,12 +33,14 @@ fun TimePicker(
         AlertDialog(
             onDismissRequest = onDismiss,
             dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(stringResource(R.string.dialog_dismiss))
-                }
+                ThemedButton(
+                    text = stringResource(R.string.dialog_dismiss),
+                    onClick = { onDismiss() }
+                )
             },
             confirmButton = {
-                TextButton(
+                ThemedButton(
+                    text = stringResource(R.string.dialog_ok),
                     onClick = {
                         onChange(
                             TimeState(
@@ -44,11 +49,16 @@ fun TimePicker(
                             )
                         )
                     }
-                ) {
-                    Text(stringResource(R.string.dialog_ok))
-                }
+                )
             },
-            text = { TimePicker(state = timePickerState) }
+            text = {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ){
+                    TimeInput(state = timePickerState)
+                }
+
+            }
         )
     }
 }

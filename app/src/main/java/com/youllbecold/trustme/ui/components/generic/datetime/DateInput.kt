@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,7 +37,7 @@ fun DateInput(
 ) {
     val context = LocalContext.current
 
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val todayMillis = remember { System.currentTimeMillis() }
 
     val selectableDates = object : SelectableDates {
@@ -97,9 +98,7 @@ fun DateInput(
                 }
             },
         ) {
-            DatePicker(
-                state = datePickerState,
-            )
+            DatePicker(state = datePickerState)
         }
     }
 }
