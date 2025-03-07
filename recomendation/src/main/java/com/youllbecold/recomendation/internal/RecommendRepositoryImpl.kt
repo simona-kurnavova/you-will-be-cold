@@ -76,23 +76,22 @@ internal class RecommendRepositoryImpl(
     /**
      * Gather suitable logs from database. First try only specific range, then expand range if needed.
      */
-    private suspend fun gatherLogs(apparentTempRange: Pair<Double, Double>): List<LogData> =
-        withContext(Dispatchers.IO) {
-            var expandConstant = 0.0
+    private suspend fun gatherLogs(apparentTempRange: Pair<Double, Double>): List<LogData> {
+        var expandConstant = 0.0
 
-            while (expandConstant <= MAX_RANGE_EXPAND) {
-                val logs = logRepository.getLogsInRange(
-                    apparentTempRange.first - expandConstant to apparentTempRange.second + expandConstant
-                )
+        while (expandConstant <= MAX_RANGE_EXPAND) {
+            val logs = logRepository.getLogsInRange(
+                apparentTempRange.first - expandConstant to apparentTempRange.second + expandConstant
+            )
 
-                if (logs.isNotEmpty()) {
-                    return@withContext logs
-                }
-                expandConstant += 1.0
+            if (logs.isNotEmpty()) {
+                return logs
             }
-
-            return@withContext emptyList()
+            expandConstant += 1.0
         }
+
+        return emptyList()
+    }
 
     private suspend fun calculateBestCandidate(
         logs: List<LogData>,

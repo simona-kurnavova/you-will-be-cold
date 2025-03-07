@@ -7,8 +7,6 @@ import com.youllbecold.weather.internal.response.TemperatureUnit
 import com.youllbecold.weather.internal.response.PredictedWeatherResponse
 import com.youllbecold.weather.model.WeatherEvaluation
 import com.youllbecold.weather.model.Weather
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDate
@@ -22,7 +20,6 @@ import java.time.format.DateTimeFormatter
 internal class WeatherRepositoryImpl(
     private val weatherApi: WeatherApi
 ) : WeatherRepository {
-    private val dispatchers = Dispatchers.IO
 
     /**
      * Get current weather.
@@ -65,14 +62,12 @@ internal class WeatherRepositoryImpl(
     private suspend fun <R, T> processCall(
         call: suspend () -> Response<R>,
         processBody: (R) -> T
-    ): Result<T> = withContext(dispatchers) {
-        try {
-            call().processResponse(processBody)
-        } catch (e: IOException) { // Network issues
-            Result.failure(Exception("No internet connection. Please try again later."))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    ): Result<T> = try {
+        call().processResponse(processBody)
+    } catch (e: IOException) { // Network issues
+        Result.failure(Exception("No internet connection. Please try again later."))
+    } catch (e: Exception) {
+        Result.failure(Exception("Unknown exception: ${e.message}"))
     }
 
     private fun <R, T> Response<R>.processResponse(
