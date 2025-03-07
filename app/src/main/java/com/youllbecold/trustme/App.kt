@@ -3,6 +3,7 @@ package com.youllbecold.trustme
 import android.app.Application
 import com.youllbecold.trustme.di.appModule
 import com.youllbecold.trustme.di.uiModule
+import com.youllbecold.trustme.notifications.channel.ChannelInitializer
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -23,5 +24,8 @@ class App : Application(){
             androidContext(this@App)
             modules(appModule, uiModule)
         }
+
+        // Create notification channels
+        ChannelInitializer.initChannels(this)
     }
 }

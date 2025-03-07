@@ -10,7 +10,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.youllbecold.trustme.notifications.NotificationHelper
+import com.youllbecold.trustme.notifications.DailyRecommendNotification
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.utils.LocationHelper
@@ -27,7 +27,7 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
     private val currentWeatherUseCase: CurrentWeatherUseCase by inject()
 
-    private val notificationHelper: NotificationHelper by inject()
+    private val dailyRecommendNotification: DailyRecommendNotification by inject()
 
     private val dataStorePreferences: DataStorePreferences by inject()
 
@@ -60,7 +60,7 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
         Log.d("DailyRecommendWorker", "Showing notification")
 
-        notificationHelper.showRecommendNotification(
+        dailyRecommendNotification.show(
             temperature = weather.temperature,
             useCelsiusUnits = weather.unitsCelsius,
             weatherEvaluation = weather.weatherEvaluation

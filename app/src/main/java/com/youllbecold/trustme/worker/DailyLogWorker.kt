@@ -9,7 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.youllbecold.trustme.notifications.NotificationHelper
+import com.youllbecold.trustme.notifications.DailyLogNotification
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.utils.PermissionHelper
 import org.koin.core.component.KoinComponent
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class DailyLogWorker(private val appContext: Context, workerParams: WorkerParameters):
     CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    private val notificationHelper: NotificationHelper by inject()
+    private val dailyLogNotification: DailyLogNotification by inject()
 
     private val dataStorePreferences: DataStorePreferences by inject()
 
@@ -38,7 +38,7 @@ class DailyLogWorker(private val appContext: Context, workerParams: WorkerParame
         }
 
         Log.d("DailyLogWorker", "Showing daily log notification")
-        notificationHelper.showDailyLogNotification()
+        dailyLogNotification.show()
 
         return Result.success()
     }

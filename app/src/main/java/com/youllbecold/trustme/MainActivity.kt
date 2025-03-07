@@ -11,7 +11,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,7 +59,8 @@ private fun Main() {
     // Handle different overlays: welcome screen or location permission.
     LaunchedEffect(overlayState) {
         when(overlayState) {
-            OverlayState.NEW_USER -> navController.popAllAndNavigate(NavRoute.Welcome.route)
+            OverlayState.NEW_USER ->
+                navController.popAllAndNavigate(NavRoute.Welcome.route)
             OverlayState.LOCATION_PERM_MISSING ->
                 navController.popAllAndNavigate(NavRoute.LocationPermission.route)
             else -> Unit // Do nothing

@@ -4,51 +4,26 @@ import androidx.compose.runtime.Stable
 
 /**
  * Weather data.
+ *
+ * @property time Time of the weather prediction.
+ * @property unitsCelsius Whether the temperature is in Celsius.
+ * @property temperature The temperature.
+ * @property apparentTemperature The apparent temperature.
+ * @property weatherEvaluation The weather evaluation - specifying simple weather description.
+ * @property relativeHumidity The relative humidity in percent.
+ * @property windSpeed The wind speed.
+ * @property precipitationProbability Probability of rain
+ * @property uvIndex The UV index.
  */
 @Stable
 data class Weather(
-    /**
-     * Time of the weather prediction.
-     */
     val time: Long,
-
-    /**
-     * Whether the temperature is in Celsius.
-     */
     val unitsCelsius: Boolean,
-
-    /**
-     * The temperature.
-     */
     val temperature: Double,
-
-    /**
-     * The apparent temperature.
-     */
     val apparentTemperature: Double,
-
-    /**
-     * The weather evaluation - specifying simple weather description.
-     */
     val weatherEvaluation: WeatherEvaluation,
-
-    /**
-     * The relative humidity in percent.
-     */
     val relativeHumidity: Int,
-
-    /**
-     * The wind speed.
-     */
     val windSpeed: Double,
-
-    /**
-     * Probability of rain
-     */
     val precipitationProbability: Int,
-
-    /**
-     * The UV index.
-     */
     val uvIndex: Double,
 )

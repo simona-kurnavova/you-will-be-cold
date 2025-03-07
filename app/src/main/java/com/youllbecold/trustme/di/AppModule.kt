@@ -1,10 +1,13 @@
 package com.youllbecold.trustme.di
 
+import android.app.NotificationManager
+import android.content.Context
 import com.youllbecold.logdatabase.LogRepositoryProvider
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.recomendation.RecommendRepositoryProvider
 import com.youllbecold.recomendation.api.RecommendRepository
-import com.youllbecold.trustme.notifications.NotificationHelper
+import com.youllbecold.trustme.notifications.DailyLogNotification
+import com.youllbecold.trustme.notifications.DailyRecommendNotification
 import com.youllbecold.trustme.preferences.DataStorePreferences
 import com.youllbecold.trustme.usecases.recommendation.RecommendationUseCase
 import com.youllbecold.trustme.usecases.weather.CurrentWeatherUseCase
@@ -24,12 +27,20 @@ internal val appModule = module {
     // Preferences
     singleOf(::DataStorePreferences)
 
+    // System Services
+    single<NotificationManager> {
+        androidApplication().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
     // Helpers
     singleOf(::PermissionHelper)
     singleOf(::NetworkHelper)
     singleOf(::LocationHelper)
-    singleOf(::NotificationHelper)
-    
+
+    // Notifications
+    factoryOf(::DailyLogNotification)
+    factoryOf(::DailyRecommendNotification)
+
     // UseCases
     singleOf(::CurrentWeatherUseCase)
     singleOf(::HourlyWeatherUseCase)

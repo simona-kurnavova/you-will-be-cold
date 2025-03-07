@@ -1,5 +1,8 @@
 package com.youllbecold.weather.internal.request
 
+/**
+ * Enum class that represents the different weather categories that can be requested.
+ */
 internal enum class WeatherCategoriesRequest(val value: String) {
     TEMPERATURE("temperature_2m"),
     RAIN("rain"),
