@@ -11,24 +11,23 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Singleton
 
 /**
  * Use case for recommendation.
  */
-@Singleton
 class RecommendationUseCase(
     private val recommendRepository: RecommendRepository,
 ) {
-    private val dispatchers = Dispatchers.IO
-
     /**
      * Recommends clothes based on the weather.
      */
     suspend fun recommend(hourlyWeather: List<Weather>): Recommendation? =
-        withContext(dispatchers) {
-            val useCelsius = hourlyWeather.firstOrNull()?.unitsCelsius
-                ?: return@withContext null
+        withContext(Dispatchers.Default) {
+            if (hourlyWeather.isEmpty()) {
+                return@withContext null
+            }
+
+            val useCelsius = hourlyWeather.first().unitsCelsius
 
             val rec = recommendRepository.recommend(
                 hourlyWeather.map { it.apparentTemperature },
@@ -37,16 +36,14 @@ class RecommendationUseCase(
                 hourlyWeather.map { it.precipitationProbability }
             )
 
-            if (rec == null) {
-                return@withContext null
+            return@withContext rec?.let {
+                Recommendation(
+                    uvLevel = rec.uvLevel,
+                    rainLevel = rec.rainLevel,
+                    clothes = rec.clothes.toPersistentList(),
+                    certainty = rec.certainty
+                )
             }
-
-            Recommendation(
-                uvLevel = rec.uvLevel,
-                rainLevel = rec.rainLevel,
-                clothes = rec.clothes.toPersistentList(),
-                certainty = rec.certainty
-            )
         }
 }
 
