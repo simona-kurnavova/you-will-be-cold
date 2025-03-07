@@ -6,13 +6,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
 
 /**
@@ -80,16 +78,14 @@ class DataStorePreferences(private val context: Context) {
     private fun <T> get(key: Preferences. Key<T>, default: T): Flow<T> =
         context.dataStore.data.catch { exception ->
             Log.d("AppDataStorePreferences", "Error reading preferences", exception)
-            flow { emit(default) }
+            emit(emptyPreferences())
         }.map { preferences ->
             preferences[key] ?: default
         }
 
     private suspend fun <T> edit(key: Preferences.Key<T>, newValue: T) {
-        withContext(Dispatchers.IO) {
-            context.dataStore.edit { preferences ->
-                preferences[key] = newValue
-            }
+        context.dataStore.edit { preferences ->
+            preferences[key] = newValue
         }
     }
 }
