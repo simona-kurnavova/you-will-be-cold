@@ -1,7 +1,7 @@
 package com.youllbecold.trustme.usecases.weather.state
 
 /**
- * General status for usecases.
+ * General status for weather usecases.
  */
 sealed class WeatherUseCaseStatus {
     data object Idle : WeatherUseCaseStatus()

@@ -73,4 +73,3 @@ class NetworkHelper(private val app: Application) {
     private fun NetworkCapabilities.hasInternet(): Boolean =
         hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
-

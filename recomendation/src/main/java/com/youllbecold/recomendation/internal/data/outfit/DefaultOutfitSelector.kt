@@ -1,4 +1,4 @@
-package com.youllbecold.recomendation.internal
+package com.youllbecold.recomendation.internal.data.outfit
 
 import com.youllbecold.logdatabase.model.Clothes
 
@@ -13,7 +13,7 @@ internal object DefaultOutfitSelector {
      * @param minTemp The minimum apparent temperature.
      * @return The recommended clothes.
      */
-    fun createRecommendation(minTemp: Double): List<Clothes> {
+    fun createOutfitRecommendation(minTemp: Double): List<Clothes> {
         return when {
             minTemp < 0 -> listOf(
                 Clothes.WINTER_HAT,

@@ -1,4 +1,4 @@
-package com.youllbecold.recomendation.internal.model
+package com.youllbecold.recomendation.internal.data.outfit
 
 import com.youllbecold.logdatabase.model.Clothes
 
@@ -66,9 +66,3 @@ internal val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.assoc
         else -> ClothesWeight()
     }
 }
-
-/**
- * Weights of clothes for different categories.
- */
-internal val categorizedClothesWeights =
-    clothesWeights.entries.groupBy { it.key.category }

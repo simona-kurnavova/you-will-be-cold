@@ -5,6 +5,11 @@ import com.youllbecold.logdatabase.model.Clothes
 
 /**
  * Data class for recommendation.
+ *
+ * @param clothes List of clothes to wear.
+ * @param certainty Certainty level of this recommendation.
+ * @param uvLevel UV protection recommendation.
+ * @param rainLevel Rain level recommendation.
  */
 @Stable
 data class Recommendation(
@@ -13,46 +18,3 @@ data class Recommendation(
     val uvLevel: UvRecommendation,
     val rainLevel: RainRecommendation
 )
-
-/**
- * Certainty level of the recommendation.
- */
-@Stable
-enum class Certainty {
-    /**
-     * Default value was used, we are just guessing here.
-     */
-    Low,
-
-    /**
-     * Derived from existing data with some confidence.
-     */
-    Medium,
-
-    /**
-     * Derived from existing data with reasonably high confidence.
-     */
-    High
-}
-
-/**
- * UV protection recommendation.
- */
-@Stable
-enum class UvRecommendation {
-    NoProtection,
-    LowProtection,
-    MediumProtection,
-    HighProtection,
-}
-
-/**
- * Rain level recommendation.
- */
-@Stable
-enum class RainRecommendation {
-    NoRain,
-    LightRain,
-    MediumRain,
-    HeavyRain,
-}
