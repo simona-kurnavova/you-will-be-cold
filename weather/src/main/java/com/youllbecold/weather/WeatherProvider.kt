@@ -1,8 +1,8 @@
 package com.youllbecold.weather
 
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.internal.WeatherApi
-import com.youllbecold.weather.internal.WeatherRepositoryImpl
+import com.youllbecold.weather.internal.data.dao.WeatherDao
+import com.youllbecold.weather.internal.data.repository.WeatherRepositoryImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit
  */
 object WeatherProvider {
     private val retrofit: Retrofit by lazy { buildRetrofit() }
-    private val weatherApi: WeatherApi by lazy { retrofit.create(WeatherApi::class.java) }
+    private val weatherDao: WeatherDao by lazy { retrofit.create(WeatherDao::class.java) }
 
     /**
      * Repository for weather data.
      */
-    val weatherRepository: WeatherRepository by lazy { WeatherRepositoryImpl(weatherApi) }
+    val weatherRepository: WeatherRepository by lazy { WeatherRepositoryImpl(weatherDao) }
 
     private fun buildRetrofit(): Retrofit {
         val client = OkHttpClient.Builder()

@@ -1,12 +1,13 @@
-package com.youllbecold.weather.internal
+package com.youllbecold.weather.internal.data.repository
 
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.internal.request.TemperatureUnitRequest
-import com.youllbecold.weather.internal.response.CurrentWeatherResponse
-import com.youllbecold.weather.internal.response.TemperatureUnit
-import com.youllbecold.weather.internal.response.PredictedWeatherResponse
-import com.youllbecold.weather.model.WeatherEvaluation
+import com.youllbecold.weather.internal.data.dao.WeatherDao
+import com.youllbecold.weather.internal.data.request.TemperatureUnitRequest
+import com.youllbecold.weather.internal.data.response.CurrentWeatherResponse
+import com.youllbecold.weather.internal.data.response.PredictedWeatherResponse
+import com.youllbecold.weather.internal.data.response.TemperatureUnit
 import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherEvaluation
 import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDate
@@ -18,7 +19,7 @@ import java.time.format.DateTimeFormatter
  * Repository for weather data.
  */
 internal class WeatherRepositoryImpl(
-    private val weatherApi: WeatherApi
+    private val weatherDao: WeatherDao
 ) : WeatherRepository {
 
     /**
@@ -26,13 +27,13 @@ internal class WeatherRepositoryImpl(
      */
     override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Weather> =
         processCall(
-            call = { weatherApi.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius)) },
+            call = { weatherDao.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius)) },
             processBody = { responseBody -> responseBody.toWeather() }
         )
 
     override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<Weather>> =
         processCall(
-            call = { weatherApi.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays) },
+            call = { weatherDao.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays) },
             processBody = { responseBody -> responseBody.toWeatherList() }
         )
 
@@ -45,7 +46,7 @@ internal class WeatherRepositoryImpl(
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
         return processCall(
-            call = { weatherApi.getHourlyWeatherForDateRange(
+            call = { weatherDao.getHourlyWeatherForDateRange(
                 latitude,
                 longitude,
                 temperatureUnit = getUnits(useCelsius),

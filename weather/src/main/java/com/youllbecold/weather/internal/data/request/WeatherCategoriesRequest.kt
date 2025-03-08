@@ -1,4 +1,4 @@
-package com.youllbecold.weather.internal.request
+package com.youllbecold.weather.internal.data.request
 
 /**
  * Enum class that represents the different weather categories that can be requested.

@@ -1,4 +1,4 @@
-package com.youllbecold.weather.internal.response
+package com.youllbecold.weather.internal.data.response
 
 import com.google.gson.annotations.SerializedName
 

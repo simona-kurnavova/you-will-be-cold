@@ -1,8 +1,8 @@
-package com.youllbecold.weather.internal
+package com.youllbecold.weather.internal.data.dao
 
-import com.youllbecold.weather.internal.request.WeatherCategoriesRequest
-import com.youllbecold.weather.internal.response.CurrentWeatherResponse
-import com.youllbecold.weather.internal.response.PredictedWeatherResponse
+import com.youllbecold.weather.internal.data.request.WeatherCategoriesRequest
+import com.youllbecold.weather.internal.data.response.CurrentWeatherResponse
+import com.youllbecold.weather.internal.data.response.PredictedWeatherResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -10,7 +10,7 @@ import retrofit2.http.Query
 /**
  * Weather API.
  */
-internal interface WeatherApi {
+internal interface WeatherDao {
     /**
      * Get forecast weather.
      */
