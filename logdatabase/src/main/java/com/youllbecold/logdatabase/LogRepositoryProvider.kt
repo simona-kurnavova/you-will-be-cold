@@ -2,8 +2,8 @@ package com.youllbecold.logdatabase
 
 import android.app.Application
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.internal.log.LogDatabase
-import com.youllbecold.logdatabase.internal.log.LogRepositoryImpl
+import com.youllbecold.logdatabase.internal.data.database.LogDatabase
+import com.youllbecold.logdatabase.internal.data.repository.LogRepositoryImpl
 
 /**
  * Provider for LogRepository.

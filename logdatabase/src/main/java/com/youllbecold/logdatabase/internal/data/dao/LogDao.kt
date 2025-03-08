@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal.log
+package com.youllbecold.logdatabase.internal.data.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
@@ -6,7 +6,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
-import com.youllbecold.logdatabase.internal.log.entity.LogEntity
+import com.youllbecold.logdatabase.internal.data.model.LogEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

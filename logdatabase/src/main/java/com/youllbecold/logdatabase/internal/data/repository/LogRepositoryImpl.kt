@@ -1,13 +1,14 @@
-package com.youllbecold.logdatabase.internal.log
+package com.youllbecold.logdatabase.internal.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.logdatabase.internal.log.entity.ClothesId
-import com.youllbecold.logdatabase.internal.log.entity.FeelingEntity
-import com.youllbecold.logdatabase.internal.log.entity.LogEntity
+import com.youllbecold.logdatabase.internal.data.dao.LogDao
+import com.youllbecold.logdatabase.internal.data.model.ClothesId
+import com.youllbecold.logdatabase.internal.data.model.FeelingEntity
+import com.youllbecold.logdatabase.internal.data.model.LogEntity
 import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings

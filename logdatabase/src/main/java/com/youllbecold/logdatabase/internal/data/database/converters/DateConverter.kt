@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal.log.converters
+package com.youllbecold.logdatabase.internal.data.database.converters
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime

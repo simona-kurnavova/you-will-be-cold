@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal.log.entity
+package com.youllbecold.logdatabase.internal.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

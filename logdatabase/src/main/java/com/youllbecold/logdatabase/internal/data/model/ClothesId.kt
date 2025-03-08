@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal.log.entity
+package com.youllbecold.logdatabase.internal.data.model
 
 internal enum class ClothesId {
     HEAD_SCARF,
