@@ -1,4 +1,4 @@
-package com.youllbecold.logdatabase.internal.data.database.converters
+package com.youllbecold.logdatabase.internal.data.converters
 
 import androidx.room.TypeConverter
 import com.youllbecold.logdatabase.internal.data.model.FeelingEntity

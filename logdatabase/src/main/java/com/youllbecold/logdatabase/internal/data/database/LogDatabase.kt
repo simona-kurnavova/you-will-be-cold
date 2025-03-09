@@ -6,10 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.youllbecold.logdatabase.internal.data.dao.LogDao
-import com.youllbecold.logdatabase.internal.data.database.converters.ClothesIdConverter
-import com.youllbecold.logdatabase.internal.data.database.converters.ClothesIdListConverter
-import com.youllbecold.logdatabase.internal.data.database.converters.DateConverter
-import com.youllbecold.logdatabase.internal.data.database.converters.FeelingEntityConverter
+import com.youllbecold.logdatabase.internal.data.converters.ClothesIdConverter
+import com.youllbecold.logdatabase.internal.data.converters.ClothesIdListConverter
+import com.youllbecold.logdatabase.internal.data.converters.DateConverter
+import com.youllbecold.logdatabase.internal.data.converters.FeelingEntityConverter
 import com.youllbecold.logdatabase.internal.data.model.LogEntity
 
 /**
