@@ -5,18 +5,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.youllbecold.trustme.ui.screens.AddLogRoot
-import com.youllbecold.trustme.ui.screens.EditLogRoot
-import com.youllbecold.trustme.ui.screens.HistoryScreenRoot
-import com.youllbecold.trustme.ui.screens.HomeScreenRoot
-import com.youllbecold.trustme.ui.screens.InfoScreen
-import com.youllbecold.trustme.ui.screens.SettingsScreenRoot
-import com.youllbecold.trustme.ui.screens.LocationPermissionRoot
-import com.youllbecold.trustme.ui.screens.NotificationScreenRoot
-import com.youllbecold.trustme.ui.screens.NotificationType
-import com.youllbecold.trustme.ui.screens.RecommendScreenRoot
-import com.youllbecold.trustme.ui.screens.WelcomeScreenRoot
-import com.youllbecold.trustme.ui.utils.popAllAndNavigate
+import com.youllbecold.trustme.ui.navigation.utils.popAllAndNavigate
+import com.youllbecold.trustme.log.add.ui.AddLogRoot
+import com.youllbecold.trustme.log.edit.ui.EditLogRoot
+import com.youllbecold.trustme.log.history.ui.HistoryScreenRoot
+import com.youllbecold.trustme.home.ui.HomeScreenRoot
+import com.youllbecold.trustme.info.ui.InfoScreen
+import com.youllbecold.trustme.settings.ui.SettingsScreenRoot
+import com.youllbecold.trustme.overlays.locationpermission.ui.LocationPermissionRoot
+import com.youllbecold.trustme.overlays.notificationpermissions.ui.NotificationScreenRoot
+import com.youllbecold.trustme.overlays.notificationpermissions.ui.NotificationType
+import com.youllbecold.trustme.recommend.ui.RecommendScreenRoot
+import com.youllbecold.trustme.overlays.welcome.ui.WelcomeScreenRoot
 
 /**
  * Navigation graph for the application.

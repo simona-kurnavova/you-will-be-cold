@@ -9,9 +9,11 @@ import com.youllbecold.logdatabase.internal.data.dao.LogDao
 import com.youllbecold.logdatabase.internal.data.mappers.toLogEntity
 import com.youllbecold.logdatabase.internal.data.mappers.toLogData
 import com.youllbecold.logdatabase.model.LogData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 /**
  * Implementation of [LogRepository].
@@ -19,6 +21,8 @@ import kotlinx.coroutines.flow.map
 internal class LogRepositoryImpl(
     private val logDao: LogDao
 ) : LogRepository {
+    private val dispatchers = Dispatchers.IO
+
     override fun getAllWithPaging(pageSize: Int): Flow<PagingData<LogData>> = Pager(
         config = PagingConfig(
             pageSize = pageSize,
@@ -30,25 +34,35 @@ internal class LogRepositoryImpl(
     }
 
     override suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData> =
-        logDao.getAllInRange(
-            apparentTempRange.first,
-            apparentTempRange.second
-        ).map { it.toLogData() }
+        withContext(dispatchers) {
+            logDao.getAllInRange(
+                apparentTempRange.first,
+                apparentTempRange.second
+            ).map { it.toLogData() }
+        }
 
     override suspend fun getLog(id: Int): LogData? =
-        logDao.getById(id)
-            .first()
-            ?.toLogData()
+        withContext(dispatchers) {
+            logDao.getById(id)
+                .first()
+                ?.toLogData()
+        }
 
     override suspend fun addLog(log: LogData) {
-        logDao.insert(log.toLogEntity())
+        withContext(dispatchers) {
+            logDao.insert(log.toLogEntity())
+        }
     }
 
     override suspend fun updateLog(log: LogData) {
-        logDao.update(log.toLogEntity())
+        withContext(dispatchers) {
+            logDao.update(log.toLogEntity())
+        }
     }
 
     override suspend fun deleteLog(log: LogData) {
-        logDao.delete(log.toLogEntity())
+        withContext(dispatchers) {
+            logDao.delete(log.toLogEntity())
+        }
     }
 }

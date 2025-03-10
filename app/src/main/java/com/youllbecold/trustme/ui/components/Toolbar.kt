@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.ui.components.generic.IconType
-import com.youllbecold.trustme.ui.components.generic.attributes.defaultLargeTextAttr
-import com.youllbecold.trustme.ui.components.generic.icontext.IconText
-import com.youllbecold.trustme.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.common.ui.attributes.defaultLargeTextAttr
+import com.youllbecold.trustme.common.ui.components.icontext.IconText
+import com.youllbecold.trustme.common.ui.components.themed.IconType
+import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 
 /**
  * Toolbar.
