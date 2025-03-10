@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.ui.components.cards
+package com.youllbecold.trustme.home.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth

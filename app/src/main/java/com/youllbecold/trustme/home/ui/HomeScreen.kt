@@ -24,15 +24,13 @@ import com.youllbecold.recomendation.model.Certainty
 import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
-import com.youllbecold.trustme.common.ui.components.cards.ErrorCard
-import com.youllbecold.trustme.common.ui.components.cards.ErrorCardType
+import com.youllbecold.trustme.home.ui.components.ErrorCard
+import com.youllbecold.trustme.home.ui.components.ErrorCardType
 import com.youllbecold.trustme.common.ui.model.recommendation.Recommendation
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.common.ui.model.weatherwithrecommend.WeatherWithRecommendation
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.home.ui.components.HourlyWeatherCard
-import com.youllbecold.trustme.home.ui.components.RecommendSection
-import com.youllbecold.trustme.home.ui.components.WeatherNowSection
+import com.youllbecold.trustme.home.ui.components.HomeContent
 import com.youllbecold.trustme.home.ui.model.Forecast
 import com.youllbecold.trustme.home.ui.model.HomeUiState
 import com.youllbecold.weather.model.Weather
@@ -77,51 +75,31 @@ private fun HomeScreen(
                 .verticalScroll(scrollState),  // Note: SwipeRefresh needs scrollable content to function
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FadingItem(visible = state.isInitialLoading()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(top = PROGRESS_INDICATOR_PADDING.dp)
-                )
-            }
-
-            FadingItem(visible = state.isError()) {
-                ErrorCard(
-                    errorCardType = when (state.status) {
-                        LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
-                        else -> ErrorCardType.GENERIC
-                    },
-                    modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                )
-            }
-
-            val showWeather = state.weather != null
-
-            FadingItem(visible = showWeather) {
-                Column {
-                    WeatherNowSection(
-                        currentWeather = state.weather?.current?.weather?.first(),
-                        city = state.city,
-                        modifier = Modifier
-                            .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                            .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
+            when {
+                state.isInitialLoading() ->
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(top = PROGRESS_INDICATOR_PADDING.dp)
                     )
 
-                    state.weather?.next24Hours()?.let { hourlyTemperatures ->
-                        HourlyWeatherCard(
-                            hourlyTemperatures = hourlyTemperatures,
-                            modifier = Modifier
-                                .padding(bottom = PADDING_BETWEEN_ITEMS.dp)
-                                .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
+                state.isError() ->
+                    FadingItem(visible = state.isError()) {
+                        ErrorCard(
+                            errorCardType = when (state.status) {
+                                LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
+                                else -> ErrorCardType.GENERIC
+                            },
+                            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
                         )
                     }
 
-                    state.weather?.let { weather ->
-                        RecommendSection(
-                            weather = weather,
-                            horizontalPadding = HORIZONTAL_SCREEN_PADDING,
-                            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp),
+                else ->
+                    FadingItem(visible = state.forecast != null) {
+                        HomeContent(
+                            forecast = state.forecast,
+                            hourlyTemperatures = state.hourlyTemperature,
+                            city = state.city
                         )
                     }
-                }
             }
 
             Spacer(modifier = Modifier.height(END_SPACE.dp))
@@ -132,7 +110,6 @@ private fun HomeScreen(
 private const val PADDING_BETWEEN_ITEMS = 8
 private const val PROGRESS_INDICATOR_PADDING = 32
 private const val END_SPACE = 48
-private const val HORIZONTAL_SCREEN_PADDING = 12
 
 @Preview
 @Composable
@@ -154,7 +131,7 @@ private fun HomeScreenPreview() {
             HomeUiState(
                 hasPermission = true,
                 status = LoadingStatus.Loading,
-                weather = Forecast(
+                forecast = Forecast(
                     current = WeatherWithRecommendation(
                         weather = persistentListOf(weather, weather, weather),
                         recommendation = Recommendation(

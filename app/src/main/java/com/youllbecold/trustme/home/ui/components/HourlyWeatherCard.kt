@@ -1,8 +1,7 @@
 package com.youllbecold.trustme.home.ui.components
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +24,7 @@ fun HourlyWeatherCard(
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.wrapContentHeight(),
+        modifier = modifier
     ) {
         items(hourlyTemperatures.size) { index ->
             val hourItem = hourlyTemperatures[index]
@@ -40,7 +39,7 @@ fun HourlyWeatherCard(
             )
 
             if (index != hourlyTemperatures.size - 1) {
-                Spacer(modifier = Modifier.size(SPACE_BETWEEN_ITEMS.dp))
+                Spacer(modifier = Modifier.width(SPACE_BETWEEN_ITEMS.dp))
             }
         }
     }
