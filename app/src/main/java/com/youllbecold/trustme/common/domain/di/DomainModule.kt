@@ -2,7 +2,7 @@ package com.youllbecold.trustme.common.domain.di
 
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
-import com.youllbecold.trustme.common.domain.usecases.recommendation.RecommendationUseCase
+import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
 import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
 import com.youllbecold.trustme.common.domain.usecases.weather.HourlyWeatherUseCase
 import com.youllbecold.trustme.common.domain.usecases.weather.RangedWeatherUseCase

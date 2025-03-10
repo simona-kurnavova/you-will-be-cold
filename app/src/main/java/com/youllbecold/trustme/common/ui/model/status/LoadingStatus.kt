@@ -7,7 +7,8 @@ enum class LoadingStatus {
     Idle,
     Loading,
     NoInternet,
-    GenericError;
+    GenericError,
+    MissingPermission;
 
     /**
      * Returns true if status is error.

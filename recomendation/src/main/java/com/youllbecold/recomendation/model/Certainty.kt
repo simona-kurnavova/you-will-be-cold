@@ -1,11 +1,8 @@
 package com.youllbecold.recomendation.model
 
-import androidx.compose.runtime.Stable
-
 /**
  * Certainty level of the recommendation.
  */
-@Stable
 enum class Certainty {
     /**
      * Default value was used, we are just guessing here.

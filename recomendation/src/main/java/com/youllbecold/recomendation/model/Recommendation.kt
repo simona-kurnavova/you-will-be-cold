@@ -1,6 +1,5 @@
 package com.youllbecold.recomendation.model
 
-import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes
 
 /**
@@ -11,7 +10,6 @@ import com.youllbecold.logdatabase.model.Clothes
  * @param uvLevel UV protection recommendation.
  * @param rainLevel Rain level recommendation.
  */
-@Stable
 data class Recommendation(
     val clothes: List<Clothes> = emptyList(),
     val certainty: Certainty = Certainty.Low,

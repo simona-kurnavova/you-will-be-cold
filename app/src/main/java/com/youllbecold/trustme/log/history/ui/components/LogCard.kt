@@ -36,7 +36,7 @@ import com.youllbecold.trustme.common.ui.model.log.mappers.clothesName
 import com.youllbecold.trustme.common.ui.model.log.mappers.icon
 import com.youllbecold.trustme.common.ui.model.log.mappers.labeled
 import com.youllbecold.trustme.common.ui.model.log.mappers.worstFeeling
-import com.youllbecold.trustme.common.ui.model.weather.mappers.getTemperatureString
+import com.youllbecold.trustme.recommend.usecases.model.mappers.getTemperatureString
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalTime

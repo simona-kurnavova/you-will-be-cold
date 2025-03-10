@@ -3,7 +3,7 @@ package com.youllbecold.trustme.common.ui.notifications
 import android.app.Application
 import android.app.NotificationManager
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.common.ui.model.weather.mappers.icon
+import com.youllbecold.trustme.recommend.usecases.model.mappers.icon
 import com.youllbecold.trustme.common.ui.notifications.channel.ChannelId
 import com.youllbecold.trustme.common.ui.utils.IntentUtils
 import com.youllbecold.trustme.common.ui.notifications.utils.NotificationUtils

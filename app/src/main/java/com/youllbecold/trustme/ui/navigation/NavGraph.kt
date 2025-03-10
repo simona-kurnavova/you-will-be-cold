@@ -9,13 +9,13 @@ import com.youllbecold.trustme.ui.navigation.utils.popAllAndNavigate
 import com.youllbecold.trustme.log.add.ui.AddLogRoot
 import com.youllbecold.trustme.log.edit.ui.EditLogRoot
 import com.youllbecold.trustme.log.history.ui.HistoryScreenRoot
-import com.youllbecold.trustme.home.ui.HomeScreenRoot
+import com.youllbecold.trustme.recommend.home.ui.HomeScreenRoot
 import com.youllbecold.trustme.info.ui.InfoScreen
 import com.youllbecold.trustme.settings.ui.SettingsScreenRoot
 import com.youllbecold.trustme.overlays.locationpermission.ui.LocationPermissionRoot
 import com.youllbecold.trustme.overlays.notificationpermissions.ui.NotificationScreenRoot
 import com.youllbecold.trustme.overlays.notificationpermissions.ui.NotificationType
-import com.youllbecold.trustme.recommend.ui.RecommendScreenRoot
+import com.youllbecold.trustme.recommend.ranged.ui.RecommendScreenRoot
 import com.youllbecold.trustme.overlays.welcome.ui.WelcomeScreenRoot
 
 /**
