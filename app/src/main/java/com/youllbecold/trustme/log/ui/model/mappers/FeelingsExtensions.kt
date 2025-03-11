@@ -1,12 +1,12 @@
-package com.youllbecold.trustme.common.ui.model.log.mappers
+package com.youllbecold.trustme.log.ui.model.mappers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.inputs.SelectableItemContent
-import com.youllbecold.trustme.common.ui.model.log.FeelingState
-import com.youllbecold.trustme.common.ui.model.log.FeelingsState
+import com.youllbecold.trustme.log.ui.model.FeelingState
+import com.youllbecold.trustme.log.ui.model.FeelingsState
 
 /**
  * Returns the title associated with the feeling state.

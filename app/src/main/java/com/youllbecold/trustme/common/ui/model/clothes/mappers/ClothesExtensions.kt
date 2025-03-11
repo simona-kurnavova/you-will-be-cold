@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.ui.model.log.mappers
+package com.youllbecold.trustme.common.ui.model.clothes.mappers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -9,7 +9,7 @@ import com.youllbecold.trustme.common.ui.components.inputs.SelectableItemContent
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
-// TODO: Clothes mapping
+// TODO: Clothes mapping to UI representation
 
 /**
  * Gets the [IconType] for [Clothes.Category].

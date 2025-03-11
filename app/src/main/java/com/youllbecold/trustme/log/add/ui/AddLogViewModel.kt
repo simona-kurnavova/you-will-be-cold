@@ -1,24 +1,16 @@
 package com.youllbecold.trustme.log.add.ui
 
-import android.annotation.SuppressLint
-import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.trustme.log.add.ui.model.AddLogUiState
-import com.youllbecold.trustme.log.add.ui.model.SavingState
-import com.youllbecold.trustme.common.data.location.LocationController
-import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.domain.usecases.weather.RangedWeatherUseCase
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
-import com.youllbecold.trustme.common.ui.model.log.LogState
-import com.youllbecold.trustme.common.ui.model.log.mappers.toLogData
+import com.youllbecold.trustme.log.ui.model.LogState
+import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.log.add.ui.model.AddLogUiState
+import com.youllbecold.trustme.log.add.usecases.AddLogUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,12 +19,9 @@ import java.time.LocalDateTime
 
 @KoinViewModel
 class AddLogViewModel(
-    private val app: Application,
-    private val logRepository: LogRepository,
-    private val weatherUseCase: RangedWeatherUseCase,
-    private val locationController: LocationController
+    private val addLogUseCase: AddLogUseCase
 ) : ViewModel() {
-    private val saveState: MutableStateFlow<SavingState> = MutableStateFlow(SavingState.None)
+    private val saveState: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
     private val logState: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
 
     /**
@@ -68,41 +57,13 @@ class AddLogViewModel(
         )
     }
 
-    @SuppressLint("MissingPermission") // Permission is checked
     private fun saveLogWithWeather(logState: LogState) {
-        if (!PermissionChecker.hasLocationPermission(app)) {
-            saveState.value = SavingState.Error
-            return
-        }
+        saveState.update { LoadingStatus.Loading }
 
         viewModelScope.launch {
-            val location = locationController.geoLocationState.firstOrNull()?.location
-                ?: LocationController.getLastLocation(app)
-
-            if (location == null) {
-                saveState.value = SavingState.Error
-                return@launch
+            saveState.update {
+                addLogUseCase.saveLogWithWeather(logState)
             }
-
-            val weather = weatherUseCase.obtainRangedWeatherState(
-                location = location,
-                date = logState.dateTimeState.date.localDate,
-                timeFrom = logState.dateTimeState.timeFrom.localTime,
-                timeTo = logState.dateTimeState.timeTo.localTime,
-                useCelsiusUnits = true // Always save with Celsius units
-            ).getOrNull()
-
-            if(weather == null) {
-                Log.d("AddLogViewModel", "Failed to get weather data")
-                saveState.value = SavingState.Error
-                return@launch
-            }
-
-            logRepository.addLog(
-                logState.copy(weather = weather).toLogData()
-            )
-
-            saveState.value = SavingState.Saved
         }
     }
 }

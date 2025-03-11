@@ -8,7 +8,8 @@ enum class LoadingStatus {
     Loading,
     NoInternet,
     GenericError,
-    MissingPermission;
+    MissingPermission,
+    Success;
 
     /**
      * Returns true if status is error.
@@ -24,4 +25,9 @@ enum class LoadingStatus {
      * Returns true if status is Loading.
      */
     fun isLoading(): Boolean = this == Loading
+
+    /**
+     * Returns true if status is Success.
+     */
+    fun isSuccess(): Boolean = this == Success
 }

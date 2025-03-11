@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.log.ui
+package com.youllbecold.trustme.log.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.material3.AlertDialog

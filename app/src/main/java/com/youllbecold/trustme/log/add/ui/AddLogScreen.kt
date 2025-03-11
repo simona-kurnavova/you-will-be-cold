@@ -13,17 +13,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.log.ui.LogExitDialog
-import com.youllbecold.trustme.log.ui.AddLogForm
+import com.youllbecold.trustme.log.ui.components.LogExitDialog
+import com.youllbecold.trustme.log.ui.components.AddLogForm
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
-import com.youllbecold.trustme.common.ui.model.log.FeelingsState
-import com.youllbecold.trustme.common.ui.model.log.LogState
-import com.youllbecold.trustme.common.ui.model.log.validator.LogStateValidator
+import com.youllbecold.trustme.log.ui.model.FeelingsState
+import com.youllbecold.trustme.log.ui.model.LogState
+import com.youllbecold.trustme.log.ui.model.validator.LogStateValidator
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.add.ui.model.AddLogUiState
-import com.youllbecold.trustme.log.add.ui.model.SavingState
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
 
@@ -36,10 +35,6 @@ fun AddLogRoot(
         state = viewModel.state.collectAsStateWithLifecycle(),
         onAction = { action ->
             when (action) {
-                is AddLogAction.SaveLog -> {
-                    viewModel.onAction(action)
-                    navigateBack()
-                }
                 is AddLogAction.ExitForm -> navigateBack()
                 else -> viewModel.onAction(action)
             }
@@ -54,17 +49,29 @@ private fun AddLogScreen(
 ) {
     val context = LocalContext.current
 
-    val logState = state.value.logState
     var showExitDialog by remember { mutableStateOf(false) }
-
     val update: (LogState) -> Unit = { onAction(AddLogAction.SaveProgress(it)) }
 
-    if (state.value.saveState == SavingState.Error) {
-        Toast.makeText(
-            LocalContext.current,
-            stringResource(R.string.toast_error_saving_log),
-            Toast.LENGTH_SHORT
-        ).show()
+    val logState = state.value.logState
+    val status = state.value.saveState
+
+    when {
+        status.isError() ->
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(R.string.toast_error_saving_log),
+                Toast.LENGTH_SHORT
+            ).show()
+
+        status.isSuccess() -> {
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(R.string.toast_saved_log),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            onAction(AddLogAction.ExitForm)
+        }
     }
 
     AddLogForm(
@@ -80,17 +87,8 @@ private fun AddLogScreen(
             }
 
             onAction(AddLogAction.SaveLog)
-
-            // TODO: load until result is received, this is a temporary solution, hehe.
-
-            if (state.value.saveState != SavingState.Error) {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.toast_saved_log),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         },
+        isSaving = status.isLoading()
     )
 
     BackHandler {

@@ -5,7 +5,6 @@ import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
-import com.youllbecold.trustme.common.ui.model.log.WeatherParams
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
 import com.youllbecold.weather.model.Weather
@@ -25,35 +24,6 @@ class RangedWeatherUseCase(
     private val networkStatusProvider: NetworkStatusProvider
 ) {
     private val dispatchers = Dispatchers.IO
-
-    /**
-     * Obtains the weather for a specific time range. Returns simplified weather data.
-     *
-     * @param location The location to obtain the weather for.
-     * @param date The date to obtain the weather for.
-     * @param timeFrom The start time of the range.
-     * @param timeTo The end time of the range.
-     * @param useCelsiusUnits Whether to use Celsius units.
-     */
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    suspend fun obtainRangedWeatherState(
-        location: GeoLocation,
-        date: LocalDate,
-        timeFrom: LocalTime,
-        timeTo: LocalTime,
-        useCelsiusUnits: Boolean
-    ): Result<WeatherParams> = withContext(dispatchers) {
-        val weatherList = obtainRangedWeather(location, date, timeFrom, timeTo, useCelsiusUnits)
-
-        return@withContext weatherList.map { rangedWeather ->
-            WeatherParams(
-                apparentTemperatureMin = rangedWeather.minOf { it.apparentTemperature },
-                apparentTemperatureMax = rangedWeather.maxOf { it.apparentTemperature },
-                avgTemperature = rangedWeather.sumOf { it.temperature } / rangedWeather.size.toDouble(),
-                useCelsiusUnits = useCelsiusUnits
-            )
-        }
-    }
 
     /**
      * Obtains the weather for a specific time range. Returns a list of weather data.

@@ -29,15 +29,17 @@ import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
 import com.youllbecold.trustme.common.ui.components.utils.formatDate
 import com.youllbecold.trustme.common.ui.components.utils.formatTime
-import com.youllbecold.trustme.common.ui.model.log.FeelingsState
-import com.youllbecold.trustme.common.ui.model.log.LogState
-import com.youllbecold.trustme.common.ui.model.log.WeatherParams
-import com.youllbecold.trustme.common.ui.model.log.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.log.mappers.icon
-import com.youllbecold.trustme.common.ui.model.log.mappers.labeled
-import com.youllbecold.trustme.common.ui.model.log.mappers.worstFeeling
+import com.youllbecold.trustme.log.ui.model.FeelingsState
+import com.youllbecold.trustme.log.ui.model.LogState
+import com.youllbecold.trustme.log.ui.model.WeatherParams
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
+import com.youllbecold.trustme.log.ui.model.mappers.labeled
+import com.youllbecold.trustme.log.ui.model.mappers.worstFeeling
 import com.youllbecold.trustme.recommend.usecases.model.mappers.getTemperatureString
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.log.ui.model.mappers.clothesName
+import com.youllbecold.trustme.log.ui.model.mappers.icon
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalTime
 

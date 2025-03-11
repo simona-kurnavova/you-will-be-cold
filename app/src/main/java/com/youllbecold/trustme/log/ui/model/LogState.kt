@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.ui.model.log
+package com.youllbecold.trustme.log.ui.model
 
 import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes

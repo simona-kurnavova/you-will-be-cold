@@ -20,8 +20,8 @@ import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedHorizontalDivider
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
-import com.youllbecold.trustme.common.ui.model.log.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.log.mappers.icon
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf

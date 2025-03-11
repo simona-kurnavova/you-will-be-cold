@@ -1,12 +1,12 @@
-package com.youllbecold.trustme.common.ui.model.log.mappers
+package com.youllbecold.trustme.log.ui.model.mappers
 
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
-import com.youllbecold.trustme.common.ui.model.log.FeelingState
-import com.youllbecold.trustme.common.ui.model.log.LogState
-import com.youllbecold.trustme.common.ui.model.log.WeatherParams
+import com.youllbecold.trustme.log.ui.model.FeelingState
+import com.youllbecold.trustme.log.ui.model.LogState
+import com.youllbecold.trustme.log.ui.model.WeatherParams
 
 // TODO: Clothes mapping
 

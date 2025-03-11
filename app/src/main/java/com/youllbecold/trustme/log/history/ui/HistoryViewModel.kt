@@ -2,17 +2,16 @@ package com.youllbecold.trustme.log.history.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
-import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.common.domain.units.UnitsManager
-import com.youllbecold.trustme.common.ui.model.log.LogState
-import com.youllbecold.trustme.common.ui.model.log.mappers.toLogData
-import com.youllbecold.trustme.common.ui.model.log.mappers.toLogState
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import com.youllbecold.trustme.log.history.ui.model.HistoryUiState
+import com.youllbecold.trustme.log.history.usecases.DeleteLogUseCase
+import com.youllbecold.trustme.log.history.usecases.FetchAllLogsUseCase
+import com.youllbecold.trustme.log.ui.model.LogState
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -21,28 +20,33 @@ import org.koin.android.annotation.KoinViewModel
  */
 @KoinViewModel
 class HistoryViewModel(
-    private val logRepository: LogRepository,
-    private val unitsManager: UnitsManager
+    private val deleteLogUseCase: DeleteLogUseCase,
+    private val fetchAllLogsUseCase: FetchAllLogsUseCase,
+    unitsManager: UnitsManager
 ) : ViewModel() {
 
     /**
      * UI state for the history screen.
      */
-    val uiState: Flow<PagingData<LogState>> = logRepository
-        .getAllWithPaging()
-        .map { pagingData ->
-            pagingData.map { it.toLogState(unitsManager.unitsCelsius.first()) }
-        }
-        .cachedIn(viewModelScope)
+    // TODO: there's gotta be a better way then to call repository again on unit change, I am just too lazy to find it.
+    val uiState: StateFlow<HistoryUiState> = unitsManager.unitsCelsius.map { useCelsius ->
+        HistoryUiState(
+            logs = fetchAllLogsUseCase
+                .fetchAllLogs(useCelsius)
+                .cachedIn(viewModelScope)
+        )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, HistoryUiState())
 
     fun onAction(action: HistoryAction) {
         when (action) {
-            is HistoryAction.Delete -> {
-                viewModelScope.launch {
-                    logRepository.deleteLog(action.state.toLogData())
-                }
-            }
+            is HistoryAction.Delete -> deleteLog(action.state)
             is HistoryAction.Edit -> Unit // Do nothing, will be handled by the navigation
+        }
+    }
+
+    private fun deleteLog(logState: LogState) {
+        viewModelScope.launch {
+            deleteLogUseCase.deleteLog(logState)
         }
     }
 }

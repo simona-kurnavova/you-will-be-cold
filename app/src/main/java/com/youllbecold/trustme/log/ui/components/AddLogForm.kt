@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.log.ui
+package com.youllbecold.trustme.log.ui.components
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -38,15 +39,16 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedInputChip
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
-import com.youllbecold.trustme.common.ui.model.log.FeelingState
-import com.youllbecold.trustme.common.ui.model.log.FeelingsState
-import com.youllbecold.trustme.common.ui.model.log.mappers.getFeelingWithLabel
-import com.youllbecold.trustme.common.ui.model.log.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.log.mappers.icon
-import com.youllbecold.trustme.common.ui.model.log.mappers.items
-import com.youllbecold.trustme.common.ui.model.log.mappers.toSelectableItemContent
-import com.youllbecold.trustme.common.ui.model.log.mappers.withCategory
+import com.youllbecold.trustme.log.ui.model.FeelingState
+import com.youllbecold.trustme.log.ui.model.FeelingsState
+import com.youllbecold.trustme.log.ui.model.mappers.getFeelingWithLabel
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.items
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.toSelectableItemContent
+import com.youllbecold.trustme.common.ui.model.clothes.mappers.withCategory
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.log.ui.model.mappers.toSelectableItemContent
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentList
@@ -60,6 +62,7 @@ fun AddLogForm(
     onFeelingsChange: (FeelingsState) -> Unit,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
+    isSaving: Boolean,
     modifier: Modifier = Modifier
 ) {
     val formScrollState = rememberScrollState()
@@ -88,17 +91,28 @@ fun AddLogForm(
                 onFeelingsChange = onFeelingsChange
             )
 
-            ThemedButton(
-                text = stringResource(R.string.add_log_save),
-                onClick = {
-                    onSave()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (isSaving) {
+                // If saving state show loading instead of button
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else {
+                // Otherwise show button to save
+                ThemedButton(
+                    text = stringResource(R.string.add_log_save),
+                    onClick = {
+                        onSave()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(PADDING_BOTTOM.dp))
         }
     }
 }
 
+private const val PADDING_BOTTOM = 8
 private const val HORIZONTAL_SCREEN_PADDING = 16
 
 @Composable
@@ -256,6 +270,7 @@ private fun AddLogFormPreview() {
             onFeelingsChange = { },
             onClothesCategoryChange = { },
             onSave = { },
+            isSaving = true
         )
     }
 }
