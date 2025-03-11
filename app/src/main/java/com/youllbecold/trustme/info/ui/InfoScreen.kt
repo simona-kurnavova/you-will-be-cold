@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 fun InfoScreen() {
     Column(
         modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .padding(top = PADDING_BETWEEN_SECTIONS.dp)
             .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
