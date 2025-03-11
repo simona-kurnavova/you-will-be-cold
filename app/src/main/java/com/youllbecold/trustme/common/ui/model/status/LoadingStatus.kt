@@ -1,7 +1,7 @@
 package com.youllbecold.trustme.common.ui.model.status
 
 /**
- * General UI status for screens.
+ * General UI status for screens containing progress states and helper functions.
  */
 enum class LoadingStatus {
     Idle,
@@ -14,7 +14,7 @@ enum class LoadingStatus {
     /**
      * Returns true if status is error.
      */
-    fun isError(): Boolean = this in listOf(GenericError, NoInternet)
+    fun isError(): Boolean = this in listOf(GenericError, NoInternet, MissingPermission)
 
     /**
      * Returns true if status is Idle.

@@ -9,13 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.section.Section
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 
 @Composable
@@ -29,10 +28,8 @@ fun InfoScreen() {
         Section(
             title = stringResource(id = R.string.info_title_how_section),
         ) {
-            Text(
+            ThemedText(
                 text = stringResource(id = R.string.info_desc_how_section),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -41,10 +38,8 @@ fun InfoScreen() {
         Section(
             title = stringResource(id = R.string.info_title_why_section),
         ) {
-            Text(
+            ThemedText(
                 text = stringResource(id = R.string.info_desc_why_section),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

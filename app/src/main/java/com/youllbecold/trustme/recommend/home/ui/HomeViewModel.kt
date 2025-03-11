@@ -1,36 +1,36 @@
 package com.youllbecold.trustme.recommend.home.ui
 
 import android.annotation.SuppressLint
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.LocationPermissionManager
-import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
+import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
-import com.youllbecold.trustme.common.domain.usecases.weather.HourlyWeatherUseCase
-import com.youllbecold.trustme.common.domain.usecases.weather.model.WeatherUseCaseStatus
+import com.youllbecold.trustme.recommend.home.usecases.HourlyWeatherUseCase
 import com.youllbecold.trustme.common.ui.components.utils.formatTime
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.recommend.usecases.model.mappers.icon
-import com.youllbecold.trustme.recommend.usecases.model.WeatherWithRecommendation
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import com.youllbecold.trustme.recommend.home.ui.model.HomeUiState
 import com.youllbecold.trustme.recommend.home.ui.model.HourlyTemperature
+import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
+import com.youllbecold.trustme.recommend.usecases.model.WeatherWithRecommendation
+import com.youllbecold.trustme.recommend.usecases.model.mappers.icon
 import com.youllbecold.weather.model.Weather
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDateTime
@@ -42,40 +42,38 @@ import kotlin.math.roundToInt
 @SuppressLint("MissingPermission") // Not missing, handled by the permission helper.
 @KoinViewModel
 class HomeViewModel(
-    private val app: Application,
     private val currentWeatherUseCase: CurrentWeatherUseCase,
     private val hourlyWeatherUseCase: HourlyWeatherUseCase,
     private val recommendUseCase: RecommendationUseCase,
-    private val locationController: LocationController,
+    private val unitsManager: UnitsManager,
+    locationController: LocationController,
     permissionManager: LocationPermissionManager,
     networkStatusProvider: NetworkStatusProvider,
 ) : ViewModel() {
+    private val loadingStatus: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
+    private val forecastState: MutableStateFlow<Forecast?> = MutableStateFlow(null)
+
+    private val hourlyTemperature: StateFlow<PersistentList<HourlyTemperature>> = forecastState.map { forecast ->
+        forecast
+            ?.let { createHourlyTemperatures(it) }
+            ?: persistentListOf()
+    }.stateIn(viewModelScope, SharingStarted.Lazily, persistentListOf())
 
     /**
      * The UI state for the home screen.
      */
+    // TODO figure out the location
     val uiState: StateFlow<HomeUiState> = combine(
-        permissionManager.hasLocationPermission,
         locationController.geoLocationState,
-        networkStatusProvider.isConnected,
-        currentWeatherUseCase.weatherState,
-        hourlyWeatherUseCase.weatherState,
-    ) { hasPermission, locationState, hasInternet, weatherState, hourlyWeatherState ->
-        val forecast = obtainWeatherWithRecommendations(weatherState.weather, hourlyWeatherState.weather)
-
-        val status = when {
-            !hasPermission -> LoadingStatus.Loading
-            !hasInternet -> LoadingStatus.NoInternet
-            !locationState.status.isIdle() -> locationState.status
-            else -> weatherState.status.toWeatherStatus()
-        }
-
+        loadingStatus,
+        forecastState,
+        hourlyTemperature
+    ) { geoLocation, loadingStatus, forecast, hourlyTemperature ->
         HomeUiState(
-            hasPermission = hasPermission,
-            status = status,
-            city = locationState.city,
+            status = loadingStatus,
+            city = geoLocation.city,
             forecast = forecast,
-            hourlyTemperature = forecast?.let { createHourlyTemperatures(it) } ?: persistentListOf(),
+            hourlyTemperature = hourlyTemperature,
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, HomeUiState())
 
@@ -86,33 +84,38 @@ class HomeViewModel(
         combine(
             permissionManager.hasLocationPermission,
             networkStatusProvider.isConnected,
-            locationController.geoLocationState,
-        ) { hasPermission, hasInternet, geoLocation ->
-            if (hasPermission && hasInternet) {
-                geoLocation.location?.let { refreshWeather(it) }
+        ) { hasPermission, hasInternet ->
+            when {
+                !hasPermission -> loadingStatus.update { LoadingStatus.MissingPermission }
+                !hasInternet -> loadingStatus.update { LoadingStatus.NoInternet }
+                loadingStatus.value.isIdle() -> updateWeatherAndRecommendations()
             }
+        }.launchIn(viewModelScope)
+
+        // Update the weather when the units change.
+        unitsManager.unitsCelsius.onEach {
+            updateWeatherAndRecommendations()
         }.launchIn(viewModelScope)
     }
 
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.RefreshWeather -> {
-                viewModelScope.launch {
-                    val location = locationController.geoLocationState.firstOrNull()?.location
-                    location?.let { refreshWeather(it) }
-                }
-            }
+            HomeAction.RefreshWeather -> updateWeatherAndRecommendations()
         }
     }
 
-    private fun refreshWeather(location: GeoLocation) {
-        if (uiState.value.status == LoadingStatus.Loading) {
-            return // Already in progress, do not call again.
-        }
+    private fun updateWeatherAndRecommendations() {
+        loadingStatus.update { LoadingStatus.Loading }
 
-        if (PermissionChecker.hasLocationPermission(app)) {
-            currentWeatherUseCase.refreshCurrentWeather(location)
-            hourlyWeatherUseCase.refreshHourlyWeather(location, days = 2)
+        viewModelScope.launch {
+            val useCelsius = unitsManager.fetchUnitsCelsius()
+            val current = currentWeatherUseCase.fetchCurrentWeather(useCelsius)
+            val hourly = hourlyWeatherUseCase.fetchHourlyWeather(useCelsius, 2)
+
+            val forecast = obtainWeatherWithRecommendations(current.weather, hourly.weather)
+
+            forecastState.update { forecast }
+            loadingStatus.update { LoadingStatus.Success }
         }
     }
 
@@ -120,6 +123,7 @@ class HomeViewModel(
         currentWeather: Weather?,
         hourlyWeather: List<Weather>,
     ): Forecast? {
+        // TODO: Extract to usecase
         if (currentWeather == null || hourlyWeather.isEmpty()) {
             return null
         }
@@ -146,13 +150,6 @@ class HomeViewModel(
                 recommendUseCase.recommend(tomorrowWeather)
             )
         )
-    }
-
-    private fun WeatherUseCaseStatus.toWeatherStatus(): LoadingStatus = when (this) {
-        WeatherUseCaseStatus.Idle,
-        WeatherUseCaseStatus.Success -> LoadingStatus.Idle
-        WeatherUseCaseStatus.Loading -> LoadingStatus.Loading
-        is WeatherUseCaseStatus.Error -> LoadingStatus.GenericError
     }
 
     /**

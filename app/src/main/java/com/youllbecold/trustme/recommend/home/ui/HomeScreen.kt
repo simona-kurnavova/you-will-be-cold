@@ -54,7 +54,7 @@ private fun HomeScreen(
     onAction: (HomeAction) -> Unit,
 ) {
     val state = uiState.value
-    if (!state.hasPermission) {
+    if (state.status == LoadingStatus.MissingPermission) {
         return
     }
 
@@ -136,7 +136,6 @@ private fun HomeScreenPreview() {
     val state = remember {
         mutableStateOf(
             HomeUiState(
-                hasPermission = true,
                 status = LoadingStatus.Loading,
                 forecast = Forecast(
                     current = weatherWithRecommendation,

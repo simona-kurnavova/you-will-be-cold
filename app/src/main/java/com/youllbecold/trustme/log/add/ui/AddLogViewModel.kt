@@ -61,9 +61,7 @@ class AddLogViewModel(
         saveState.update { LoadingStatus.Loading }
 
         viewModelScope.launch {
-            saveState.update {
-                addLogUseCase.saveLogWithWeather(logState)
-            }
+            saveState.update { addLogUseCase.saveLogWithWeather(logState) }
         }
     }
 }

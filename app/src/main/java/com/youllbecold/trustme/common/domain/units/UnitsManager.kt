@@ -7,6 +7,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Manager for units settings.
@@ -31,4 +32,9 @@ class UnitsManager(
             }
         }
     }
+
+    /**
+     * Fetch whether to use celsius units with main-safety in mind.
+     */
+    suspend fun fetchUnitsCelsius(): Boolean = withContext(Dispatchers.IO) { unitsCelsius.first() }
 }

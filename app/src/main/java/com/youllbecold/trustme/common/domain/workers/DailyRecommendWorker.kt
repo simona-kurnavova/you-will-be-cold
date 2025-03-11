@@ -12,9 +12,9 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.youllbecold.trustme.common.ui.notifications.DailyRecommendNotification
 import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
-import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
+import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.domain.utils.DateTimeUtils
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -30,6 +30,8 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
     private val dailyRecommendNotification: DailyRecommendNotification by inject()
 
+    private val unitsManager: UnitsManager by inject()
+
     private val notificationsManager: DailyNotificationsManager by inject()
 
     @SuppressLint("MissingPermission")
@@ -40,26 +42,20 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
 
             // Disable notification and cancel this worker
             notificationsManager.setRecommendNotification(false)
-
             return Result.success()
         }
 
-        val geoLocation = LocationController.getLastLocation(appContext)
+        val weatherWithStatus = currentWeatherUseCase.fetchCurrentWeather(
+            useCelsius = unitsManager.fetchUnitsCelsius()
+        )
+        val weather = weatherWithStatus.weather
 
-        if (geoLocation == null) {
-            Log.d("DailyRecommendWorker", "Location is null, aborting")
-            return Result.success()
-        }
-
-        val weather = currentWeatherUseCase.getCurrentWeather(geoLocation)
-
-        if (weather == null) {
-            Log.d("DailyRecommendWorker", "Weather is null, aborting")
+        if (weatherWithStatus.status.isError() || weather == null) {
+            Log.d("DailyRecommendWorker", "Weather status is ${weatherWithStatus.status}, aborting")
             return Result.success()
         }
 
         Log.d("DailyRecommendWorker", "Showing notification")
-
         dailyRecommendNotification.show(
             temperature = weather.temperature,
             useCelsiusUnits = weather.unitsCelsius,

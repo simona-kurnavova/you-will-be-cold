@@ -53,10 +53,9 @@ private fun RowScope.BottomNavItem(
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
-                // Avoid multiple copies of the same destination when
-                // reselecting the same item
+                // Avoid multiple copies of the same destination when re-selecting the same item
                 launchSingleTop = true
-                // Restore state when reselecting a previously selected item
+                // Restore state when re-selecting a previously selected item
                 restoreState = true
             }
         }

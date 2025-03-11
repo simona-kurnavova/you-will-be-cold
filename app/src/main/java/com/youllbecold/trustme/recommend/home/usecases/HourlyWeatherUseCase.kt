@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.domain.usecases.weather
+package com.youllbecold.trustme.recommend.home.usecases
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -11,47 +11,50 @@ import com.youllbecold.weather.model.Weather
 import org.koin.core.annotation.Singleton
 
 /**
- * Use case for fetching and refreshing the current weather.
+ * Use case for fetching and refreshing the hourly weather.
  */
 @Singleton
-class CurrentWeatherUseCase(
+class HourlyWeatherUseCase(
     private val app: Application,
     private val weatherRepository: WeatherRepository,
+    private val networkStatusProvider: NetworkStatusProvider,
     private val fetchLocationUseCase: FetchLocationUseCase,
-    private val networkStatusProvider: NetworkStatusProvider
 ) {
+
     /**
-     * Fetches the current weather for the current location.
+     * Fetches the hourly weather for the current location.
      *
      * @param useCelsius Whether to use Celsius units.
+     * @param days The number of days to fetch the weather for.
      */
     @SuppressLint("MissingPermission")
-    suspend fun fetchCurrentWeather(useCelsius: Boolean): WeatherWithStatus {
+    suspend fun fetchHourlyWeather(useCelsius: Boolean, days: Int): HourlyWeatherWithStatus {
         // TODO: Extract this check somewhere
         when {
             !networkStatusProvider.hasInternet() ->
-                return WeatherWithStatus(status = LoadingStatus.NoInternet)
+                return HourlyWeatherWithStatus(status = LoadingStatus.NoInternet)
             !PermissionChecker.hasLocationPermission(app) ->
-                return WeatherWithStatus(status = LoadingStatus.MissingPermission)
+                return HourlyWeatherWithStatus(status = LoadingStatus.MissingPermission)
         }
 
         val location = fetchLocationUseCase.fetchLocation()
-            ?: return WeatherWithStatus(status = LoadingStatus.GenericError)
+            ?: return HourlyWeatherWithStatus(status = LoadingStatus.GenericError)
 
-        val result = weatherRepository.getCurrentWeather(
+        val result = weatherRepository.getHourlyWeather(
             location.latitude,
             location.longitude,
-            useCelsius
+            useCelsius,
+            forecastDays = days
         ).getOrNull()
 
-        return WeatherWithStatus(
+        return HourlyWeatherWithStatus(
+            weather = result ?: emptyList(),
             status = if (result != null) LoadingStatus.Success else LoadingStatus.GenericError,
-            weather = result,
         )
     }
 }
 
-data class WeatherWithStatus(
+data class HourlyWeatherWithStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
-    val weather: Weather? = null
+    val weather: List<Weather> = emptyList()
 )
