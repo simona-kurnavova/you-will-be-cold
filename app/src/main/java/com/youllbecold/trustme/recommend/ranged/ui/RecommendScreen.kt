@@ -1,7 +1,6 @@
 package com.youllbecold.trustme.recommend.ranged.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -67,18 +67,19 @@ private fun RecommendScreen(
             .verticalScroll(state = rememberScrollState())
             .padding(vertical = VERTICAL_PADDING.dp, horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
-        ThemedCard(modifier = Modifier.fillMaxWidth()) {
-            DateTimePickerSection(
-                updateRecommendation = {
-                    onAction(RecommendAction.UpdateRecommendation(it))
-                }
-            )
 
-            RecommendContentSection(
-                status = state.status,
-                weatherWithRecommendation = state.weatherWithRecommendation,
-            )
-        }
+        DateTimePickerSection(
+            updateRecommendation = {
+                onAction(RecommendAction.UpdateRecommendation(it))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
+
+        RecommendContentSection(
+            status = state.status,
+            weatherWithRecommendation = state.weatherWithRecommendation,
+        )
 
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
     }
@@ -95,22 +96,24 @@ private fun DateTimePickerSection(
         mutableStateOf(DateTimeState.fromDateTime(dateTimeNow, dateTimeNow.plusHours(1)))
     }
 
-    Column {
-        DateTimeInput(
-            dateTimeState = dateTimeState,
-            onDatetimeChanged = { dateTimeState = it },
-            allowFuture = true
-        )
+    ThemedCard(modifier = Modifier.fillMaxWidth()) {
+        Column {
+            DateTimeInput(
+                dateTimeState = dateTimeState,
+                onDatetimeChanged = { dateTimeState = it },
+                allowFuture = true
+            )
 
-        Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
+            Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
 
-        ThemedButton(
-            text = stringResource(R.string.menu_recommendation),
-            onClick = {
-                updateRecommendation(dateTimeState)
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
+            ThemedButton(
+                text = stringResource(R.string.menu_recommendation),
+                onClick = {
+                    updateRecommendation(dateTimeState)
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -120,10 +123,11 @@ private fun RecommendContentSection(
     weatherWithRecommendation: WeatherWithRecommendation?,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         when {
             status.isLoading() -> CircularProgressIndicator(
                 modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
                     .padding(top = PROGRESS_INDICATOR_PADDING.dp)
             )
 
