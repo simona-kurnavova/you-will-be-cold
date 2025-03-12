@@ -8,6 +8,8 @@ import com.youllbecold.weather.model.WeatherModel
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Map [WeatherModel] to [WeatherConditions] to be used in UI.
@@ -28,8 +30,12 @@ fun WeatherModel.toWeatherConditions(): WeatherConditions =
 /**
  * Map [List] of [WeatherModel] to [PersistentList] of [WeatherConditions] to be used in UI.
  */
-fun List<WeatherModel>.toWeatherCondPersistList(): PersistentList<WeatherConditions> =
-    map { it.toWeatherConditions() }.toPersistentList()
+suspend fun List<WeatherModel>.toWeatherCondPersistList(): PersistentList<WeatherConditions> =
+    withContext(Dispatchers.Default) {
+        map {
+            it.toWeatherConditions()
+        }.toPersistentList()
+    }
 
 /**
  * Get icon for [WeatherEvaluation].

@@ -1,13 +1,11 @@
 package com.youllbecold.trustme.log.usecases
 
 import android.annotation.SuppressLint
-import android.app.Application
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.domain.weather.RangedWeatherProvider
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
-import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -15,7 +13,6 @@ import java.time.LocalTime
  * Use case to obtain weather data for a log.
  */
 class ObtainLogWeatherParamsUseCase(
-    private val app: Application,
     private val rangedWeatherProvider: RangedWeatherProvider,
     private val locationController: LocationController
 ) {
@@ -24,8 +21,7 @@ class ObtainLogWeatherParamsUseCase(
      */
     @SuppressLint("MissingPermission") // It is checked
     suspend fun obtainWeather(dateTimeState: DateTimeState): WeatherParams? {
-        val location = locationController.geoLocationState.firstOrNull()?.location
-            ?: LocationController.getLastLocation(app)
+        val location = locationController.quickGetLastLocation()
 
         if (location == null) {
             return null

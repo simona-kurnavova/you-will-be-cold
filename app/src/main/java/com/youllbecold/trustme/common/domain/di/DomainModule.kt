@@ -1,9 +1,9 @@
 package com.youllbecold.trustme.common.domain.di
 
-import com.youllbecold.trustme.common.domain.location.GeoLocationProvider
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.domain.weather.CurrentWeatherProvider
+import com.youllbecold.trustme.common.domain.weather.HourlyWeatherProvider
 import com.youllbecold.trustme.common.domain.weather.RangedWeatherProvider
 import com.youllbecold.trustme.common.domain.welcome.WelcomeOverlayManager
 import com.youllbecold.trustme.common.ui.notifications.DailyLogNotification
@@ -21,7 +21,7 @@ internal val domainModule = module {
     // Providers
     factoryOf(::CurrentWeatherProvider)
     factoryOf(::RangedWeatherProvider)
-    factoryOf(::GeoLocationProvider)
+    factoryOf(::HourlyWeatherProvider)
 
     // Notifications
     factoryOf(::DailyLogNotification)

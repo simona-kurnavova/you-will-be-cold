@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -43,21 +44,21 @@ class HomeViewModel(
     /**
      * The UI state for the home screen.
      */
-    // TODO figure out the location
-    val uiState: StateFlow<HomeUiState> = combine(
-        locationController.geoLocationState,
-        allWeather
-    ) { geoLocation, allWeather ->
+    val uiState: StateFlow<HomeUiState> = allWeather.map { allWeather ->
+        val city = allWeather.location?.let {
+            locationController.quickGetCity(it.latitude, it.longitude)
+        }
+
         HomeUiState(
             status = allWeather.status,
-            city = geoLocation.city,
+            city = city,
             forecast = allWeather.forecast,
             hourlyTemperature = allWeather.hourlyTemperatures,
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, HomeUiState())
 
     init {
-        locationController.refresh()
+        locationController.refreshLocation()
 
         // Wait for permission and internet connection to fetch the weather.
         // Also serves as recovery mechanism after connection/permission was lost.

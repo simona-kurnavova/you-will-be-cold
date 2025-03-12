@@ -2,7 +2,6 @@ package com.youllbecold.trustme.recommend.ranged.usecase
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.compose.runtime.Stable
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
@@ -38,8 +37,7 @@ class RecommendForDateUseCase(
                 return RecommendationStatus(status = LoadingStatus.MissingPermission)
         }
 
-        val location = locationController.simpleLocation // Readily available
-            ?: LocationController.getLastLocation(app) // Ask for it otherwise
+        val location = locationController.quickGetLastLocation()
 
         if (location == null) {
             return RecommendationStatus(status = LoadingStatus.GenericError)
@@ -74,7 +72,6 @@ class RecommendForDateUseCase(
     }
  }
 
-@Stable
 data class RecommendationStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
     val weatherWithRecommendation: WeatherWithRecommendation? = null,

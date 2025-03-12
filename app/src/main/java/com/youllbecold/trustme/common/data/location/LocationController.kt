@@ -7,21 +7,18 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
-import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.youllbecold.trustme.common.data.permissions.LocationPermissionManager
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -33,41 +30,34 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * Helper class for fetching the device's location.
+ * Controller class for fetching device's location and city.
  */
 @Singleton
 class LocationController(
     private val app: Application,
+    private val locationClient: FusedLocationProviderClient,
     permissionManager: LocationPermissionManager,
 ) {
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val locationClient by lazy { LocationServices.getFusedLocationProviderClient(app) }
+    private val dispatcher = Dispatchers.IO
+    private val coroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    private val _geoLocation: MutableStateFlow<GeoLocationState> = MutableStateFlow(GeoLocationState()).apply {
-        onEach { state ->
-            // Update the city if the location changes.
-            if (state.status.isIdle() && state.city == null) {
-                state.location?.let { updateAddress(it) }
+    private val cachedGeoLocation: MutableStateFlow<GeoLocation?> = MutableStateFlow<GeoLocation?>(null).apply {
+        onEach { location ->
+            if (location != null) {
+                updateAddress(location)
             }
         }.launchIn(coroutineScope)
     }
 
-    /**
-     * State flow for the device's location.
-     */
-    val geoLocationState: StateFlow<GeoLocationState> = _geoLocation
+    private val cachedLocationWithCity: MutableStateFlow<GeoLocationWithCity?> = MutableStateFlow(null)
 
-    /**
-     * Simple location object, without the status and city.
-     */
-    val simpleLocation: GeoLocation?
-        get() = _geoLocation.value.location
+    private var refreshRunning: Boolean = false
 
     init {
         coroutineScope.launch {
             permissionManager.hasLocationPermission.collectLatest { hasPermission ->
                 if (hasPermission) {
-                    refresh()
+                    refreshLocation()
                 }
             }
         }
@@ -77,37 +67,85 @@ class LocationController(
      * Refreshes the device's location.
      */
     @SuppressLint("MissingPermission") // Not missing, handled by the permission helper.
-    fun refresh() {
-        if (!PermissionChecker.hasLocationPermission(app) ||
-            _geoLocation.value.status == LoadingStatus.Loading) {
+    fun refreshLocation() {
+        if (!PermissionChecker.hasLocationPermission(app) || refreshRunning) {
             return
         }
 
-        _geoLocation.update { it.copy(status = LoadingStatus.Loading) }
+        refreshRunning = true
 
-        locationClient.lastLocation.addOnCompleteListener { task: Task<Location> ->
-            if (task.isSuccessful && task.result != null) {
-                _geoLocation.update {
-                    GeoLocationState(GeoLocation(task.result.latitude, task.result.longitude))
-                }
-            } else {
-                _geoLocation.update { it.copy(status = LoadingStatus.GenericError) }
-            }
+        coroutineScope.launch {
+            val location = getLastLocation() ?: return@launch
+            cachedGeoLocation.update { location }
+
+            refreshRunning = false
         }
     }
+
+    /**
+     * Returns location as quickly as possible - checks cached one, if not available fetches it.
+     */
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    suspend fun quickGetLastLocation(): GeoLocation? =  withContext(dispatcher) {
+        cachedGeoLocation.firstOrNull() ?: getLastLocation()
+    }
+
+    /**
+     * Returns city for coordinates - first checks cache then fetches it.
+     *
+     * @param latitude The latitude of the location.
+     * @param longitude The longitude of the location.
+     */
+    suspend fun quickGetCity(latitude: Double, longitude: Double): String? =
+        withContext(dispatcher) {
+            val cached = cachedLocationWithCity.firstOrNull()
+            val loc = cached?.geoLocation
+
+            if (loc?.latitude == latitude && loc.longitude == longitude) {
+                return@withContext cached.city
+            }
+
+            return@withContext fetchCity(latitude, longitude)
+        }
+
+    /**
+     * One-time location request. Used for obtaining one-time synchronous location (without city).
+     */
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    private suspend fun getLastLocation(): GeoLocation? =
+        suspendCoroutine { continuation ->
+            locationClient.lastLocation
+                .addOnSuccessListener {
+                    if (it != null) {
+                        continuation.resume(GeoLocation(it.latitude, it.longitude))
+                    } else {
+                        continuation.resume(null)
+                    }
+                }.addOnFailureListener {
+                    continuation.resume(null)
+                }
+        }
+
+    /**
+     * One-time city request.
+     *
+     * @param latitude The latitude of the location.
+     * @param longitude The longitude of the location.
+     */
+    private suspend fun fetchCity(latitude: Double, longitude: Double): String? =
+        suspendCoroutine { continuation ->
+            obtainAddress(app, latitude, longitude) { address ->
+                val city = address?.locality ?: address?.adminArea ?: address?.countryName
+                continuation.resume(city)
+            }
+        }
 
     private fun updateAddress(geoLocation: GeoLocation) {
         obtainAddress(app, geoLocation.latitude, geoLocation.longitude) { address ->
             val city = address?.locality ?: address?.adminArea ?: address?.countryName
 
-            _geoLocation.update {
-                // Consistency check, if the location is still the same, update the city.
-                if (it.location == geoLocation) {
-                    it.copy(city = city)
-                } else {
-                    // Do nothing, another update will deal with this.
-                    return@obtainAddress
-                }
+            cachedLocationWithCity.update {
+                GeoLocationWithCity(geoLocation, city)
             }
         }
     }
@@ -155,38 +193,26 @@ class LocationController(
         }
         geocoder.getFromLocation(latitude, longitude, 1, listener)
     }
-
-    companion object {
-        /**
-         * One-time location request. Used for obtaining one-time synchronous location (without city).
-         */
-        @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        suspend fun getLastLocation(context: Context): GeoLocation? =
-            withContext(Dispatchers.IO) {
-                suspendCoroutine { continuation ->
-                    val locClient = LocationServices.getFusedLocationProviderClient(context)
-                    locClient.lastLocation
-                        .addOnSuccessListener {
-                            if (it != null) {
-                                continuation.resume(GeoLocation(it.latitude, it.longitude))
-                            } else {
-                                continuation.resume(null)
-                            }
-                        }.addOnFailureListener {
-                            continuation.resume(null)
-                        }
-                }
-            }
-    }
 }
 
+/**
+ * Data class representing a geo location.
+ *
+ * @param latitude The latitude of the location.
+ * @param longitude The longitude of the location.
+ */
 data class GeoLocation(
     val latitude: Double,
     val longitude: Double,
 )
 
-data class GeoLocationState(
-    val location: GeoLocation? = null,
-    val status: LoadingStatus = LoadingStatus.Idle,
-    val city: String? = null
+/**
+ * Data class representing a geo location with city.
+ *
+ * @param geoLocation The geo location.
+ * @param city The city name (if available).
+ */
+data class GeoLocationWithCity(
+    val geoLocation: GeoLocation,
+    val city: String?,
 )

@@ -14,7 +14,6 @@ internal val recommendModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::RecommendViewModel)
 
-    factoryOf(::HourlyWeatherProvider)
     factoryOf(::RecommendForDateUseCase)
     factoryOf(::RecommendationUseCase)
     factoryOf(::FetchAllWeatherUseCase)

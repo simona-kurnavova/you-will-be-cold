@@ -2,6 +2,8 @@ package com.youllbecold.trustme.common.data.di
 
 import android.app.NotificationManager
 import android.content.Context
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.youllbecold.logdatabase.LogRepositoryProvider
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.recomendation.RecommendRepositoryProvider
@@ -25,6 +27,9 @@ internal val dataModule = module {
     // System Services
     single<NotificationManager> {
         androidApplication().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+    single<FusedLocationProviderClient> {
+        LocationServices.getFusedLocationProviderClient(androidApplication())
     }
 
     // Location

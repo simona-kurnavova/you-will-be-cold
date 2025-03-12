@@ -19,7 +19,7 @@ class RecommendationUseCase(
      * Recommends clothes based on the weather.
      */
     suspend fun recommend(hourlyWeatherModel: List<WeatherModel>): RecommendationState? =
-        withContext(Dispatchers.Default) {
+        withContext(Dispatchers.Default) { // List operations
             if (hourlyWeatherModel.isEmpty()) {
                 return@withContext null
             }

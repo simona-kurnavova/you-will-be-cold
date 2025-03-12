@@ -2,9 +2,10 @@ package com.youllbecold.trustme.common.domain.weather
 
 import android.annotation.SuppressLint
 import android.app.Application
+import com.youllbecold.trustme.common.data.location.GeoLocation
+import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.domain.location.GeoLocationProvider
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.model.WeatherModel
@@ -15,7 +16,7 @@ import com.youllbecold.weather.model.WeatherModel
 class CurrentWeatherProvider(
     private val app: Application,
     private val weatherRepository: WeatherRepository,
-    private val geoLocationProvider: GeoLocationProvider,
+    private val locationController: LocationController,
     private val networkStatusProvider: NetworkStatusProvider
 ) {
     /**
@@ -32,7 +33,7 @@ class CurrentWeatherProvider(
                 return WeatherWithStatus(status = LoadingStatus.MissingPermission)
         }
 
-        val location = geoLocationProvider.fetchLocation()
+        val location = locationController.quickGetLastLocation()
             ?: return WeatherWithStatus(status = LoadingStatus.GenericError)
 
         val result = weatherRepository.getCurrentWeather(
@@ -44,11 +45,13 @@ class CurrentWeatherProvider(
         return WeatherWithStatus(
             status = if (result != null) LoadingStatus.Success else LoadingStatus.GenericError,
             weatherModel = result,
+            location = location
         )
     }
 }
 
 data class WeatherWithStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
-    val weatherModel: WeatherModel? = null
+    val weatherModel: WeatherModel? = null,
+    val location: GeoLocation? = null
 )

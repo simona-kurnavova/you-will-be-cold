@@ -2,9 +2,9 @@ package com.youllbecold.trustme.common.domain.weather
 
 import android.annotation.SuppressLint
 import android.app.Application
+import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.domain.location.GeoLocationProvider
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.model.WeatherModel
@@ -18,7 +18,7 @@ class HourlyWeatherProvider(
     private val app: Application,
     private val weatherRepository: WeatherRepository,
     private val networkStatusProvider: NetworkStatusProvider,
-    private val geoLocationProvider: GeoLocationProvider,
+    private val locationController: LocationController,
 ) {
 
     /**
@@ -36,7 +36,7 @@ class HourlyWeatherProvider(
                 return HourlyWeatherWithStatus(status = LoadingStatus.MissingPermission)
         }
 
-        val location = geoLocationProvider.fetchLocation()
+        val location = locationController.quickGetLastLocation()
             ?: return HourlyWeatherWithStatus(status = LoadingStatus.GenericError)
 
         val result = weatherRepository.getHourlyWeather(
