@@ -4,11 +4,10 @@ import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
+import com.youllbecold.trustme.common.ui.mappers.toClothesModel
 import com.youllbecold.trustme.log.ui.model.FeelingState
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
-
-// TODO: Clothes mapping
 
 fun LogState.toLogData(): LogData =
     LogData(
@@ -25,7 +24,7 @@ fun LogState.toLogData(): LogData =
         ),
         weatherData = weather?.toWeatherData()
             ?: throw IllegalStateException("Weather data is missing"),
-        clothes = clothes.map { it }
+        clothes = clothes.mapNotNull { it.toClothesModel() }
     )
 
 private fun FeelingState.toFeeling(): Feeling = when (this) {

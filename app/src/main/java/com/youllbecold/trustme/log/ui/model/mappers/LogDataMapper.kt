@@ -5,6 +5,7 @@ import com.youllbecold.logdatabase.model.Feelings
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.common.ui.mappers.toClothes
 import com.youllbecold.trustme.log.ui.model.FeelingState
 import com.youllbecold.trustme.log.ui.model.FeelingsState
 import com.youllbecold.trustme.log.ui.model.LogState
@@ -20,7 +21,7 @@ fun LogData.toLogState(
         datetimeTo = dateTo
     ),
     feelings = feelings.toFeelingsState(),
-    clothes = clothes.toPersistentSet(),
+    clothes = clothes.map { it.toClothes() }.toPersistentSet(),
     weather = weatherData.toWeatherState(useCelsiusUnits)
 )
 

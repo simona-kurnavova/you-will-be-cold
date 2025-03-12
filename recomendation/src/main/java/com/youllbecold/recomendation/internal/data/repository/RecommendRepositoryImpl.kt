@@ -1,7 +1,7 @@
 package com.youllbecold.recomendation.internal.data.repository
 
 import android.util.Log
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.recomendation.api.RecommendRepository
 import com.youllbecold.recomendation.internal.data.logs.LogCollector
 import com.youllbecold.recomendation.internal.data.outfit.CustomOutfitSelector
@@ -47,7 +47,7 @@ internal class RecommendRepositoryImpl(
 
         val relevantLogs = logCollector.gatherRelevantLogs(minApparentC, maxApparentC)
 
-        val best: Pair<List<Clothes>, Double>? =
+        val best: Pair<List<ClothesModel>, Double>? =
             CustomOutfitSelector.createOutfitRecommendation(relevantLogs, minApparentC, maxApparentC)
 
         val (finalClothes, certaintyMeasure) = when {

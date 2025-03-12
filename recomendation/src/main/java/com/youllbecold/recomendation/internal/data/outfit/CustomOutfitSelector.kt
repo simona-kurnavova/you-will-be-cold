@@ -1,6 +1,6 @@
 package com.youllbecold.recomendation.internal.data.outfit
 
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.logdatabase.model.LogData
 import com.youllbecold.recomendation.internal.data.utils.LogCertaintyUtils
 import com.youllbecold.recomendation.internal.data.utils.TemperatureSimilarityUtils
@@ -23,7 +23,7 @@ internal object CustomOutfitSelector {
         logs: List<LogData>,
         minApparentTemp: Double,
         maxApparentTemp: Double,
-    ): Pair<List<Clothes>, Double>? = withContext(Dispatchers.Default) {
+    ): Pair<List<ClothesModel>, Double>? = withContext(Dispatchers.Default) {
         if (logs.isEmpty()) {
             return@withContext null
         }
@@ -72,7 +72,7 @@ internal object CustomOutfitSelector {
             .sortedByDescending { it.second } // Sort by similarity
             .take(MAX_LOGS_PROCESSING) // Limit to certain number to optimise performance and prioritise latest logs
 
-    private fun Map<BodyPart, ClothesWithCertainty>.mapToResult(): Pair<List<Clothes>, Double> {
+    private fun Map<BodyPart, ClothesWithCertainty>.mapToResult(): Pair<List<ClothesModel>, Double> {
         val finalClothes = this
             .flatMap { it.value.clothes }
             .distinct()
@@ -85,7 +85,7 @@ internal object CustomOutfitSelector {
     }
 
     private data class ClothesWithCertainty(
-        val clothes: List<Clothes> = emptyList(),
+        val clothes: List<ClothesModel> = emptyList(),
         val certainty: Double = 0.0
     )
 }

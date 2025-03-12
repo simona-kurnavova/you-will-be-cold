@@ -27,30 +27,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.icontext.Tile
 import com.youllbecold.trustme.common.ui.components.inputs.LabeledSlider
 import com.youllbecold.trustme.common.ui.components.inputs.SelectRowWithButton
+import com.youllbecold.trustme.common.ui.components.inputs.SelectableItemContent
 import com.youllbecold.trustme.common.ui.components.section.Section
 import com.youllbecold.trustme.common.ui.components.themed.ThemedButton
 import com.youllbecold.trustme.common.ui.components.themed.ThemedInputChip
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
+import com.youllbecold.trustme.common.ui.mappers.getAllItems
+import com.youllbecold.trustme.common.ui.mappers.getAllItemsAsSet
+import com.youllbecold.trustme.common.ui.mappers.withCategory
+import com.youllbecold.trustme.common.ui.model.clothes.Clothes
+import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
+import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.ui.model.FeelingState
 import com.youllbecold.trustme.log.ui.model.FeelingsState
+import com.youllbecold.trustme.log.ui.model.mappers.clothesName
 import com.youllbecold.trustme.log.ui.model.mappers.getFeelingWithLabel
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.items
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.toSelectableItemContent
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.withCategory
-import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.log.ui.model.mappers.toSelectableItemContent
+import com.youllbecold.trustme.log.ui.model.mappers.icon
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
-import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
@@ -177,7 +178,7 @@ private fun ClothesSection(
     modifier: Modifier = Modifier
 ) {
     val clothesScrollState = rememberScrollState()
-    var showForCategory by remember { mutableStateOf<Clothes.Category?>(null) }
+    var showForCategory by remember { mutableStateOf<ClothesCategory?>(null) }
 
     Section(
         title = stringResource(R.string.add_log_wearing),
@@ -189,7 +190,7 @@ private fun ClothesSection(
                 clothes.forEach { item ->
                     key(item) {
                         ThemedInputChip(
-                            text = item.clothesName(),
+                            text = stringResource(item.name),
                             iconType = item.icon,
                             onRemove = { onClothesCategoryChange(clothes.remove(item)) },
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -206,9 +207,9 @@ private fun ClothesSection(
                 modifier = Modifier.horizontalScroll(clothesScrollState),
             ){
                 // All categories
-                Clothes.Category.entries.forEach { type ->
+                ClothesCategory.getAll().forEach { type ->
                     Tile(
-                        title = type.clothesName(),
+                        title = stringResource(type.name),
                         iconType = type.icon,
                         onClick = { showForCategory = type },
                         modifier = Modifier.padding(4.dp)
@@ -234,7 +235,7 @@ private const val BOTTOM_SHEET_PADDING = 12
 private fun ClothesBottomSheetPicker(
     clothes: PersistentSet<Clothes>,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
-    showForCategory: Clothes.Category?,
+    showForCategory: ClothesCategory?,
     closeDialog: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -244,7 +245,7 @@ private fun ClothesBottomSheetPicker(
             sheetState = sheetState,
             onDismissRequest = { closeDialog() },
             content = {
-                val allClothesInCategory = category.items
+                val allClothesInCategory = category.getAllItems()
 
                 val preSelected = clothes
                     .withCategory(category)
@@ -271,6 +272,30 @@ private fun ClothesBottomSheetPicker(
     }
 }
 
+/**
+ * Returns a list of [SelectableItemContent] for the feelings state.
+ */
+@Composable
+private fun List<FeelingState>.toSelectableItemContent(): List<SelectableItemContent> = map { feeling ->
+    SelectableItemContent(
+        iconType = feeling.icon,
+        title = feeling.clothesName(),
+    )
+}
+
+
+/**
+ * Converts a set of [Clothes] to a list of [SelectableItemContent].
+ */
+@Composable
+private fun List<Clothes>.toSelectableItemContent(): PersistentList<SelectableItemContent> =
+    this.map { item ->
+        SelectableItemContent(
+            title = stringResource(item.name),
+            iconType = item.icon,
+        )
+    }.toPersistentList()
+
 @Preview(showBackground = true)
 @Composable
 private fun AddLogFormPreview() {
@@ -282,7 +307,7 @@ private fun AddLogFormPreview() {
                 timeTo = TimeState(13, 0)
             ),
             feelings = FeelingsState(),
-            clothes = persistentSetOf(Clothes.JEANS, Clothes.SHORT_TSHIRT_DRESS, Clothes.SHORTS, Clothes.SHORT_SKIRT),
+            clothes = ClothesCategory.getAll().first().getAllItemsAsSet(),
             onDateTimeChanged = { },
             onFeelingsChange = { },
             onClothesCategoryChange = { },

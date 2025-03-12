@@ -1,8 +1,8 @@
 package com.youllbecold.trustme.log.ui.model
 
 import androidx.compose.runtime.Stable
-import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate

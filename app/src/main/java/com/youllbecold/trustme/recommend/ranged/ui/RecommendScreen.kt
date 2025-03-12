@@ -25,21 +25,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
-import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
+import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.themed.ThemedButton
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
-import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.common.ui.mappers.getAllItems
+import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
+import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
 import com.youllbecold.trustme.recommend.ui.mappers.feelLikeDescription
 import com.youllbecold.trustme.recommend.ui.mappers.temperatureRangeDescription
 import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
-import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
@@ -176,7 +177,7 @@ private fun RecommendScreenPreview() {
                 recommendationState = RecommendationState(
                     "UV warning",
                     "Rain warning",
-                    clothes = persistentListOf(Clothes.SHORT_TSHIRT_DRESS),
+                    clothes = ClothesCategory.getAll().first().getAllItems(),
                     certaintyLevel = "High"
                 )
             )

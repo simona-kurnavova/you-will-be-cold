@@ -3,7 +3,7 @@ package com.youllbecold.logdatabase.internal.data.mappers
 import com.youllbecold.logdatabase.internal.data.model.ClothesId
 import com.youllbecold.logdatabase.internal.data.model.FeelingEntity
 import com.youllbecold.logdatabase.internal.data.model.LogEntity
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.logdatabase.model.LogData
 
@@ -37,46 +37,46 @@ private fun Feeling.toFeelingEntity(): FeelingEntity {
     }
 }
 
-private fun Clothes.toClothesId(): ClothesId = when (this) {
-    Clothes.SHORT_SLEEVE -> ClothesId.SHORT_SLEEVE
-    Clothes.LONG_SLEEVE -> ClothesId.LONG_SLEEVE
-    Clothes.SHORT_SKIRT -> ClothesId.SHORT_SKIRT
-    Clothes.SHORTS -> ClothesId.SHORTS
-    Clothes.JEANS -> ClothesId.JEANS
-    Clothes.SANDALS -> ClothesId.SANDALS
-    Clothes.TENNIS_SHOES -> ClothesId.TENNIS_SHOES
-    Clothes.SHORT_TSHIRT_DRESS -> ClothesId.SHORT_TSHIRT_DRESS
-    Clothes.BASEBALL_HAT -> ClothesId.BASEBALL_HAT
-    Clothes.WINTER_HAT -> ClothesId.WINTER_HAT
-    Clothes.TANK_TOP -> ClothesId.TANK_TOP
-    Clothes.LIGHT_JACKET -> ClothesId.LIGHT_JACKET
-    Clothes.WINTER_JACKET -> ClothesId.WINTER_JACKET
-    Clothes.LEGGINGS -> ClothesId.LEGGINGS
-    Clothes.WARM_PANTS -> ClothesId.WARM_PANTS
-    Clothes.WINTER_SHOES -> ClothesId.WINTER_SHOES
-    Clothes.LONG_TSHIRT_DRESS -> ClothesId.LONG_TSHIRT_DRESS
-    Clothes.TIGHTS -> ClothesId.TIGHTS
-    Clothes.SCARF -> ClothesId.SCARF
-    Clothes.GLOVES -> ClothesId.GLOVES
-    Clothes.SUNGLASSES -> ClothesId.SUNGLASSES
-    Clothes.LONG_SKIRT -> ClothesId.LONG_SKIRT
-    Clothes.HEAD_SCARF -> ClothesId.HEAD_SCARF
-    Clothes.BEANIE -> ClothesId.BEANIE
-    Clothes.CROP_TOP -> ClothesId.CROP_TOP
-    Clothes.SHIRT -> ClothesId.SHIRT
-    Clothes.SWEATER -> ClothesId.SWEATER
-    Clothes.CARDIGAN -> ClothesId.CARDIGAN
-    Clothes.JUMPER -> ClothesId.JUMPER
-    Clothes.HOODIE -> ClothesId.HOODIE
-    Clothes.JEAN_JACKET -> ClothesId.JEAN_JACKET
-    Clothes.LEATHER_JACKET -> ClothesId.LEATHER_JACKET
-    Clothes.WINTER_COAT -> ClothesId.WINTER_COAT
-    Clothes.FLIP_FLOPS -> ClothesId.FLIP_FLOPS
-    Clothes.SLEVESLESS_LONG_DRESS -> ClothesId.SLEVESLESS_LONG_DRESS
-    Clothes.SLEEVELESS_SHORT_DRESS -> ClothesId.SLEEVELESS_SHORT_DRESS
-    Clothes.LONG_SLEEVE_LONG_DRESS -> ClothesId.LONG_SLEEVE_LONG_DRESS
-    Clothes.LONG_SLEEVE_SHORT_DRESS -> ClothesId.LONG_SLEEVE_SHORT_DRESS
-    Clothes.FINGERLESS_GLOVES -> ClothesId.FINGERLESS_GLOVES
-    Clothes.WINTER_GLOVES -> ClothesId.WINTER_GLOVES
-    Clothes.WINTER_SCARF -> ClothesId.WINTER_SCARF
+private fun ClothesModel.toClothesId(): ClothesId = when (this) {
+    ClothesModel.SHORT_SLEEVE -> ClothesId.SHORT_SLEEVE
+    ClothesModel.LONG_SLEEVE -> ClothesId.LONG_SLEEVE
+    ClothesModel.SHORT_SKIRT -> ClothesId.SHORT_SKIRT
+    ClothesModel.SHORTS -> ClothesId.SHORTS
+    ClothesModel.JEANS -> ClothesId.JEANS
+    ClothesModel.SANDALS -> ClothesId.SANDALS
+    ClothesModel.TENNIS_SHOES -> ClothesId.TENNIS_SHOES
+    ClothesModel.SHORT_TSHIRT_DRESS -> ClothesId.SHORT_TSHIRT_DRESS
+    ClothesModel.BASEBALL_HAT -> ClothesId.BASEBALL_HAT
+    ClothesModel.WINTER_HAT -> ClothesId.WINTER_HAT
+    ClothesModel.TANK_TOP -> ClothesId.TANK_TOP
+    ClothesModel.LIGHT_JACKET -> ClothesId.LIGHT_JACKET
+    ClothesModel.WINTER_JACKET -> ClothesId.WINTER_JACKET
+    ClothesModel.LEGGINGS -> ClothesId.LEGGINGS
+    ClothesModel.WARM_PANTS -> ClothesId.WARM_PANTS
+    ClothesModel.WINTER_SHOES -> ClothesId.WINTER_SHOES
+    ClothesModel.LONG_TSHIRT_DRESS -> ClothesId.LONG_TSHIRT_DRESS
+    ClothesModel.TIGHTS -> ClothesId.TIGHTS
+    ClothesModel.SCARF -> ClothesId.SCARF
+    ClothesModel.GLOVES -> ClothesId.GLOVES
+    ClothesModel.SUNGLASSES -> ClothesId.SUNGLASSES
+    ClothesModel.LONG_SKIRT -> ClothesId.LONG_SKIRT
+    ClothesModel.HEAD_SCARF -> ClothesId.HEAD_SCARF
+    ClothesModel.BEANIE -> ClothesId.BEANIE
+    ClothesModel.CROP_TOP -> ClothesId.CROP_TOP
+    ClothesModel.SHIRT -> ClothesId.SHIRT
+    ClothesModel.SWEATER -> ClothesId.SWEATER
+    ClothesModel.CARDIGAN -> ClothesId.CARDIGAN
+    ClothesModel.JUMPER -> ClothesId.JUMPER
+    ClothesModel.HOODIE -> ClothesId.HOODIE
+    ClothesModel.JEAN_JACKET -> ClothesId.JEAN_JACKET
+    ClothesModel.LEATHER_JACKET -> ClothesId.LEATHER_JACKET
+    ClothesModel.WINTER_COAT -> ClothesId.WINTER_COAT
+    ClothesModel.FLIP_FLOPS -> ClothesId.FLIP_FLOPS
+    ClothesModel.SLEVESLESS_LONG_DRESS -> ClothesId.SLEVESLESS_LONG_DRESS
+    ClothesModel.SLEEVELESS_SHORT_DRESS -> ClothesId.SLEEVELESS_SHORT_DRESS
+    ClothesModel.LONG_SLEEVE_LONG_DRESS -> ClothesId.LONG_SLEEVE_LONG_DRESS
+    ClothesModel.LONG_SLEEVE_SHORT_DRESS -> ClothesId.LONG_SLEEVE_SHORT_DRESS
+    ClothesModel.FINGERLESS_GLOVES -> ClothesId.FINGERLESS_GLOVES
+    ClothesModel.WINTER_GLOVES -> ClothesId.WINTER_GLOVES
+    ClothesModel.WINTER_SCARF -> ClothesId.WINTER_SCARF
 }

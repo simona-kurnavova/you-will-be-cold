@@ -1,6 +1,6 @@
 package com.youllbecold.recomendation.internal.data.outfit
 
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 
 /**
  * Weight of clothes for different body parts.
@@ -17,50 +17,50 @@ internal class ClothesWeight(
 /**
  * Weights of clothes for different clothes.
  */
-internal val clothesWeights: Map<Clothes, ClothesWeight> = Clothes.entries.associateWith {
+internal val clothesModelWeights: Map<ClothesModel, ClothesWeight> = ClothesModel.entries.associateWith {
     when(it) {
-        Clothes.HEAD_SCARF -> ClothesWeight(head = 1)
-        Clothes.BASEBALL_HAT -> ClothesWeight(head = 2)
-        Clothes.BEANIE -> ClothesWeight(head = 3)
-        Clothes.WINTER_HAT -> ClothesWeight(head = 4)
+        ClothesModel.HEAD_SCARF -> ClothesWeight(head = 1)
+        ClothesModel.BASEBALL_HAT -> ClothesWeight(head = 2)
+        ClothesModel.BEANIE -> ClothesWeight(head = 3)
+        ClothesModel.WINTER_HAT -> ClothesWeight(head = 4)
 
-        Clothes.TANK_TOP -> ClothesWeight(top = 1)
-        Clothes.CROP_TOP -> ClothesWeight(top = 1)
-        Clothes.SHORT_SLEEVE -> ClothesWeight(top = 2)
-        Clothes.LONG_SLEEVE -> ClothesWeight(top = 3)
-        Clothes.SHIRT -> ClothesWeight(top = 3)
+        ClothesModel.TANK_TOP -> ClothesWeight(top = 1)
+        ClothesModel.CROP_TOP -> ClothesWeight(top = 1)
+        ClothesModel.SHORT_SLEEVE -> ClothesWeight(top = 2)
+        ClothesModel.LONG_SLEEVE -> ClothesWeight(top = 3)
+        ClothesModel.SHIRT -> ClothesWeight(top = 3)
 
-        Clothes.SWEATER -> ClothesWeight(top = 4)
-        Clothes.CARDIGAN -> ClothesWeight(top = 4)
-        Clothes.JUMPER -> ClothesWeight(top = 4)
-        Clothes.HOODIE -> ClothesWeight(top = 4)
+        ClothesModel.SWEATER -> ClothesWeight(top = 4)
+        ClothesModel.CARDIGAN -> ClothesWeight(top = 4)
+        ClothesModel.JUMPER -> ClothesWeight(top = 4)
+        ClothesModel.HOODIE -> ClothesWeight(top = 4)
 
-        Clothes.LIGHT_JACKET -> ClothesWeight(top = 5)
-        Clothes.JEAN_JACKET -> ClothesWeight(top = 5)
-        Clothes.LEATHER_JACKET -> ClothesWeight(top = 6)
-        Clothes.WINTER_COAT -> ClothesWeight(top = 7)
-        Clothes.WINTER_JACKET -> ClothesWeight(top = 8)
+        ClothesModel.LIGHT_JACKET -> ClothesWeight(top = 5)
+        ClothesModel.JEAN_JACKET -> ClothesWeight(top = 5)
+        ClothesModel.LEATHER_JACKET -> ClothesWeight(top = 6)
+        ClothesModel.WINTER_COAT -> ClothesWeight(top = 7)
+        ClothesModel.WINTER_JACKET -> ClothesWeight(top = 8)
 
-        Clothes.SHORTS -> ClothesWeight(bottom = 1)
-        Clothes.SHORT_SKIRT -> ClothesWeight(bottom = 1)
-        Clothes.LEGGINGS -> ClothesWeight(bottom = 2)
-        Clothes.LONG_SKIRT -> ClothesWeight(bottom = 2)
-        Clothes.JEANS -> ClothesWeight(bottom = 3)
-        Clothes.WARM_PANTS -> ClothesWeight(bottom = 3)
+        ClothesModel.SHORTS -> ClothesWeight(bottom = 1)
+        ClothesModel.SHORT_SKIRT -> ClothesWeight(bottom = 1)
+        ClothesModel.LEGGINGS -> ClothesWeight(bottom = 2)
+        ClothesModel.LONG_SKIRT -> ClothesWeight(bottom = 2)
+        ClothesModel.JEANS -> ClothesWeight(bottom = 3)
+        ClothesModel.WARM_PANTS -> ClothesWeight(bottom = 3)
 
-        Clothes.FLIP_FLOPS -> ClothesWeight(feet = 1)
-        Clothes.SANDALS -> ClothesWeight(feet = 2)
-        Clothes.TENNIS_SHOES -> ClothesWeight(feet = 3)
-        Clothes.WINTER_SHOES -> ClothesWeight(feet = 3)
+        ClothesModel.FLIP_FLOPS -> ClothesWeight(feet = 1)
+        ClothesModel.SANDALS -> ClothesWeight(feet = 2)
+        ClothesModel.TENNIS_SHOES -> ClothesWeight(feet = 3)
+        ClothesModel.WINTER_SHOES -> ClothesWeight(feet = 3)
 
-        Clothes.FINGERLESS_GLOVES -> ClothesWeight(hands = 1)
-        Clothes.GLOVES -> ClothesWeight(hands = 2)
-        Clothes.WINTER_GLOVES -> ClothesWeight(hands = 3)
+        ClothesModel.FINGERLESS_GLOVES -> ClothesWeight(hands = 1)
+        ClothesModel.GLOVES -> ClothesWeight(hands = 2)
+        ClothesModel.WINTER_GLOVES -> ClothesWeight(hands = 3)
 
-        Clothes.SCARF -> ClothesWeight(neck = 1)
-        Clothes.WINTER_SCARF -> ClothesWeight(neck = 2)
+        ClothesModel.SCARF -> ClothesWeight(neck = 1)
+        ClothesModel.WINTER_SCARF -> ClothesWeight(neck = 2)
 
-        Clothes.TIGHTS -> ClothesWeight(bottom = 1)
+        ClothesModel.TIGHTS -> ClothesWeight(bottom = 1)
 
         // Accessories and full body are never recommended, return empty
         else -> ClothesWeight()

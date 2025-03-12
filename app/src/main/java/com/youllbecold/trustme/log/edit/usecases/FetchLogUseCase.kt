@@ -7,7 +7,9 @@ import com.youllbecold.trustme.log.ui.model.mappers.toLogState
 /**
  * Use case to fetch a log.
  */
-class FetchLogUseCase(private val logResult: LogRepository) {
+class FetchLogUseCase(
+    private val logResult: LogRepository
+) {
 
     /**
      * Fetches a log.

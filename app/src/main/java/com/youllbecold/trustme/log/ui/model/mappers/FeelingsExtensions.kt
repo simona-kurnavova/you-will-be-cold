@@ -33,17 +33,6 @@ val FeelingState.icon: IconType
     }
 
 /**
- * Returns a list of [SelectableItemContent] for the feelings state.
- */
-@Composable
-fun List<FeelingState>.toSelectableItemContent(): List<SelectableItemContent> = map { feeling ->
-    SelectableItemContent(
-        iconType = feeling.icon,
-        title = feeling.clothesName(),
-    )
-}
-
-/**
  * Returns a list of [FeelingWithLabel] for the feelings state.
  */
 @Composable

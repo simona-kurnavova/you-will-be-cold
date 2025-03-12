@@ -1,6 +1,6 @@
 package com.youllbecold.recomendation.internal.data.outfit
 
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.logdatabase.model.Feeling
 import com.youllbecold.recomendation.internal.data.utils.getItemSelector
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +13,7 @@ internal object OutfitProcessor {
     /**
      * Weights of clothes for different categories.
      */
-    private val categorizedClothesWeights = clothesWeights.entries.groupBy { it.key.category }
+    private val categorizedClothesWeights = clothesModelWeights.entries.groupBy { it.key.category }
 
     /**
      * Adjusts clothes based on feelings. Returns new set of clothes adjusted per feeling.
@@ -21,13 +21,13 @@ internal object OutfitProcessor {
      * Note: Function uses recursion, but it should be fine performance-wise as it's limited to at most 2 calls.
      */
     suspend fun adjustPerFeeling(
-        clothes: List<Clothes>,
+        clothes: List<ClothesModel>,
         feeling: Feeling,
         bodyPart: BodyPart
-    ): List<Clothes> = withContext(Dispatchers.Default) {
+    ): List<ClothesModel> = withContext(Dispatchers.Default) {
         val itemSelector = bodyPart.getItemSelector()
 
-        val weightedCurrent: Map<Clothes, Int> = clothes
+        val weightedCurrent: Map<ClothesModel, Int> = clothes
             .replaceFullBodyClothes() // Replace full body clothes with parts for better computing
             .filterAndMapWithWeights(itemSelector) // Filter out clothes with no weight and map to its weight
 
@@ -61,14 +61,14 @@ internal object OutfitProcessor {
     }
 
     private fun adjustTooWarm(
-        weightedCurrent: Map<Clothes, Int>,
+        weightedCurrent: Map<ClothesModel, Int>,
         itemSelector: (ClothesWeight) -> Int,
-        filteredList: List<Clothes>
-    ): List<Clothes> {
+        filteredList: List<ClothesModel>
+    ): List<ClothesModel> {
         val warmest = weightedCurrent.maxByOrNull { it.value }
             ?: return emptyList() // Nothing we can do
 
-        val candidates = clothesWeights.entries.filter { entry ->
+        val candidates = clothesModelWeights.entries.filter { entry ->
             itemSelector(entry.value) > 0 && itemSelector(entry.value) < warmest.value
                     && !weightedCurrent.contains(entry.key)
         }
@@ -92,10 +92,10 @@ internal object OutfitProcessor {
     }
 
     private fun adjustTooCold(
-        weightedCurrent: Map<Clothes, Int>,
+        weightedCurrent: Map<ClothesModel, Int>,
         itemSelector: (ClothesWeight) -> Int,
-        filteredList: List<Clothes>
-    ): List<Clothes> {
+        filteredList: List<ClothesModel>
+    ): List<ClothesModel> {
         // Find warmer in given category. First replace wins.
         weightedCurrent.entries
             .groupBy { it.key.category }
@@ -116,26 +116,26 @@ internal object OutfitProcessor {
             }
 
         // If there is some available category missing, add least warm one
-        return clothesWeights.entries
+        return clothesModelWeights.entries
             .filter { entry -> itemSelector(entry.value) > 0 && filteredList.none { entry.key.category == it.category } }
             .minByOrNull { itemSelector(it.value) }
             ?.let { filteredList + it.key }
             ?: filteredList // Nothing more we can do
     }
 
-    private fun List<Clothes>.filterAndMapWithWeights(weight: (ClothesWeight) -> Int): Map<Clothes, Int> =
-        this.associate { it to weight(clothesWeights[it] ?: ClothesWeight()) }
+    private fun List<ClothesModel>.filterAndMapWithWeights(weight: (ClothesWeight) -> Int): Map<ClothesModel, Int> =
+        this.associate { it to weight(clothesModelWeights[it] ?: ClothesWeight()) }
             .filter { it.value > 0 }
 
-    private fun List<Clothes>.replaceFullBodyClothes(): List<Clothes> =
+    private fun List<ClothesModel>.replaceFullBodyClothes(): List<ClothesModel> =
         this.flatMap {
             when (it) {
-                Clothes.SLEEVELESS_SHORT_DRESS -> listOf(Clothes.TANK_TOP, Clothes.SHORT_SKIRT)
-                Clothes.SLEVESLESS_LONG_DRESS -> listOf(Clothes.TANK_TOP, Clothes.LONG_SKIRT)
-                Clothes.LONG_SLEEVE_SHORT_DRESS -> listOf(Clothes.LONG_SLEEVE, Clothes.SHORT_SKIRT)
-                Clothes.LONG_SLEEVE_LONG_DRESS -> listOf(Clothes.LONG_SLEEVE, Clothes.LONG_SKIRT)
-                Clothes.SHORT_TSHIRT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.SHORT_SKIRT)
-                Clothes.LONG_TSHIRT_DRESS -> listOf(Clothes.SHORT_SLEEVE, Clothes.LONG_SKIRT)
+                ClothesModel.SLEEVELESS_SHORT_DRESS -> listOf(ClothesModel.TANK_TOP, ClothesModel.SHORT_SKIRT)
+                ClothesModel.SLEVESLESS_LONG_DRESS -> listOf(ClothesModel.TANK_TOP, ClothesModel.LONG_SKIRT)
+                ClothesModel.LONG_SLEEVE_SHORT_DRESS -> listOf(ClothesModel.LONG_SLEEVE, ClothesModel.SHORT_SKIRT)
+                ClothesModel.LONG_SLEEVE_LONG_DRESS -> listOf(ClothesModel.LONG_SLEEVE, ClothesModel.LONG_SKIRT)
+                ClothesModel.SHORT_TSHIRT_DRESS -> listOf(ClothesModel.SHORT_SLEEVE, ClothesModel.SHORT_SKIRT)
+                ClothesModel.LONG_TSHIRT_DRESS -> listOf(ClothesModel.SHORT_SLEEVE, ClothesModel.LONG_SKIRT)
                 else -> listOf(it)
             }
         }

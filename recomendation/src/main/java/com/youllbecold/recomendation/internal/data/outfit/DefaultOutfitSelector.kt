@@ -1,6 +1,6 @@
 package com.youllbecold.recomendation.internal.data.outfit
 
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 
 /**
  * Default outfit selector. Basically guesswork based only on min apparent temperature.
@@ -13,42 +13,42 @@ internal object DefaultOutfitSelector {
      * @param minTemp The minimum apparent temperature.
      * @return The recommended clothes.
      */
-    fun createOutfitRecommendation(minTemp: Double): List<Clothes> {
+    fun createOutfitRecommendation(minTemp: Double): List<ClothesModel> {
         return when {
             minTemp < 0 -> listOf(
-                Clothes.WINTER_HAT,
-                Clothes.LONG_SLEEVE,
-                Clothes.WARM_PANTS,
-                Clothes.WINTER_JACKET,
-                Clothes.WINTER_SHOES,
-                Clothes.GLOVES
+                ClothesModel.WINTER_HAT,
+                ClothesModel.LONG_SLEEVE,
+                ClothesModel.WARM_PANTS,
+                ClothesModel.WINTER_JACKET,
+                ClothesModel.WINTER_SHOES,
+                ClothesModel.GLOVES
             )
             minTemp < 10 -> listOf(
-                Clothes.WINTER_HAT,
-                Clothes.LONG_SLEEVE,
-                Clothes.WARM_PANTS,
-                Clothes.WINTER_JACKET,
-                Clothes.WINTER_SHOES
+                ClothesModel.WINTER_HAT,
+                ClothesModel.LONG_SLEEVE,
+                ClothesModel.WARM_PANTS,
+                ClothesModel.WINTER_JACKET,
+                ClothesModel.WINTER_SHOES
             )
             minTemp < 20 -> listOf(
-                Clothes.WINTER_HAT,
-                Clothes.LONG_SLEEVE,
-                Clothes.WARM_PANTS,
-                Clothes.LIGHT_JACKET,
-                Clothes.WINTER_SHOES
+                ClothesModel.WINTER_HAT,
+                ClothesModel.LONG_SLEEVE,
+                ClothesModel.WARM_PANTS,
+                ClothesModel.LIGHT_JACKET,
+                ClothesModel.WINTER_SHOES
             )
             minTemp < 30 -> listOf(
-                Clothes.WINTER_HAT,
-                Clothes.SHORT_SLEEVE,
-                Clothes.SHORTS,
-                Clothes.LIGHT_JACKET,
-                Clothes.SANDALS
+                ClothesModel.WINTER_HAT,
+                ClothesModel.SHORT_SLEEVE,
+                ClothesModel.SHORTS,
+                ClothesModel.LIGHT_JACKET,
+                ClothesModel.SANDALS
             )
             else -> listOf(
-                Clothes.BASEBALL_HAT,
-                Clothes.SHORT_SLEEVE,
-                Clothes.SHORTS,
-                Clothes.SANDALS
+                ClothesModel.BASEBALL_HAT,
+                ClothesModel.SHORT_SLEEVE,
+                ClothesModel.SHORTS,
+                ClothesModel.SANDALS
             )
         }
     }

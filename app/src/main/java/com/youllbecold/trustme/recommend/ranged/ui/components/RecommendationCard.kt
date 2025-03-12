@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.attributes.copyWithAlpha
 import com.youllbecold.trustme.common.ui.attributes.defaultMediumTextAttr
@@ -20,11 +19,11 @@ import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedHorizontalDivider
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
+import com.youllbecold.trustme.common.ui.mappers.getAllItems
+import com.youllbecold.trustme.common.ui.model.clothes.Clothes
+import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun RecommendationCard(
@@ -91,7 +90,7 @@ private fun ClothesRecommendations(
         Column{
             clothes.forEach {
                 IconText(
-                    text = it.clothesName(),
+                    text = stringResource(it.name),
                     iconType = it.icon,
                     modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
                 )
@@ -113,7 +112,7 @@ private fun RecommendationCardPreview() {
             certaintyLevelDescription = "High",
             uvWarning = "High",
             rainWarning = "Low",
-            clothes = persistentListOf(Clothes.SHORT_TSHIRT_DRESS, Clothes.SCARF, Clothes.GLOVES, Clothes.WINTER_COAT)
+            clothes = ClothesCategory.getAll().first().getAllItems()
         )
     }
 }

@@ -1,6 +1,6 @@
 package com.youllbecold.recomendation.model
 
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 
 /**
  * Data class for recommendation.
@@ -11,7 +11,7 @@ import com.youllbecold.logdatabase.model.Clothes
  * @param rainLevel Rain level recommendation.
  */
 data class Recommendation(
-    val clothes: List<Clothes> = emptyList(),
+    val clothes: List<ClothesModel> = emptyList(),
     val certainty: Certainty = Certainty.Low,
     val uvLevel: UvRecommendation,
     val rainLevel: RainRecommendation

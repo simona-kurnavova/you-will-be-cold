@@ -1,9 +1,6 @@
 package com.youllbecold.logdatabase.model
 
-import androidx.compose.runtime.Stable
-
-@Stable
-enum class Clothes(val category: Category) {
+enum class ClothesModel(val category: Category) {
     HEAD_SCARF(Category.HATS),
     BASEBALL_HAT(Category.HATS),
     BEANIE(Category.HATS),
@@ -55,7 +52,6 @@ enum class Clothes(val category: Category) {
     TIGHTS(Category.ACCESSORIES),
     SUNGLASSES(Category.ACCESSORIES);
 
-    @Stable
     enum class Category {
         HATS, TOPS, HOODIES, JACKETS, BOTTOMS, SHOES, FULL_BODY, ACCESSORIES
     }

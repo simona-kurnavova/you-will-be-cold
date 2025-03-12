@@ -6,6 +6,7 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.Recommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.mappers.toClothes
 import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import kotlinx.collections.immutable.toPersistentList
 
@@ -16,7 +17,7 @@ fun Recommendation.toRecommendationState(context: Context): RecommendationState 
     RecommendationState(
         uvWarning = uvLevel.getUvWarning(context),
         rainWarning = rainLevel.getRainWarning(context),
-        clothes = clothes.toPersistentList(),
+        clothes = clothes.map { it.toClothes() }.toPersistentList(),
         certaintyLevel = certainty.getTitle(context)
     )
 

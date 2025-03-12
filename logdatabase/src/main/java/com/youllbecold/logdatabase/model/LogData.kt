@@ -8,7 +8,7 @@ data class LogData(
     val dateTo: LocalDateTime,
     val weatherData: WeatherData,
     val feelings: Feelings,
-    val clothes: List<Clothes>
+    val clothes: List<ClothesModel>
 )
 
 data class WeatherData(

@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youllbecold.logdatabase.model.Clothes
+import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.icontext.ClickableText
 import com.youllbecold.trustme.common.ui.components.icontext.IconText
@@ -28,8 +28,8 @@ import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
 import com.youllbecold.trustme.common.ui.components.utils.formatDate
 import com.youllbecold.trustme.common.ui.components.utils.formatTime
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.clothesName
-import com.youllbecold.trustme.common.ui.model.clothes.mappers.icon
+import com.youllbecold.trustme.common.ui.mappers.toClothes
+import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.ui.model.FeelingsState
 import com.youllbecold.trustme.log.ui.model.LogState
@@ -140,7 +140,7 @@ private fun LogCardClothesSection(
     Column(modifier = modifier) {
         clothes.forEach {
             IconText(
-                text = it.clothesName(),
+                text = stringResource(it.name),
                 iconType = it.icon,
                 modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
             )
@@ -185,7 +185,8 @@ private fun ExpandedLogCardContentPreview() {
                 ),
                 feelings = FeelingsState(),
                 clothes = persistentSetOf(
-                    Clothes.SHORT_SLEEVE, Clothes.TENNIS_SHOES
+                    ClothesModel.SHORT_SLEEVE.toClothes(),
+                    ClothesModel.SHORTS.toClothes()
                 ),
                 weather = WeatherParams(
                     avgTemperature = 20.0,
