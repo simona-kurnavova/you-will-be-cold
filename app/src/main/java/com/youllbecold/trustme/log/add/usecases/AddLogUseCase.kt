@@ -5,7 +5,7 @@ import android.app.Application
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.log.ui.model.mappers.toLogData
+import com.youllbecold.trustme.log.ui.mappers.toLogData
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.log.usecases.ObtainLogWeatherParamsUseCase
 

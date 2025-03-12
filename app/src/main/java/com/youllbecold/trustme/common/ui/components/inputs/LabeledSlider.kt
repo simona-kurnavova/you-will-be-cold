@@ -19,9 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -52,7 +54,7 @@ fun LabeledSlider(
             )
 
             Text(
-                text = options.getOrNull(sliderValue.toInt()) ?: "Unknown",
+                text = options.getOrNull(sliderValue.toInt()) ?: stringResource(R.string.unknown_label),
                 style = MaterialTheme.typography.bodyLarge,
                 color = color
             )
@@ -94,12 +96,12 @@ private const val SLIDER_HEIGHT = 7
 private const val SPACE_BETWEEN_TEXT = 12
 
 private fun calculateColor(sliderValue: Float, options: Int): Color {
-    val fraction = 1.0f - (sliderValue / (options - 1)) // Reverse the fraction
+    val fraction = 1.0f - (sliderValue / (options - 1))
 
     return Color(
-        red = 1.0f - (0.4f * fraction), // Now starts at 0.6 (blue) and increases to 1.0 (red)
+        red = 1.0f - (0.4f * fraction), // Starts at 0.6 (blue) and increases to 1.0 (red)
         green = 0.7f,  // Keeping green constant for nice shades
-        blue = 0.6f + (0.4f * fraction) // Now starts at 1.0 (red) and decreases to 0.6 (blue)
+        blue = 0.6f + (0.4f * fraction) // Starts at 1.0 (red) and decreases to 0.6 (blue)
     )
 }
 

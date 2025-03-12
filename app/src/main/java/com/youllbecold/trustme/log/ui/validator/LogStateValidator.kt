@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.log.ui.model.validator
+package com.youllbecold.trustme.log.ui.validator
 
 import android.content.Context
 import android.widget.Toast

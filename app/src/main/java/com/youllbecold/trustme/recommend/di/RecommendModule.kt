@@ -2,7 +2,6 @@ package com.youllbecold.trustme.recommend.di
 
 import com.youllbecold.trustme.recommend.home.ui.HomeViewModel
 import com.youllbecold.trustme.recommend.home.usecases.FetchAllWeatherUseCase
-import com.youllbecold.trustme.common.domain.weather.HourlyWeatherProvider
 import com.youllbecold.trustme.recommend.ranged.ui.RecommendViewModel
 import com.youllbecold.trustme.recommend.ranged.usecase.RecommendForDateUseCase
 import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase

@@ -3,16 +3,21 @@ package com.youllbecold.trustme.log.ui.model
 import androidx.compose.runtime.Stable
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.model.clothes.Clothes
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalDate
 import java.time.LocalTime
 
+/**
+ * Log state.
+ */
 @Stable
 data class LogState(
     val id: Int? = null,
     val dateTimeState: DateTimeState,
-    val feelings: FeelingsState = FeelingsState(),
+    val feelings: PersistentList<FeelingWithLabel> = persistentListOf(),
     val clothes: PersistentSet<Clothes> = persistentSetOf(),
     val weather: WeatherParams? = null
 ) {
@@ -26,6 +31,9 @@ data class LogState(
         get() = dateTimeState.timeTo.localTime
 }
 
+/**
+ * Weather parameters.
+ */
 @Stable
 data class WeatherParams(
     val apparentTemperatureMin: Double,
@@ -34,20 +42,12 @@ data class WeatherParams(
     val useCelsiusUnits: Boolean
 )
 
-@Stable
-data class FeelingsState(
-    val head: FeelingState = FeelingState.NORMAL,
-    val neck: FeelingState = FeelingState.NORMAL,
-    val top: FeelingState = FeelingState.NORMAL,
-    val bottom: FeelingState = FeelingState.NORMAL,
-    val feet: FeelingState = FeelingState.NORMAL,
-    val hand: FeelingState = FeelingState.NORMAL,
-)
+/**
+ * Returns the worst feeling in the state.
+ */
+val PersistentList<FeelingWithLabel>.worstFeeling: FeelingState
+    get() = filter { it.feeling != FeelingState.NORMAL }
+        .minByOrNull { it.feeling.ordinal }?.feeling // Consider cold worst than hot.
+        ?: FeelingState.NORMAL
 
-enum class FeelingState {
-    VERY_COLD,
-    COLD,
-    NORMAL,
-    WARM,
-    VERY_WARM,
-}
+

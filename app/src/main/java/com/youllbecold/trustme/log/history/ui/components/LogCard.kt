@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,12 +18,12 @@ import com.youllbecold.trustme.common.ui.components.utils.TimeState
 import com.youllbecold.trustme.common.ui.components.utils.formatDate
 import com.youllbecold.trustme.common.ui.mappers.toClothes
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.log.ui.model.FeelingsState
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
-import com.youllbecold.trustme.log.ui.model.mappers.clothesName
-import com.youllbecold.trustme.log.ui.model.mappers.icon
-import com.youllbecold.trustme.log.ui.model.mappers.worstFeeling
+import com.youllbecold.trustme.log.ui.model.feelingName
+import com.youllbecold.trustme.log.ui.model.icon
+import com.youllbecold.trustme.log.ui.model.worstFeeling
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalTime
 
@@ -35,14 +34,14 @@ fun LogCard(
     deleteAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val worstFeeling = log.feelings.worstFeeling()
+    val worstFeeling = log.feelings.worstFeeling
 
     ExpandableCard(
         nonExpandedContent = {
             NonExpandedCardContent(
                 title = stringResource(
                     R.string.log_item_label,
-                    worstFeeling.clothesName()
+                    stringResource(worstFeeling.feelingName)
                 ),
                 iconType = worstFeeling.icon,
                 formattedDate = log.date.formatDate(),
@@ -89,7 +88,7 @@ private fun LogCardPreview() {
                     timeFrom = TimeState(time.hour, time.minute),
                     timeTo = TimeState(time.hour + 1, time.minute)
                 ),
-                feelings = FeelingsState(),
+                feelings = persistentListOf(),
                 clothes = persistentSetOf(
                     ClothesModel.SHORT_SLEEVE.toClothes(),
                     ClothesModel.TENNIS_SHOES.toClothes(),

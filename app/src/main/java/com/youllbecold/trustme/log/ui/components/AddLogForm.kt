@@ -45,22 +45,23 @@ import com.youllbecold.trustme.common.ui.mappers.withCategory
 import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.log.ui.model.BodyPart
 import com.youllbecold.trustme.log.ui.model.FeelingState
-import com.youllbecold.trustme.log.ui.model.FeelingsState
-import com.youllbecold.trustme.log.ui.model.mappers.clothesName
-import com.youllbecold.trustme.log.ui.model.mappers.getFeelingWithLabel
-import com.youllbecold.trustme.log.ui.model.mappers.icon
+import com.youllbecold.trustme.log.ui.model.FeelingWithLabel
+import com.youllbecold.trustme.log.ui.model.feelingName
+import com.youllbecold.trustme.log.ui.model.icon
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun AddLogForm(
     dateTimeState: DateTimeState,
-    feelings: FeelingsState,
+    feelings: PersistentList<FeelingWithLabel>,
     clothes: PersistentSet<Clothes>,
     onDateTimeChanged: (DateTimeState) -> Unit,
-    onFeelingsChange: (FeelingsState) -> Unit,
+    onFeelingsChange: (PersistentList<FeelingWithLabel>) -> Unit,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
     isSaving: Boolean,
@@ -135,8 +136,8 @@ private fun DateTimeSection(
 
 @Composable
 private fun FeelingSection(
-    feelings: FeelingsState,
-    onFeelingsChange: (FeelingsState) -> Unit,
+    feelings: PersistentList<FeelingWithLabel>,
+    onFeelingsChange: (PersistentList<FeelingWithLabel>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Section(
@@ -149,26 +150,30 @@ private fun FeelingSection(
             .toPersistentList()
 
         Column {
-            feelings.getFeelingWithLabel(onFeelingsChange)
-                .forEach {
-                    LabeledSlider(
-                        label = it.label,
-                        options = options,
-                        selected = it.feeling.ordinal,
-                        onSelected = { ordinal ->
-                            it.update(FeelingState.entries.first { it.ordinal == ordinal })
-                        },
-                        modifier = Modifier.padding(SLIDER_PADDING.dp)
-                    )
+            feelings.forEachIndexed { index, feeling ->
+                LabeledSlider(
+                    label = stringResource(feeling.label),
+                    options = options,
+                    selected = feeling.feeling.ordinal,
+                    onSelected = { ordinal ->
+                        val newFeeling = FeelingState.entries.first { it.ordinal == ordinal }
+                        val updatedFeelings = feelings.mapIndexed { i, existingFeeling ->
+                            if (i == index) existingFeeling.copy(feeling = newFeeling) else existingFeeling
+                        }
+                        onFeelingsChange(updatedFeelings.toPersistentList())
+                    },
+                    modifier = Modifier.padding(SLIDER_PADDING.dp)
+                )
 
-                    Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
-                }
+                Spacer(modifier = Modifier.height(SPACER_BETWEEN_SLIDERS.dp))
+            }
         }
     }
 }
 
 private const val SPACER_BETWEEN_SLIDERS = 12
 private const val SLIDER_PADDING = 8
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -279,7 +284,7 @@ private fun ClothesBottomSheetPicker(
 private fun List<FeelingState>.toSelectableItemContent(): List<SelectableItemContent> = map { feeling ->
     SelectableItemContent(
         iconType = feeling.icon,
-        title = feeling.clothesName(),
+        title = stringResource(feeling.feelingName),
     )
 }
 
@@ -306,7 +311,11 @@ private fun AddLogFormPreview() {
                 timeFrom = TimeState(12, 0),
                 timeTo = TimeState(13, 0)
             ),
-            feelings = FeelingsState(),
+            feelings = persistentListOf(
+                FeelingWithLabel(BodyPart.HEAD, FeelingState.COLD, R.string.label_head),
+                FeelingWithLabel(BodyPart.BOTTOM, FeelingState.NORMAL, R.string.label_bottom),
+                FeelingWithLabel(BodyPart.FEET, FeelingState.VERY_WARM, R.string.label_feet),
+            ),
             clothes = ClothesCategory.getAll().first().getAllItemsAsSet(),
             onDateTimeChanged = { },
             onFeelingsChange = { },

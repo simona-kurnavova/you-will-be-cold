@@ -2,7 +2,7 @@ package com.youllbecold.trustme.log.edit.usecases
 
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.log.ui.model.mappers.toLogState
+import com.youllbecold.trustme.log.ui.mappers.toLogState
 
 /**
  * Use case to fetch a log.

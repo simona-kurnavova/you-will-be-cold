@@ -31,15 +31,16 @@ import com.youllbecold.trustme.common.ui.components.utils.formatTime
 import com.youllbecold.trustme.common.ui.mappers.toClothes
 import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.trustme.log.ui.model.FeelingsState
+import com.youllbecold.trustme.log.ui.model.FeelingWithLabel
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
-import com.youllbecold.trustme.log.ui.model.mappers.clothesName
-import com.youllbecold.trustme.log.ui.model.mappers.icon
-import com.youllbecold.trustme.log.ui.model.mappers.labeled
-import com.youllbecold.trustme.log.ui.model.mappers.worstFeeling
+import com.youllbecold.trustme.log.ui.model.feelingName
+import com.youllbecold.trustme.log.ui.model.icon
+import com.youllbecold.trustme.log.ui.model.worstFeeling
 import com.youllbecold.trustme.recommend.ui.mappers.getTemperatureString
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import java.time.LocalTime
 
@@ -95,11 +96,11 @@ private fun LogCardHeaderSection(
     log: LogState,
     modifier: Modifier = Modifier
 ) {
-    val worstFeeling = log.feelings.worstFeeling()
+    val worstFeeling = log.feelings.worstFeeling
 
     Column(modifier = modifier) {
         IconText(
-            text = worstFeeling.clothesName(),
+            text = stringResource(worstFeeling.feelingName),
             iconType = worstFeeling.icon
         )
 
@@ -150,14 +151,16 @@ private fun LogCardClothesSection(
 
 @Composable
 private fun LogCardFeelingsSection(
-    feelings: FeelingsState,
+    feelings: PersistentList<FeelingWithLabel>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        feelings.labeled().forEach { (label, feeling) ->
+        feelings.forEach { feeling ->
+            val label = stringResource(feeling.label)
+            val feelingText = stringResource(feeling.feeling.feelingName)
             IconText(
-                text = "$label ${feeling.clothesName()}",
-                iconType = feeling.icon,
+                text = "$label $feelingText",
+                iconType = feeling.feeling.icon,
                 modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
             )
         }
@@ -183,7 +186,7 @@ private fun ExpandedLogCardContentPreview() {
                     timeFrom = TimeState(time.hour, time.minute),
                     timeTo = TimeState(time.hour + 1, time.minute)
                 ),
-                feelings = FeelingsState(),
+                feelings = persistentListOf(),
                 clothes = persistentSetOf(
                     ClothesModel.SHORT_SLEEVE.toClothes(),
                     ClothesModel.SHORTS.toClothes()

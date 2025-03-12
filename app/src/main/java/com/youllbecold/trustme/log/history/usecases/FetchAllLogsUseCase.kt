@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.log.ui.model.mappers.toLogState
+import com.youllbecold.trustme.log.ui.mappers.toLogState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
