@@ -85,7 +85,7 @@ private fun HomeScreen(
                                 LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
                                 else -> ErrorCardType.GENERIC
                             },
-                            modifier = Modifier.padding(bottom = PADDING_BETWEEN_ITEMS.dp)
+                            modifier = Modifier.padding(PADDING_BETWEEN_ITEMS.dp)
                         )
                     }
 

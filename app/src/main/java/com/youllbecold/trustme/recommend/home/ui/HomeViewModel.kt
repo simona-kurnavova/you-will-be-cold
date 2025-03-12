@@ -81,6 +81,7 @@ class HomeViewModel(
         locationController.refresh()
 
         // Wait for permission and internet connection to fetch the weather.
+        // Also serves as recovery mechanism after connection/permission was lost.
         combine(
             permissionManager.hasLocationPermission,
             networkStatusProvider.isConnected,
@@ -88,7 +89,10 @@ class HomeViewModel(
             when {
                 !hasPermission -> loadingStatus.update { LoadingStatus.MissingPermission }
                 !hasInternet -> loadingStatus.update { LoadingStatus.NoInternet }
-                loadingStatus.value.isIdle() -> updateWeatherAndRecommendations()
+                forecastState.value == null // First time load
+                        || loadingStatus.value.isError() // Recovery when we encountered an error
+                        || loadingStatus.value.isIdle() // Sanity check for default state (nothing happened yet)
+                            -> updateWeatherAndRecommendations()
             }
         }.launchIn(viewModelScope)
 
@@ -105,6 +109,11 @@ class HomeViewModel(
     }
 
     private fun updateWeatherAndRecommendations() {
+        if (loadingStatus.value.isLoading()) {
+            // Refresh already running, return
+            return
+        }
+
         loadingStatus.update { LoadingStatus.Loading }
 
         viewModelScope.launch {
