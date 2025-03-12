@@ -18,9 +18,9 @@ import org.koin.dsl.module
 
 internal val dataModule = module {
     // Repositories (from different modules)
-    single<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
-    single<RecommendRepository> { RecommendRepositoryProvider.repository(androidApplication()) }
-    single<WeatherRepository> { WeatherProvider.weatherRepository }
+    factory<LogRepository> { LogRepositoryProvider.repository(androidApplication()) }
+    factory<RecommendRepository> { RecommendRepositoryProvider.repository(androidApplication()) }
+    factory<WeatherRepository> { WeatherProvider.weatherRepository }
 
     // System Services
     single<NotificationManager> {

@@ -26,17 +26,17 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedIcon
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.rememberVector
-import com.youllbecold.trustme.recommend.usecases.model.mappers.getTemperatureString
-import com.youllbecold.trustme.recommend.usecases.model.mappers.icon
-import com.youllbecold.trustme.recommend.usecases.model.mappers.thermometer
+import com.youllbecold.trustme.recommend.ui.mappers.getTemperatureString
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.trustme.recommend.ui.model.WeatherConditions
+import com.youllbecold.trustme.recommend.ui.mappers.icon
+import com.youllbecold.trustme.recommend.ui.mappers.thermometer
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun WeatherCard(
-    weather: Weather,
+    weather: WeatherConditions,
     city: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -61,7 +61,7 @@ fun WeatherCard(
                 CurrentTemperatureView(
                     temperature = weather.temperature,
                     useCelsius = weather.unitsCelsius,
-                    iconType = weather.weatherEvaluation.icon,
+                    iconType = weather.icon,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
@@ -161,12 +161,12 @@ private fun WeatherParameters(
 private fun WeatherCardPreview() {
     YoullBeColdTheme {
         WeatherCard(
-            weather = Weather(
+            weather = WeatherConditions(
                 time = 1000,
                 unitsCelsius = true,
                 temperature = -10.0,
                 apparentTemperature = 20.0,
-                weatherEvaluation = WeatherEvaluation.SUNNY,
+                icon = WeatherEvaluation.SUNNY.icon,
                 relativeHumidity = 50,
                 windSpeed = 10.0,
                 precipitationProbability = 0,

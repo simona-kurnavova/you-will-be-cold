@@ -34,10 +34,10 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.recommend.usecases.model.mappers.feelLikeDescription
-import com.youllbecold.trustme.recommend.usecases.model.mappers.temperatureRangeDescription
-import com.youllbecold.trustme.recommend.usecases.model.RecommendationState
-import com.youllbecold.trustme.recommend.usecases.model.WeatherWithRecommendation
+import com.youllbecold.trustme.recommend.ui.mappers.feelLikeDescription
+import com.youllbecold.trustme.recommend.ui.mappers.temperatureRangeDescription
+import com.youllbecold.trustme.recommend.ui.model.RecommendationState
+import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
 import kotlinx.collections.immutable.persistentListOf

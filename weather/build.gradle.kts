@@ -43,9 +43,6 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines)
 
-    // Stable annotation
-    implementation(libs.androidx.runtime.android)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

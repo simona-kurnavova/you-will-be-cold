@@ -1,6 +1,6 @@
 package com.youllbecold.weather.api
 
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherModel
 import java.time.LocalDate
 
 /**
@@ -14,7 +14,7 @@ interface WeatherRepository {
         latitude: Double,
         longitude: Double,
         useCelsius: Boolean,
-    ): Result<Weather>
+    ): Result<WeatherModel>
 
     /**
      * Get hourly weather for specified number of days.
@@ -25,7 +25,7 @@ interface WeatherRepository {
         longitude: Double,
         useCelsius: Boolean,
         forecastDays: Int = 1
-    ): Result<List<Weather>>
+    ): Result<List<WeatherModel>>
 
     /**
      * Get forecast weather for a specific date.
@@ -35,7 +35,7 @@ interface WeatherRepository {
         longitude: Double,
         useCelsius: Boolean,
         date: LocalDate,
-    ): Result<List<Weather>>
+    ): Result<List<WeatherModel>>
 }
 
 val <T> Result<T>.isSuccessful: Boolean

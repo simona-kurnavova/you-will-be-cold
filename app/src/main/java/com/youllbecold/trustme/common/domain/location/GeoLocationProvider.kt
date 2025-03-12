@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.domain.usecases.location
+package com.youllbecold.trustme.common.domain.location
 
 import android.Manifest
 import android.app.Application
@@ -9,7 +9,7 @@ import com.youllbecold.trustme.common.data.location.LocationController
 /**
  * Use case for fetching the current location.
  */
-class FetchLocationUseCase(
+class GeoLocationProvider(
     private val app: Application,
     private val locationController: LocationController
 ) {

@@ -16,8 +16,8 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
 import com.youllbecold.trustme.common.ui.components.inputs.ChipSelectCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
-import com.youllbecold.trustme.recommend.usecases.model.mappers.feelLikeDescription
-import com.youllbecold.trustme.recommend.usecases.model.mappers.temperatureRangeDescription
+import com.youllbecold.trustme.recommend.ui.mappers.feelLikeDescription
+import com.youllbecold.trustme.recommend.ui.mappers.temperatureRangeDescription
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList

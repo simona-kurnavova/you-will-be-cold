@@ -1,23 +1,21 @@
-package com.youllbecold.trustme.common.domain.usecases.weather
+package com.youllbecold.trustme.common.domain.weather
 
 import android.annotation.SuppressLint
 import android.app.Application
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.domain.usecases.location.FetchLocationUseCase
+import com.youllbecold.trustme.common.domain.location.GeoLocationProvider
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.model.Weather
-import org.koin.core.annotation.Singleton
+import com.youllbecold.weather.model.WeatherModel
 
 /**
  * Use case for fetching and refreshing the current weather.
  */
-@Singleton
-class CurrentWeatherUseCase(
+class CurrentWeatherProvider(
     private val app: Application,
     private val weatherRepository: WeatherRepository,
-    private val fetchLocationUseCase: FetchLocationUseCase,
+    private val geoLocationProvider: GeoLocationProvider,
     private val networkStatusProvider: NetworkStatusProvider
 ) {
     /**
@@ -27,7 +25,6 @@ class CurrentWeatherUseCase(
      */
     @SuppressLint("MissingPermission")
     suspend fun fetchCurrentWeather(useCelsius: Boolean): WeatherWithStatus {
-        // TODO: Extract this check somewhere
         when {
             !networkStatusProvider.hasInternet() ->
                 return WeatherWithStatus(status = LoadingStatus.NoInternet)
@@ -35,7 +32,7 @@ class CurrentWeatherUseCase(
                 return WeatherWithStatus(status = LoadingStatus.MissingPermission)
         }
 
-        val location = fetchLocationUseCase.fetchLocation()
+        val location = geoLocationProvider.fetchLocation()
             ?: return WeatherWithStatus(status = LoadingStatus.GenericError)
 
         val result = weatherRepository.getCurrentWeather(
@@ -46,12 +43,12 @@ class CurrentWeatherUseCase(
 
         return WeatherWithStatus(
             status = if (result != null) LoadingStatus.Success else LoadingStatus.GenericError,
-            weather = result,
+            weatherModel = result,
         )
     }
 }
 
 data class WeatherWithStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
-    val weather: Weather? = null
+    val weatherModel: WeatherModel? = null
 )

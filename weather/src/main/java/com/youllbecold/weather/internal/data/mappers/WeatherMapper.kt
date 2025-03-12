@@ -3,19 +3,19 @@ package com.youllbecold.weather.internal.data.mappers
 import com.youllbecold.weather.internal.data.response.CurrentWeatherResponse
 import com.youllbecold.weather.internal.data.response.PredictedWeatherResponse
 import com.youllbecold.weather.internal.data.response.TemperatureUnit
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherModel
 import com.youllbecold.weather.model.WeatherEvaluation
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 /**
- * Maps [PredictedWeatherResponse] to a list of [Weather].
+ * Maps [PredictedWeatherResponse] to a list of [WeatherModel].
  */
-internal fun PredictedWeatherResponse.toWeatherList(): List<Weather> {
+internal fun PredictedWeatherResponse.toWeatherList(): List<WeatherModel> {
     val unitsCelsius = hourlyUnits.temperatureUnit == TemperatureUnit.CELSIUS
 
     return hourly.time.mapIndexed { index, time ->
-        Weather(
+        WeatherModel(
             time = LocalDateTime.parse(time).toMillis(),
             unitsCelsius = unitsCelsius,
             temperature = hourly.temperature2m[index],
@@ -30,9 +30,9 @@ internal fun PredictedWeatherResponse.toWeatherList(): List<Weather> {
 }
 
 /**
- * Maps [CurrentWeatherResponse] to [Weather].
+ * Maps [CurrentWeatherResponse] to [WeatherModel].
  */
-internal fun CurrentWeatherResponse.toWeather(): Weather = Weather(
+internal fun CurrentWeatherResponse.toWeather(): WeatherModel = WeatherModel(
     time = LocalDateTime.parse(current.time).toMillis(),
     unitsCelsius = units.temperatureUnit == TemperatureUnit.CELSIUS,
     temperature = current.temperature2m,

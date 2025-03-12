@@ -11,7 +11,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.youllbecold.trustme.common.ui.notifications.DailyRecommendNotification
-import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
+import com.youllbecold.trustme.common.domain.weather.CurrentWeatherProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 class DailyRecommendWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    private val currentWeatherUseCase: CurrentWeatherUseCase by inject()
+    private val currentWeatherProvider: CurrentWeatherProvider by inject()
 
     private val dailyRecommendNotification: DailyRecommendNotification by inject()
 
@@ -45,10 +45,10 @@ class DailyRecommendWorker(private val appContext: Context, workerParams: Worker
             return Result.success()
         }
 
-        val weatherWithStatus = currentWeatherUseCase.fetchCurrentWeather(
+        val weatherWithStatus = currentWeatherProvider.fetchCurrentWeather(
             useCelsius = unitsManager.fetchUnitsCelsius()
         )
-        val weather = weatherWithStatus.weather
+        val weather = weatherWithStatus.weatherModel
 
         if (weatherWithStatus.status.isError() || weather == null) {
             Log.d("DailyRecommendWorker", "Weather status is ${weatherWithStatus.status}, aborting")

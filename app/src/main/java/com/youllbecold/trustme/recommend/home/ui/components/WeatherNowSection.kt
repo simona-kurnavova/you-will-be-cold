@@ -11,12 +11,13 @@ import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.trustme.recommend.ui.mappers.icon
+import com.youllbecold.trustme.recommend.ui.model.WeatherConditions
 import com.youllbecold.weather.model.WeatherEvaluation
 
 @Composable
 fun WeatherNowSection(
-    currentWeather: Weather?,
+    currentWeather: WeatherConditions?,
     city: String?,
     modifier: Modifier = Modifier
 ) {
@@ -47,12 +48,12 @@ private const val PADDING_BETWEEN_ITEMS = 8
 private fun WeatherNowSectionPreview() {
     YoullBeColdTheme {
         WeatherNowSection(
-            currentWeather = Weather(
+            currentWeather = WeatherConditions(
                 time = 1000,
                 unitsCelsius = true,
                 temperature = -10.0,
                 apparentTemperature = 20.0,
-                weatherEvaluation = WeatherEvaluation.CLOUDY,
+                icon = WeatherEvaluation.CLOUDY.icon,
                 relativeHumidity = 50,
                 windSpeed = 10.0,
                 precipitationProbability = 0,

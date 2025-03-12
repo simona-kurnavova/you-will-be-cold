@@ -23,14 +23,15 @@ import com.youllbecold.logdatabase.model.Clothes
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCard
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCardType
-import com.youllbecold.trustme.recommend.usecases.model.RecommendationState
+import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.recommend.usecases.model.WeatherWithRecommendation
+import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.home.ui.components.HomeContent
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import com.youllbecold.trustme.recommend.home.ui.model.HomeUiState
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.trustme.recommend.ui.model.WeatherConditions
+import com.youllbecold.trustme.recommend.ui.mappers.icon
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
@@ -111,12 +112,12 @@ private const val END_SPACE = 48
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    val weather = Weather(
+    val weather = WeatherConditions(
         time = 1000,
         unitsCelsius = true,
         temperature = 2.0,
         apparentTemperature = 20.0,
-        weatherEvaluation = WeatherEvaluation.CLOUDY,
+        icon = WeatherEvaluation.CLOUDY.icon,
         relativeHumidity = 1,
         windSpeed = 5.0,
         precipitationProbability = 2,

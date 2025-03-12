@@ -5,7 +5,7 @@ import com.youllbecold.weather.internal.data.dao.WeatherDao
 import com.youllbecold.weather.internal.data.mappers.toWeather
 import com.youllbecold.weather.internal.data.mappers.toWeatherList
 import com.youllbecold.weather.internal.data.request.TemperatureUnitRequest
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherModel
 import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDate
@@ -21,13 +21,13 @@ internal class WeatherRepositoryImpl(
     /**
      * Get current weather.
      */
-    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<Weather> =
+    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<WeatherModel> =
         processCall(
             call = { weatherDao.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius)) },
             processBody = { responseBody -> responseBody.toWeather() }
         )
 
-    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<Weather>> =
+    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<WeatherModel>> =
         processCall(
             call = { weatherDao.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays) },
             processBody = { responseBody -> responseBody.toWeatherList() }
@@ -38,7 +38,7 @@ internal class WeatherRepositoryImpl(
         longitude: Double,
         useCelsius: Boolean,
         date: LocalDate,
-    ): Result<List<Weather>> {
+    ): Result<List<WeatherModel>> {
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
         return processCall(

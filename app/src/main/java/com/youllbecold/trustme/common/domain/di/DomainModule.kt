@@ -1,10 +1,10 @@
 package com.youllbecold.trustme.common.domain.di
 
+import com.youllbecold.trustme.common.domain.location.GeoLocationProvider
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
-import com.youllbecold.trustme.common.domain.usecases.location.FetchLocationUseCase
-import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
-import com.youllbecold.trustme.common.domain.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.common.domain.weather.CurrentWeatherProvider
+import com.youllbecold.trustme.common.domain.weather.RangedWeatherProvider
 import com.youllbecold.trustme.common.domain.welcome.WelcomeOverlayManager
 import com.youllbecold.trustme.common.ui.notifications.DailyLogNotification
 import com.youllbecold.trustme.common.ui.notifications.DailyRecommendNotification
@@ -18,10 +18,10 @@ internal val domainModule = module {
     singleOf(::UnitsManager)
     singleOf(::WelcomeOverlayManager)
 
-    // UseCases
-    factoryOf(::CurrentWeatherUseCase)
-    factoryOf(::RangedWeatherUseCase)
-    factoryOf(::FetchLocationUseCase)
+    // Providers
+    factoryOf(::CurrentWeatherProvider)
+    factoryOf(::RangedWeatherProvider)
+    factoryOf(::GeoLocationProvider)
 
     // Notifications
     factoryOf(::DailyLogNotification)

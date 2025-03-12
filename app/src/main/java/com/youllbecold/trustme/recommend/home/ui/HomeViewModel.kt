@@ -7,32 +7,20 @@ import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.LocationPermissionManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
-import com.youllbecold.trustme.common.domain.usecases.weather.CurrentWeatherUseCase
-import com.youllbecold.trustme.recommend.home.usecases.HourlyWeatherUseCase
-import com.youllbecold.trustme.common.ui.components.utils.formatTime
-import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import com.youllbecold.trustme.recommend.home.ui.model.HomeUiState
-import com.youllbecold.trustme.recommend.home.ui.model.HourlyTemperature
-import com.youllbecold.trustme.recommend.home.usecases.CreateForecastUseCase
-import com.youllbecold.trustme.recommend.usecases.model.mappers.icon
-import com.youllbecold.weather.model.Weather
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import com.youllbecold.trustme.recommend.home.usecases.AllWeatherWithStatus
+import com.youllbecold.trustme.recommend.home.usecases.FetchAllWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import kotlin.math.roundToInt
 
 /**
  * ViewModel for the home screen.
@@ -40,22 +28,17 @@ import kotlin.math.roundToInt
 @SuppressLint("MissingPermission") // Not missing, handled by the permission helper.
 @KoinViewModel
 class HomeViewModel(
-    private val currentWeatherUseCase: CurrentWeatherUseCase,
-    private val hourlyWeatherUseCase: HourlyWeatherUseCase,
-    private val createForecastUseCase: CreateForecastUseCase,
+    private val fetchAllWeatherUseCase: FetchAllWeatherUseCase,
     private val unitsManager: UnitsManager,
     locationController: LocationController,
     permissionManager: LocationPermissionManager,
     networkStatusProvider: NetworkStatusProvider,
 ) : ViewModel() {
-    private val loadingStatus: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
-    private val forecastState: MutableStateFlow<Forecast?> = MutableStateFlow(null)
+    private val allWeather: MutableStateFlow<AllWeatherWithStatus> =
+        MutableStateFlow(AllWeatherWithStatus(status = LoadingStatus.Idle))
 
-    private val hourlyTemperature: StateFlow<PersistentList<HourlyTemperature>> = forecastState.map { forecast ->
-        forecast
-            ?.let { createHourlyTemperatures(it) }
-            ?: persistentListOf()
-    }.stateIn(viewModelScope, SharingStarted.Lazily, persistentListOf())
+    private val loadingStatus: LoadingStatus
+        get() = allWeather.value.status
 
     /**
      * The UI state for the home screen.
@@ -63,15 +46,13 @@ class HomeViewModel(
     // TODO figure out the location
     val uiState: StateFlow<HomeUiState> = combine(
         locationController.geoLocationState,
-        loadingStatus,
-        forecastState,
-        hourlyTemperature
-    ) { geoLocation, loadingStatus, forecast, hourlyTemperature ->
+        allWeather
+    ) { geoLocation, allWeather ->
         HomeUiState(
-            status = loadingStatus,
+            status = allWeather.status,
             city = geoLocation.city,
-            forecast = forecast,
-            hourlyTemperature = hourlyTemperature,
+            forecast = allWeather.forecast,
+            hourlyTemperature = allWeather.hourlyTemperatures,
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, HomeUiState())
 
@@ -85,11 +66,10 @@ class HomeViewModel(
             networkStatusProvider.isConnected,
         ) { hasPermission, hasInternet ->
             when {
-                !hasPermission -> loadingStatus.update { LoadingStatus.MissingPermission }
-                !hasInternet -> loadingStatus.update { LoadingStatus.NoInternet }
-                forecastState.value == null // First time load
-                        || loadingStatus.value.isError() // Recovery when we encountered an error
-                        || loadingStatus.value.isIdle() // Sanity check for default state (nothing happened yet)
+                !hasPermission -> allWeather.update { it.copy(LoadingStatus.MissingPermission) }
+                !hasInternet -> allWeather.update {it.copy(LoadingStatus.NoInternet) }
+                loadingStatus.isError()  // Recovery when we encountered an error
+                        || loadingStatus.isIdle() // First time loading
                             -> updateWeatherAndRecommendations()
             }
         }.launchIn(viewModelScope)
@@ -107,49 +87,21 @@ class HomeViewModel(
     }
 
     private fun updateWeatherAndRecommendations() {
-        if (loadingStatus.value.isLoading()) {
+        if (allWeather.value.status.isLoading()) {
             // Refresh already running, return
             return
         }
 
-        loadingStatus.update { LoadingStatus.Loading }
+        allWeather.update { it.copy(status = LoadingStatus.Loading) }
 
         viewModelScope.launch {
             val useCelsius = unitsManager.fetchUnitsCelsius()
-            val current = currentWeatherUseCase.fetchCurrentWeather(useCelsius)
-            val hourly = hourlyWeatherUseCase.fetchHourlyWeather(useCelsius, 2)
-            val forecast = createForecastUseCase.createForecast(
-                currentWeather = current.weather,
-                hourlyWeather = hourly.weather
-            )
 
-            forecastState.update { forecast }
-            loadingStatus.update { LoadingStatus.Success }
+            allWeather.update {
+                fetchAllWeatherUseCase.fetchWeather(useCelsius)
+            }
         }
     }
-
-    /**
-     * The next 24 hours of weather temperature forecast.
-     */
-    private fun createHourlyTemperatures(forecast: Forecast): PersistentList<HourlyTemperature> =
-        (forecast.today.weather + forecast.tomorrow.weather)
-            .take(HOURS_IN_HOURLY_WEATHER)
-            .toHourlyTemperature()
-            .toPersistentList()
-
-    private fun List<Weather>?.toHourlyTemperature(): PersistentList<HourlyTemperature> =
-        this?.map { weather ->
-            HourlyTemperature(
-                formattedTime = weather.time.formatTime(),
-                temperature = weather.temperature.roundToInt(),
-                weatherIcon = weather.weatherEvaluation.icon
-            )
-        }?.toPersistentList() ?: persistentListOf()
-
-    private fun Long.formatTime(): String =
-        this.millisToDateTime
-            .toLocalTime()
-            .formatTime()
 }
 
 /**
@@ -158,5 +110,3 @@ class HomeViewModel(
 sealed class HomeAction {
     data object RefreshWeather : HomeAction()
 }
-
-private const val HOURS_IN_HOURLY_WEATHER = 24

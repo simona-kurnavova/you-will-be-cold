@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.common.domain.usecases.weather
+package com.youllbecold.trustme.common.domain.weather
 
 import android.Manifest
 import androidx.annotation.RequiresPermission
@@ -7,10 +7,9 @@ import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
-import com.youllbecold.weather.model.Weather
+import com.youllbecold.weather.model.WeatherModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Singleton
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -18,8 +17,7 @@ import java.time.LocalTime
 /**
  * Use case for fetching the weather for a specific time range.
  */
-@Singleton
-class RangedWeatherUseCase(
+class RangedWeatherProvider(
     private val weatherRepository: WeatherRepository,
     private val networkStatusProvider: NetworkStatusProvider
 ) {
@@ -41,7 +39,7 @@ class RangedWeatherUseCase(
         timeFrom: LocalTime,
         timeTo: LocalTime,
         useCelsiusUnits: Boolean
-    ): Result<List<Weather>> = withContext(dispatchers) {
+    ): Result<List<WeatherModel>> = withContext(dispatchers) {
         if (!networkStatusProvider.hasInternet()) {
             return@withContext Result.failure(Exception("No internet connection"))
         }

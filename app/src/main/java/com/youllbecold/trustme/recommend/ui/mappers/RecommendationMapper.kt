@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.recommend.usecases.model.mappers
+package com.youllbecold.trustme.recommend.ui.mappers
 
 import android.content.Context
 import com.youllbecold.recomendation.model.Certainty
@@ -6,7 +6,7 @@ import com.youllbecold.recomendation.model.RainRecommendation
 import com.youllbecold.recomendation.model.Recommendation
 import com.youllbecold.recomendation.model.UvRecommendation
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.recommend.usecases.model.RecommendationState
+import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import kotlinx.collections.immutable.toPersistentList
 
 /**

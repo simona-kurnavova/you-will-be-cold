@@ -1,8 +1,11 @@
 package com.youllbecold.trustme.common.ui.model.status
 
+import androidx.compose.runtime.Stable
+
 /**
  * General UI status for screens containing progress states and helper functions.
  */
+@Stable
 enum class LoadingStatus {
     Idle,
     Loading,

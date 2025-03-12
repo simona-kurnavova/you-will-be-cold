@@ -6,7 +6,7 @@ import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
-import com.youllbecold.trustme.recommend.usecases.RecommendForDateUseCase
+import com.youllbecold.trustme.recommend.ranged.usecase.RecommendForDateUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first

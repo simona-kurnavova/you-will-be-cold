@@ -1,7 +1,5 @@
 package com.youllbecold.weather.model
 
-import androidx.compose.runtime.Stable
-
 /**
  * Weather data.
  *
@@ -15,8 +13,7 @@ import androidx.compose.runtime.Stable
  * @property precipitationProbability Probability of rain
  * @property uvIndex The UV index.
  */
-@Stable
-data class Weather(
+data class WeatherModel(
     val time: Long,
     val unitsCelsius: Boolean,
     val temperature: Double,

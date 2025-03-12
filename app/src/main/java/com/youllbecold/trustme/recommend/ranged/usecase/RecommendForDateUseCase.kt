@@ -1,4 +1,4 @@
-package com.youllbecold.trustme.recommend.usecases
+package com.youllbecold.trustme.recommend.ranged.usecase
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -6,11 +6,12 @@ import androidx.compose.runtime.Stable
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.domain.usecases.weather.RangedWeatherUseCase
+import com.youllbecold.trustme.common.domain.weather.RangedWeatherProvider
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.recommend.usecases.model.WeatherWithRecommendation
-import kotlinx.collections.immutable.toPersistentList
+import com.youllbecold.trustme.recommend.ui.mappers.toWeatherCondPersistList
+import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
+import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
 
 /**
  * Use case for recommending clothes for a date.
@@ -20,7 +21,7 @@ class RecommendForDateUseCase(
     private val locationController: LocationController,
     private val networkStatusProvider: NetworkStatusProvider,
     private val recommendationUseCase: RecommendationUseCase,
-    private val weatherUseCase: RangedWeatherUseCase,
+    private val weatherUseCase: RangedWeatherProvider,
 ) {
     /**
      * Recommendation for specified date time range.
@@ -64,7 +65,7 @@ class RecommendForDateUseCase(
 
         return RecommendationStatus(
             weatherWithRecommendation = WeatherWithRecommendation(
-                weather = weather.toPersistentList(),
+                weather = weather.toWeatherCondPersistList(),
                 recommendationState = recommendation
             ),
             status = LoadingStatus.Idle,

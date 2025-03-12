@@ -1,10 +1,8 @@
-package com.youllbecold.trustme.recommend.usecases.model
+package com.youllbecold.trustme.recommend.ui.model
 
 import androidx.compose.runtime.Stable
 import com.youllbecold.logdatabase.model.Clothes
 import kotlinx.collections.immutable.PersistentList
-
-// TODO: mapping for Clothes
 
 /**
  * Data class for recommendation.
