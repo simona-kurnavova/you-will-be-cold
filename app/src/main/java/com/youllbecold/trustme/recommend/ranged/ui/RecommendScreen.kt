@@ -1,6 +1,7 @@
 package com.youllbecold.trustme.recommend.ranged.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +33,7 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedButton
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.recommend.usecases.model.mappers.feelLikeDescription
 import com.youllbecold.trustme.recommend.usecases.model.mappers.temperatureRangeDescription
 import com.youllbecold.trustme.recommend.usecases.model.RecommendationState
@@ -59,12 +60,6 @@ private fun RecommendScreen(
     onAction: (RecommendAction) -> Unit
 ) {
     val state = uiState.value
-    val dateTimeNow = LocalDateTime.now()
-
-    var dateTimeState by remember {
-        // Initial state
-        mutableStateOf(DateTimeState.fromDateTime(dateTimeNow, dateTimeNow.plusHours(1)))
-    }
 
     Column(
         modifier = Modifier
@@ -73,47 +68,77 @@ private fun RecommendScreen(
             .padding(vertical = VERTICAL_PADDING.dp, horizontal = HORIZONTAL_SCREEN_PADDING.dp)
     ) {
         ThemedCard(modifier = Modifier.fillMaxWidth()) {
-            Column {
-                DateTimeInput(
-                    dateTimeState = dateTimeState,
-                    onDatetimeChanged = { dateTimeState = it },
-                    allowFuture = true
-                )
+            DateTimePickerSection(
+                updateRecommendation = {
+                    onAction(RecommendAction.UpdateRecommendation(it))
+                }
+            )
 
-                Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
-
-                ThemedButton(
-                    text = stringResource(R.string.menu_recommendation),
-                    onClick = {
-                        onAction(
-                            RecommendAction.UpdateRecommendation(dateTimeState)
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            RecommendContentSection(
+                status = state.status,
+                weatherWithRecommendation = state.weatherWithRecommendation,
+            )
         }
 
         Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
+    }
+}
 
+@Composable
+private fun DateTimePickerSection(
+    updateRecommendation: (DateTimeState) -> Unit
+) {
+    val dateTimeNow = LocalDateTime.now()
+
+    var dateTimeState by remember {
+        // Initial state
+        mutableStateOf(DateTimeState.fromDateTime(dateTimeNow, dateTimeNow.plusHours(1)))
+    }
+
+    Column {
+        DateTimeInput(
+            dateTimeState = dateTimeState,
+            onDatetimeChanged = { dateTimeState = it },
+            allowFuture = true
+        )
+
+        Spacer(modifier = Modifier.height(SPACE_BETWEEN_ITEMS.dp))
+
+        ThemedButton(
+            text = stringResource(R.string.menu_recommendation),
+            onClick = {
+                updateRecommendation(dateTimeState)
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun RecommendContentSection(
+    status: LoadingStatus,
+    weatherWithRecommendation: WeatherWithRecommendation?,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
         when {
-            state.status.isLoading() -> CircularProgressIndicator(
+            status.isLoading() -> CircularProgressIndicator(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
                     .padding(top = PROGRESS_INDICATOR_PADDING.dp)
             )
-            state.status.isError() -> Text(
-                    text = stringResource(R.string.recom_no_recommendation),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(CARD_INTERNAL_PADDING.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
 
-            else -> FadingItem(visible = state.status.isIdle()) {
-                state.weatherWithRecommendation?.let { weatherWithRec ->
+            status.isError() -> Text(
+                text = stringResource(R.string.recom_no_recommendation),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(CARD_INTERNAL_PADDING.dp),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            else -> FadingItem(visible = status.isIdle()) {
+                weatherWithRecommendation?.let { weatherWithRec ->
                     weatherWithRec.recommendationState?.let {
                         RecommendationCard(
                             temperatureRangeDescription = weatherWithRec.temperatureRangeDescription(),

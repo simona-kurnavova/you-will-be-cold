@@ -28,7 +28,6 @@ class HistoryViewModel(
     /**
      * UI state for the history screen.
      */
-    // TODO: there's gotta be a better way then to call repository again on unit change, I am just too lazy to find it.
     val uiState: StateFlow<HistoryUiState> = unitsManager.unitsCelsius.map { useCelsius ->
         HistoryUiState(
             logs = fetchAllLogsUseCase

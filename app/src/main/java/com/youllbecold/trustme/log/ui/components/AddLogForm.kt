@@ -177,8 +177,7 @@ private fun ClothesSection(
     modifier: Modifier = Modifier
 ) {
     val clothesScrollState = rememberScrollState()
-    var clothesBottomSheet by remember { mutableStateOf<Clothes.Category?>(null) }
-    val sheetState = rememberModalBottomSheetState()
+    var showForCategory by remember { mutableStateOf<Clothes.Category?>(null) }
 
     Section(
         title = stringResource(R.string.add_log_wearing),
@@ -211,7 +210,7 @@ private fun ClothesSection(
                     Tile(
                         title = type.clothesName(),
                         iconType = type.icon,
-                        onClick = { clothesBottomSheet = type },
+                        onClick = { showForCategory = type },
                         modifier = Modifier.padding(4.dp)
                     )
                 }
@@ -219,10 +218,31 @@ private fun ClothesSection(
         }
     }
 
-    clothesBottomSheet?.let { category ->
+    ClothesBottomSheetPicker(
+        clothes = clothes,
+        onClothesCategoryChange = onClothesCategoryChange,
+        showForCategory = showForCategory,
+        closeDialog = { showForCategory = null }
+    )
+}
+
+private const val PADDING_AROUND_QUESTION = 8
+private const val BOTTOM_SHEET_PADDING = 12
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ClothesBottomSheetPicker(
+    clothes: PersistentSet<Clothes>,
+    onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
+    showForCategory: Clothes.Category?,
+    closeDialog: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+
+    showForCategory?.let { category ->
         ModalBottomSheet(
             sheetState = sheetState,
-            onDismissRequest = { clothesBottomSheet = null },
+            onDismissRequest = { closeDialog() },
             content = {
                 val allClothesInCategory = category.items
 
@@ -241,7 +261,7 @@ private fun ClothesSection(
                                 .removeAll(allClothesInCategory)
                                 .addAll(newSelection)
                         )
-                        clothesBottomSheet = null
+                        closeDialog()
                     },
                     selected = preSelected,
                     modifier = Modifier.padding(BOTTOM_SHEET_PADDING.dp)
@@ -250,9 +270,6 @@ private fun ClothesSection(
         )
     }
 }
-
-private const val PADDING_AROUND_QUESTION = 8
-private const val BOTTOM_SHEET_PADDING = 12
 
 @Preview(showBackground = true)
 @Composable

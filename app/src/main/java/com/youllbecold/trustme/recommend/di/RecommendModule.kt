@@ -1,6 +1,7 @@
 package com.youllbecold.trustme.recommend.di
 
 import com.youllbecold.trustme.recommend.home.ui.HomeViewModel
+import com.youllbecold.trustme.recommend.home.usecases.HourlyWeatherUseCase
 import com.youllbecold.trustme.recommend.ranged.ui.RecommendViewModel
 import com.youllbecold.trustme.recommend.usecases.RecommendForDateUseCase
 import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
@@ -12,6 +13,7 @@ internal val recommendModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::RecommendViewModel)
 
+    factoryOf(::HourlyWeatherUseCase)
     factoryOf(::RecommendForDateUseCase)
     factoryOf(::RecommendationUseCase)
 }
