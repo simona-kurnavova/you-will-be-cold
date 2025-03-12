@@ -49,5 +49,3 @@ val PersistentList<FeelingWithLabel>.worstFeeling: FeelingState
     get() = filter { it.feeling != FeelingState.NORMAL }
         .minByOrNull { it.feeling.ordinal }?.feeling // Consider cold worst than hot.
         ?: FeelingState.NORMAL
-
-

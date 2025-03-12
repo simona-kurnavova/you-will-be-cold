@@ -16,8 +16,6 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
 import com.youllbecold.trustme.common.ui.components.inputs.ChipSelectCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
-import com.youllbecold.trustme.recommend.ui.mappers.feelLikeDescription
-import com.youllbecold.trustme.recommend.ui.mappers.temperatureRangeDescription
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -53,12 +51,8 @@ fun RecommendSection(
 
             weather.recommendationState?.let {
                 RecommendationCard(
-                    temperatureRangeDescription = weather.temperatureRangeDescription(),
-                    feelsLikeDescription = weather.feelLikeDescription(),
-                    uvWarning = it.uvWarning,
-                    rainWarning = it.rainWarning,
+                    weather = weather,
                     clothes = it.clothes,
-                    certaintyLevelDescription = it.certaintyLevel
                 )
             }
         }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,15 +24,15 @@ import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.common.ui.utils.TemperatureUiUtils
+import com.youllbecold.trustme.recommend.ui.model.WeatherConditions
+import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun RecommendationCard(
-    temperatureRangeDescription: String,
-    feelsLikeDescription: String,
-    certaintyLevelDescription: String,
-    uvWarning: String?,
-    rainWarning: String?,
+    weather: WeatherWithRecommendation,
     clothes: PersistentList<Clothes>,
     modifier: Modifier = Modifier
 ) {
@@ -44,12 +45,13 @@ fun RecommendationCard(
                 )
                 return@Column
             }
+            val recommendation = weather.recommendationState
 
             listOfNotNull(
-                temperatureRangeDescription to IconType.Thermometer,
-                feelsLikeDescription to IconType.Person,
-                (uvWarning to IconType.Sun).takeIf {it.first != null },
-                (rainWarning to IconType.Rain).takeIf { it.first != null }
+                weather.temperatureRangeDescription() to IconType.Thermometer,
+                weather.feelLikeDescription() to IconType.Person,
+                (recommendation?.uvWarning to IconType.Sun).takeIf {it.first != null },
+                (recommendation?.rainWarning to IconType.Rain).takeIf { it.first != null }
             ).forEach { (text, iconType) ->
                 IconText(
                     text = text ?: "",
@@ -68,7 +70,10 @@ fun RecommendationCard(
             )
 
             ThemedText(
-                text = stringResource(R.string.recom_certainty_description, certaintyLevelDescription),
+                text = stringResource(
+                    R.string.recom_certainty_description,
+                    recommendation?.certaintyLevel ?: stringResource(R.string.unknown_label)
+                ),
                 textAttr = defaultMediumTextAttr().copyWithAlpha(TEXT_ALPHA),
             )
         }
@@ -99,6 +104,49 @@ private fun ClothesRecommendations(
     }
 }
 
+/**
+ * Get description for the temperature range.
+ */
+@Composable
+private fun WeatherWithRecommendation.temperatureRangeDescription(): String {
+    return description(
+        valueSelector = { it.temperature },
+        singleResId = R.string.recom_description_single,
+        rangeResId = R.string.recom_description_range
+    )
+}
+
+/**
+ * Get description for the apparent temperature range.
+ */
+@Composable
+private fun WeatherWithRecommendation.feelLikeDescription(): String {
+    return description(
+        valueSelector = { it.apparentTemperature },
+        singleResId = R.string.recom_apparent_description_single,
+        rangeResId = R.string.recom_apparent_description
+    )
+}
+
+@Composable
+private fun WeatherWithRecommendation.description(
+    valueSelector: (WeatherConditions) -> Double,
+    singleResId: Int,
+    rangeResId: Int
+): String {
+    val context = LocalContext.current
+    val usesCelsius = weather.first().unitsCelsius
+
+    val min = TemperatureUiUtils.getTemperatureString(context, weather.minOf(valueSelector), usesCelsius)
+    val max = TemperatureUiUtils.getTemperatureString(context, weather.maxOf(valueSelector), usesCelsius)
+
+    return if (weather.size == 1) {
+        stringResource(singleResId, min)
+    } else {
+        stringResource(rangeResId, min, max)
+    }
+}
+
 private const val ITEMS_PADDING = 8
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
@@ -107,11 +155,22 @@ private const val ITEMS_PADDING = 8
 private fun RecommendationCardPreview() {
     YoullBeColdTheme {
         RecommendationCard(
-            temperatureRangeDescription = "10°C - 15°C",
-            feelsLikeDescription = "12°C",
-            certaintyLevelDescription = "High",
-            uvWarning = "High",
-            rainWarning = "Low",
+            weather = WeatherWithRecommendation(
+                weather = persistentListOf(
+                    WeatherConditions(
+                        time = 0,
+                        unitsCelsius = true,
+                        temperature = 10.0,
+                        apparentTemperature = 12.0,
+                        icon = IconType.Sun,
+                        relativeHumidity = 50,
+                        windSpeed = 10.0,
+                        precipitationProbability = 0,
+                        uvIndex = 5.0
+                    )
+                ),
+                recommendationState = null
+            ),
             clothes = ClothesCategory.getAll().first().getAllItems()
         )
     }

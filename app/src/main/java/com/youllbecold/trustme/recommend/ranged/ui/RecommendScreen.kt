@@ -37,8 +37,6 @@ import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
-import com.youllbecold.trustme.recommend.ui.mappers.feelLikeDescription
-import com.youllbecold.trustme.recommend.ui.mappers.temperatureRangeDescription
 import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
 import kotlinx.collections.immutable.persistentListOf
@@ -146,12 +144,8 @@ private fun RecommendContentSection(
                 weatherWithRecommendation?.let { weatherWithRec ->
                     weatherWithRec.recommendationState?.let {
                         RecommendationCard(
-                            temperatureRangeDescription = weatherWithRec.temperatureRangeDescription(),
-                            feelsLikeDescription = weatherWithRec.feelLikeDescription(),
-                            uvWarning = it.uvWarning,
-                            rainWarning = it.rainWarning,
+                            weather = weatherWithRec,
                             clothes = it.clothes,
-                            certaintyLevelDescription = it.certaintyLevel
                         )
                     }
                 }

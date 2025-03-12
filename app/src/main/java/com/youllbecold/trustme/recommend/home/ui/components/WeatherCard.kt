@@ -26,11 +26,11 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
 import com.youllbecold.trustme.common.ui.components.themed.ThemedIcon
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.rememberVector
-import com.youllbecold.trustme.recommend.ui.mappers.getTemperatureString
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.common.ui.utils.TemperatureUiUtils
 import com.youllbecold.trustme.recommend.ui.model.WeatherConditions
 import com.youllbecold.trustme.recommend.ui.mappers.icon
-import com.youllbecold.trustme.recommend.ui.mappers.thermometer
+import com.youllbecold.trustme.recommend.ui.model.thermometer
 import com.youllbecold.weather.model.WeatherEvaluation
 import kotlinx.collections.immutable.persistentListOf
 
@@ -97,8 +97,8 @@ private fun CurrentTemperatureView(
     Row(
         modifier = modifier,
     ) {
-        val temperatureWithUnits = LocalContext.current
-            .getTemperatureString(temperature, useCelsius)
+        val temperatureWithUnits = TemperatureUiUtils
+            .getTemperatureString(LocalContext.current, temperature, useCelsius)
 
         ThemedText(
             text = temperatureWithUnits,

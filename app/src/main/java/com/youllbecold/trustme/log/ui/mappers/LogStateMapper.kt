@@ -12,6 +12,9 @@ import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
 import kotlinx.collections.immutable.PersistentList
 
+/**
+ * Maps a [LogState] to a [LogData].
+ */
 fun LogState.toLogData(): LogData =
     LogData(
         id = id,

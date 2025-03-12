@@ -16,6 +16,9 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentSet
 
+/**
+ * Maps a [LogData] to a [LogState].
+ */
 fun LogData.toLogState(
     useCelsiusUnits: Boolean = true
 ): LogState = LogState(

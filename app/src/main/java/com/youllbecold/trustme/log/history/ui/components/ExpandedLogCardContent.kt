@@ -31,13 +31,13 @@ import com.youllbecold.trustme.common.ui.components.utils.formatTime
 import com.youllbecold.trustme.common.ui.mappers.toClothes
 import com.youllbecold.trustme.common.ui.model.clothes.Clothes
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
+import com.youllbecold.trustme.common.ui.utils.TemperatureUiUtils
 import com.youllbecold.trustme.log.ui.model.FeelingWithLabel
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.model.WeatherParams
 import com.youllbecold.trustme.log.ui.model.feelingName
 import com.youllbecold.trustme.log.ui.model.icon
 import com.youllbecold.trustme.log.ui.model.worstFeeling
-import com.youllbecold.trustme.recommend.ui.mappers.getTemperatureString
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
@@ -121,7 +121,8 @@ private fun LogCardWeatherSection(
     modifier: Modifier = Modifier
 ) {
     weather?.let {
-        val temperatureWithUnits = LocalContext.current.getTemperatureString(it.avgTemperature, it.useCelsiusUnits)
+        val temperatureWithUnits = TemperatureUiUtils
+            .getTemperatureString(LocalContext.current, it.avgTemperature, it.useCelsiusUnits)
         val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
 
         Text(
