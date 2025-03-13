@@ -169,10 +169,10 @@ private fun RecommendScreenPreview() {
             weatherWithRecommendation = WeatherWithRecommendation(
                 weather = persistentListOf(),
                 recommendationState = RecommendationState(
-                    "UV warning",
-                    "Rain warning",
+                    uvWarning = R.string.uv_recom_high,
+                    rainWarning = R.string.rain_recom_high,
                     clothes = ClothesCategory.getAll().first().getAllItems(),
-                    certaintyLevel = "High"
+                    R.string.certainity_high
                 )
             )
         ))

@@ -45,13 +45,16 @@ fun RecommendationCard(
                 )
                 return@Column
             }
+
             val recommendation = weather.recommendationState
+            val uvWarning = recommendation?.uvWarning?.let { stringResource(it) }
+            val rainWarning = recommendation?.rainWarning?.let { stringResource(it) }
 
             listOfNotNull(
                 weather.temperatureRangeDescription() to IconType.Thermometer,
                 weather.feelLikeDescription() to IconType.Person,
-                (recommendation?.uvWarning to IconType.Sun).takeIf {it.first != null },
-                (recommendation?.rainWarning to IconType.Rain).takeIf { it.first != null }
+                (uvWarning to IconType.Sun).takeIf {it.first != null },
+                (rainWarning to IconType.Rain).takeIf { it.first != null }
             ).forEach { (text, iconType) ->
                 IconText(
                     text = text ?: "",
@@ -69,11 +72,15 @@ fun RecommendationCard(
                 modifier = Modifier.padding(vertical = ITEMS_PADDING.dp)
             )
 
+            val certaintyText = stringResource(
+                R.string.recom_certainty_description,
+                recommendation?.certaintyLevel
+                    ?.let { stringResource(it) }
+                    ?: stringResource(R.string.unknown_label)
+            )
+
             ThemedText(
-                text = stringResource(
-                    R.string.recom_certainty_description,
-                    recommendation?.certaintyLevel ?: stringResource(R.string.unknown_label)
-                ),
+                text = certaintyText,
                 textAttr = defaultMediumTextAttr().copyWithAlpha(TEXT_ALPHA),
             )
         }

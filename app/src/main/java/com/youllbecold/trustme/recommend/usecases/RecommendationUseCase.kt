@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.recommend.usecases
 
-import android.app.Application
 import com.youllbecold.recomendation.api.RecommendRepository
 import com.youllbecold.trustme.recommend.ui.model.RecommendationState
 import com.youllbecold.trustme.recommend.ui.mappers.toRecommendationState
@@ -12,7 +11,6 @@ import kotlinx.coroutines.withContext
  * Use case for recommendation.
  */
 class RecommendationUseCase(
-    private val app: Application,
     private val recommendRepository: RecommendRepository,
 ) {
     /**
@@ -35,6 +33,6 @@ class RecommendationUseCase(
                 hourlyWeatherModel.map { it.precipitationProbability }
             )
 
-            return@withContext rec?.toRecommendationState(app)
+            return@withContext rec?.toRecommendationState()
         }
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
 import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
@@ -128,10 +129,10 @@ private fun HomeScreenPreview() {
     val weatherWithRecommendation = WeatherWithRecommendation(
         weather = persistentListOf(weather, weather, weather),
         recommendationState = RecommendationState(
-            uvWarning = "Careful not to get sunburned",
-            rainWarning = "It's going to rain",
+            uvWarning = R.string.uv_recom_high,
+            rainWarning = R.string.rain_recom_low,
             clothes = ClothesCategory.getAll().first().getAllItems(),
-            "Low"
+            R.string.certainity_low
         )
     )
     
