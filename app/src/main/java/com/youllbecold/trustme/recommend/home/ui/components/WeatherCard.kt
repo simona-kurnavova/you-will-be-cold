@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +22,7 @@ import com.youllbecold.trustme.common.ui.components.icontext.IconText
 import com.youllbecold.trustme.common.ui.components.icontext.IconTextRow
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
+import com.youllbecold.trustme.common.ui.components.themed.ThemedHorizontalDivider
 import com.youllbecold.trustme.common.ui.components.themed.ThemedIcon
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.rememberVector
@@ -65,11 +65,7 @@ fun WeatherCard(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    thickness = DIVIDER_THICKNESS.dp,
-                    modifier = Modifier.padding(DIVIDER_PADDING.dp),
-                )
+                ThemedHorizontalDivider(modifier = Modifier.padding(DIVIDER_PADDING.dp))
 
                 WeatherParameters(
                     windSpeed = weather.windSpeed,
@@ -83,7 +79,6 @@ fun WeatherCard(
     }
 }
 
-private const val DIVIDER_THICKNESS = 0.1f
 private const val DIVIDER_PADDING = 8
 private const val SPACER_UNDER_CITY = 8
 

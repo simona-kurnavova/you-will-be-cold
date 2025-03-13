@@ -6,8 +6,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 
 /**
  * Creates Painter for vector image.
@@ -17,9 +15,3 @@ import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun rememberVector(@DrawableRes image: Int): Painter =
     rememberVectorPainter(ImageVector.vectorResource(image))
-
-
-/**
- * Creates TextStyle with center alignment.
- */
-fun TextStyle.center() = this.copy(textAlign = TextAlign.Center)

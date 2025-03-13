@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +44,7 @@ private const val INSIDE_PADDING = 12
 private fun OutlinedCardPreview() {
     YoullBeColdTheme {
         ThemedCard {
-            Text(text = "This is an outlined card")
+            ThemedText(text = "This is an outlined card")
         }
     }
 }

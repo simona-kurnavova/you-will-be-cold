@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.common.ui.attributes.copyWithAlpha
+import com.youllbecold.trustme.common.ui.attributes.withAlpha
 import com.youllbecold.trustme.common.ui.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.common.ui.components.icontext.IconText
 import com.youllbecold.trustme.common.ui.components.themed.IconType
@@ -81,7 +81,7 @@ fun RecommendationCard(
 
             ThemedText(
                 text = certaintyText,
-                textAttr = defaultMediumTextAttr().copyWithAlpha(TEXT_ALPHA),
+                textAttr = defaultMediumTextAttr().withAlpha(TEXT_ALPHA),
             )
         }
     }

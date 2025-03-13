@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -15,6 +14,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.youllbecold.trustme.common.ui.attributes.defaultSmallTextAttr
+import com.youllbecold.trustme.common.ui.attributes.ellipsized
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.ui.navigation.MenuItem
 import com.youllbecold.trustme.ui.navigation.NavRoute
 import com.youllbecold.trustme.ui.navigation.NavRouteItem
@@ -46,7 +48,12 @@ private fun RowScope.BottomNavItem(
 )  {
     NavigationBarItem(
         icon = { Icon(imageVector = menuItem.menuIcon, contentDescription = null) },
-        label = { Text(stringResource(menuItem.menuTitle)) },
+        label = {
+            ThemedText(
+                text = stringResource(menuItem.menuTitle),
+                textAttr = defaultSmallTextAttr().ellipsized()
+            )
+        },
         selected = currentDestination?.hierarchy?.any { it.route == navRoute.route } == true,
         onClick = {
             navController.navigate(navRoute.route) {

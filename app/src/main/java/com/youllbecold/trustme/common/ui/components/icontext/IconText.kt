@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import com.youllbecold.trustme.common.ui.attributes.IconAttr
 import com.youllbecold.trustme.common.ui.attributes.TextAttr
 import com.youllbecold.trustme.common.ui.attributes.defaultSmallIconAttr
 import com.youllbecold.trustme.common.ui.attributes.defaultSmallTextAttr
+import com.youllbecold.trustme.common.ui.attributes.withAlpha
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.themed.ThemedIcon
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
@@ -51,10 +51,9 @@ fun IconText(
             )
 
             subtitle?.let {
-                Text(
+                ThemedText(
                     text = it,
-                    style = textAttr.style,
-                    color = textAttr.color.copy(alpha = SUBTITLE_ALPHA),
+                    textAttr = textAttr.withAlpha(alpha = SUBTITLE_ALPHA),
                 )
             }
         }

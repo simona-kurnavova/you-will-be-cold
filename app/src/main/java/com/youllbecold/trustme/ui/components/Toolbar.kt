@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.attributes.defaultLargeTextAttr
+import com.youllbecold.trustme.common.ui.attributes.ellipsized
 import com.youllbecold.trustme.common.ui.components.icontext.IconText
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
@@ -35,7 +36,7 @@ fun Toolbar(
             IconText(
                 iconType = iconType,
                 text = title,
-                textAttr = defaultLargeTextAttr()
+                textAttr = defaultLargeTextAttr().ellipsized()
             )
         },
         navigationIcon = {

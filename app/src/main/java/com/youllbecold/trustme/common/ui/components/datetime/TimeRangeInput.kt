@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.defaultSmallTextAttr
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 
@@ -58,10 +58,10 @@ private fun LabeledTimeInput(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+
+        ThemedText(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground,
+            textAttr = defaultSmallTextAttr(),
         )
 
         Spacer(modifier = Modifier.width(PADDING_UNDER_LABEL.dp))

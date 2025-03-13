@@ -4,12 +4,12 @@ import android.content.res.Configuration
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.defaultMediumTextAttr
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 
 @Composable
@@ -29,13 +29,14 @@ fun ThemedButton(
         ),
         modifier = modifier
     ) {
-        Text(
+        ThemedText(
             text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = when(type) {
-                ButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimaryContainer
-                ButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondaryContainer
-            }
+            textAttr = defaultMediumTextAttr().copy(
+                color = when(type) {
+                    ButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimaryContainer
+                    ButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondaryContainer
+                }
+            )
         )
     }
 }

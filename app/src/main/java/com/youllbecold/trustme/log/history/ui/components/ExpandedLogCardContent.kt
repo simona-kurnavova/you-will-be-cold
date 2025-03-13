@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,10 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.defaultSmallTextAttr
+import com.youllbecold.trustme.common.ui.attributes.withAlpha
 import com.youllbecold.trustme.common.ui.components.icontext.ClickableText
 import com.youllbecold.trustme.common.ui.components.icontext.IconText
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 import com.youllbecold.trustme.common.ui.components.themed.ThemedHorizontalDivider
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
@@ -107,10 +108,9 @@ private fun LogCardHeaderSection(
         val dateTime = "${log.date.formatDate()} ${log.timeFrom.formatTime()} - ${log.timeTo.formatTime()}"
 
         Spacer(modifier = Modifier.height(ITEMS_PADDING.dp))
-        Text(
+        ThemedText(
             text = dateTime,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = DATE_ALPHA)
+            textAttr = defaultSmallTextAttr().withAlpha(DATE_ALPHA),
         )
     }
 }
@@ -125,10 +125,9 @@ private fun LogCardWeatherSection(
             .getTemperatureString(LocalContext.current, it.avgTemperature, it.useCelsiusUnits)
         val weatherInfo = stringResource(R.string.log_detail_weather_info, temperatureWithUnits)
 
-        Text(
+        ThemedText(
             text = weatherInfo,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = DATE_ALPHA),
+            textAttr = defaultSmallTextAttr().withAlpha(DATE_ALPHA),
             modifier = modifier
         )
     }

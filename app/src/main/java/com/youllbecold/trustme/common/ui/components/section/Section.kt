@@ -4,12 +4,12 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 
 @Composable
@@ -39,7 +39,7 @@ private const val PADDING_BETWEEN_SECTIONS = 18
 private fun SectionPreview() {
     YoullBeColdTheme {
         Section(title = "Section title") {
-            Text("Section content")
+            ThemedText("Section content")
         }
     }
 }

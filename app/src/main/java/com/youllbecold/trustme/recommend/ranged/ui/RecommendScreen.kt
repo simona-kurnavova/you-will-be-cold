@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -21,15 +19,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.defaultMediumErrorTextAttr
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
 import com.youllbecold.trustme.common.ui.components.datetime.DateTimeInput
 import com.youllbecold.trustme.common.ui.components.themed.ThemedButton
 import com.youllbecold.trustme.common.ui.components.themed.ThemedCard
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
@@ -130,14 +129,12 @@ private fun RecommendContentSection(
                     .padding(top = PROGRESS_INDICATOR_PADDING.dp)
             )
 
-            status.isError() -> Text(
+            status.isError() -> ThemedText(
                 text = stringResource(R.string.recom_no_recommendation),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(CARD_INTERNAL_PADDING.dp),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error
+                textAttr = defaultMediumErrorTextAttr()
             )
 
             else -> FadingItem(visible = status.isIdle()) {

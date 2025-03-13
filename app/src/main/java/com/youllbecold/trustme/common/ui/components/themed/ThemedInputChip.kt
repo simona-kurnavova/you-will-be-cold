@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.InputChip
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +36,7 @@ fun ThemedInputChip(
             onRemove()
             enabled = !enabled
         },
-        label = { Text(text) },
+        label = { ThemedText(text) },
         selected = enabled,
         leadingIcon = {
             ThemedIcon(

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.key
@@ -18,13 +16,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.centered
+import com.youllbecold.trustme.common.ui.attributes.defaultMediumErrorTextAttr
+import com.youllbecold.trustme.common.ui.attributes.defaultMediumTextAttr
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
@@ -92,28 +93,24 @@ private fun HistoryScreen(
 
         if (logs.itemCount <= 0 && logs.loadState.isIdle) {
             item {
-                Text(
+                ThemedText(
                     text = stringResource(R.string.message_no_logs_available),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(EMPTY_PADDING.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                    textAttr = defaultMediumTextAttr().centered(),
                 )
             }
         }
 
         when {
             logs.loadState.hasError -> item {
-                Text(
+                ThemedText(
                     text = stringResource(R.string.generic_error_message),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(EMPTY_PADDING.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
+                    textAttr = defaultMediumErrorTextAttr()
                 )
             }
 

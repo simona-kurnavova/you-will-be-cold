@@ -2,7 +2,6 @@ package com.youllbecold.trustme.common.domain.weather
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider

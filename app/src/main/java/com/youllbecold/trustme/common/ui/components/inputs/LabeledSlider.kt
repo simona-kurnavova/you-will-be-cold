@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -24,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.youllbecold.trustme.R
+import com.youllbecold.trustme.common.ui.attributes.TextAttr
+import com.youllbecold.trustme.common.ui.attributes.defaultLargeTextAttr
+import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -47,16 +49,17 @@ fun LabeledSlider(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Absolute.spacedBy(SPACE_BETWEEN_TEXT.dp)
         ) {
-            Text(
+            ThemedText(
                 text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                textAttr = defaultLargeTextAttr()
             )
 
-            Text(
+            ThemedText(
                 text = options.getOrNull(sliderValue.toInt()) ?: stringResource(R.string.unknown_label),
-                style = MaterialTheme.typography.bodyLarge,
-                color = color
+                textAttr = TextAttr(
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = color
+                )
             )
         }
 
