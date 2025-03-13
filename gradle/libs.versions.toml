@@ -1,4 +1,8 @@
 [versions]
+targetSdk = "35"
+compileSdk = "35"
+minSdk = "29"
+
 accompanistSwiperefresh = "0.25.1"
 agp = "8.10.0-alpha05"
 kotlin = "2.1.20-RC"
