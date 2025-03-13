@@ -50,4 +50,5 @@ Uses https://open-meteo.com/ API for weather data
 MIT License
 
 ## Notes
-The app currently does not support remote backup and restore of user logs. This feature might be considered as an addition in the future.
+- The app currently does not support remote backup and restore of user logs. This feature might be considered as an addition in the future.
+- Location is always tied to the user's current location and cannot be changed manually. This feature might be considered as an addition in the future.
