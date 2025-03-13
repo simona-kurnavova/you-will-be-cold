@@ -23,7 +23,6 @@ object WeatherProvider {
 
     private fun buildRetrofit(): Retrofit {
         val client = OkHttpClient.Builder()
-            .retryOnConnectionFailure(true)
             .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)

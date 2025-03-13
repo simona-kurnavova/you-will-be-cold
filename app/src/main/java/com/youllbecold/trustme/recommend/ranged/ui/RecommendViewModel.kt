@@ -7,24 +7,29 @@ import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
 import com.youllbecold.trustme.recommend.ranged.usecase.RecommendForDateUseCase
+import com.youllbecold.trustme.recommend.ui.model.unitsCelsius
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * ViewModel for the recommendation screen.
  */
+@OptIn(ExperimentalAtomicApi::class)
 @KoinViewModel
 class RecommendViewModel(
     private val unitsManager: UnitsManager,
     private val recommendForDateUseCase: RecommendForDateUseCase,
 ) : ViewModel() {
-    private var currentDateTimeRange: DateTimeState? = null
+    private var currentDateTimeRange = AtomicReference<DateTimeState?>(null)
 
     private val _uiState: MutableStateFlow<RecommendUiState> = MutableStateFlow(RecommendUiState())
 
@@ -35,9 +40,18 @@ class RecommendViewModel(
 
     init {
         // Update recommendation reactively on units change.
-        unitsManager.unitsCelsius.onEach {
-            currentDateTimeRange?.let { updateWeatherAndRecommendation(it) }
-        }.launchIn(viewModelScope)
+        unitsManager.unitsCelsius
+            .filter { useCelsius ->
+                val weatherRec = _uiState.value.weatherWithRecommendation
+                val unitsCelsius = weatherRec?.unitsCelsius
+
+                unitsCelsius != null && unitsCelsius != useCelsius
+            }
+            .onEach { useCelsius ->
+                currentDateTimeRange.load()?.let {
+                    updateWeatherAndRecommendation(it)
+                }
+            }.launchIn(viewModelScope)
     }
 
     /**
@@ -45,7 +59,8 @@ class RecommendViewModel(
      */
     fun onAction(action: RecommendAction) {
         when (action) {
-            is RecommendAction.UpdateRecommendation -> updateWeatherAndRecommendation(action.datetimeRange)
+            is RecommendAction.UpdateRecommendation ->
+                updateWeatherAndRecommendation(action.datetimeRange)
         }
     }
 
@@ -65,7 +80,7 @@ class RecommendViewModel(
                 )
             }
 
-            currentDateTimeRange = recommendState.dateTimeState
+            currentDateTimeRange.store(recommendState.dateTimeState)
         }
     }
 }

@@ -15,13 +15,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+@OptIn(ExperimentalAtomicApi::class)
 @KoinViewModel
 class EditLogViewModel(
     private val fetchLogUseCase: FetchLogUseCase,
     private val editLogUseCase: EditLogUseCase
 ) : ViewModel() {
-    private var oldLogState: LogState? = null
+    private var oldLogState = AtomicReference<LogState?>(null)
 
     private val editState: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
     private val logState: MutableStateFlow<LogState?> = MutableStateFlow(null)
@@ -50,15 +53,20 @@ class EditLogViewModel(
 
     private fun startEdit(id: Int) {
         viewModelScope.launch {
+            if (oldLogState.load()?.id == id) {
+                return@launch // Already loaded, must have been just config change/recreation
+            }
+
             val log = fetchLogUseCase.fetchLog(id)
             logState.update { log }
-            oldLogState = log
+            oldLogState.exchange(log)
         }
     }
 
     private fun saveLog(logState: LogState) {
         viewModelScope.launch {
-            oldLogState?.let { oldLog ->
+            val oldLog = oldLogState.exchange(null)
+            oldLog?.let { oldLog ->
                 val result = editLogUseCase.updateLog(oldLog, logState)
                 editState.update { result }
             }

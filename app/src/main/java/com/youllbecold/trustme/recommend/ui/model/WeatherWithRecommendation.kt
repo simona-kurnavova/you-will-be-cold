@@ -8,3 +8,9 @@ data class WeatherWithRecommendation(
     val weather: PersistentList<WeatherConditions>,
     val recommendationState: RecommendationState?
 )
+
+/**
+ * Get the weather temperature units used. We assume whole list will have the same units.
+ */
+val WeatherWithRecommendation.unitsCelsius: Boolean?
+    get() = this.weather.firstOrNull()?.unitsCelsius

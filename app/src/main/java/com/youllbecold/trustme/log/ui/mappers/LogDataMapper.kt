@@ -32,7 +32,7 @@ fun LogData.toLogState(
     weather = weatherData.toWeatherState(useCelsiusUnits)
 )
 
-private fun Feelings.toFeelingsWithLabel(): PersistentList<FeelingWithLabel> =
+fun Feelings.toFeelingsWithLabel(): PersistentList<FeelingWithLabel> =
     persistentListOf(
         FeelingWithLabel(
             bodyPart = BodyPart.HEAD,

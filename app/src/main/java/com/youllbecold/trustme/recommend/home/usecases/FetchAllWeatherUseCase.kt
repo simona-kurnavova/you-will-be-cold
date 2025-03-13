@@ -1,5 +1,6 @@
 package com.youllbecold.trustme.recommend.home.usecases
 
+import android.util.Log
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.domain.weather.CurrentWeatherProvider
 import com.youllbecold.trustme.common.domain.weather.HourlyWeatherProvider
@@ -8,6 +9,7 @@ import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
 import com.youllbecold.trustme.recommend.home.ui.mappers.toHourlyTemperatures
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import com.youllbecold.trustme.recommend.home.ui.model.HourlyTemperature
+import com.youllbecold.trustme.recommend.home.ui.model.unitsCelsius
 import com.youllbecold.trustme.recommend.ui.mappers.toWeatherCondPersistList
 import com.youllbecold.trustme.recommend.ui.mappers.toWeatherConditions
 import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
@@ -34,12 +36,14 @@ class FetchAllWeatherUseCase(
         withContext(Dispatchers.Default) {
             val current = currentWeatherProvider.fetchCurrentWeather(useCelsius)
             if (current.status != LoadingStatus.Success) {
+                Log.e(TAG, "Failed to fetch current weather: ${current.status}")
                 return@withContext AllWeatherWithStatus(status = current.status)
             }
 
             val hourly =
                 hourlyWeatherProvider.fetchHourlyWeather(useCelsius, DAYS_FOR_HOURLY_WEATHER)
             if (hourly.status != LoadingStatus.Success) {
+                Log.e(TAG, "Failed to fetch hourly weather: ${hourly.status}")
                 return@withContext AllWeatherWithStatus(status = hourly.status)
             }
 
@@ -73,7 +77,8 @@ class FetchAllWeatherUseCase(
                 status = LoadingStatus.Success,
                 forecast = forecast,
                 hourlyTemperatures = forecast.toHourlyTemperatures(),
-                location = current.location
+                location = current.location,
+                useCelsiusUnits = forecast.unitsCelsius ?: useCelsius
             )
         }
 }
@@ -84,5 +89,8 @@ data class AllWeatherWithStatus(
     val status: LoadingStatus,
     val forecast: Forecast? = null,
     val hourlyTemperatures: PersistentList<HourlyTemperature> = persistentListOf(),
-    val location: GeoLocation? = null
+    val location: GeoLocation? = null,
+    val useCelsiusUnits: Boolean = true,
 )
+
+private const val TAG = "FetchAllWeatherUseCase"

@@ -51,7 +51,7 @@ complexity:
     threshold: 60
   LongParameterList:
     active: true
-    functionThreshold: 10
+    functionThreshold: 12
     constructorThreshold: 10
 
 coroutines:

@@ -55,7 +55,7 @@ internal class WeatherRepositoryImpl(
 
     private suspend fun <R, T> processCall(
         call: suspend () -> Response<R>,
-        processBody: (R) -> T
+        processBody: (R) -> T,
     ): Result<T> = try {
         call().processResponse(processBody)
     } catch (_: IOException) { // Network issues

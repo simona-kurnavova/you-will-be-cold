@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,9 +23,9 @@ class NetworkStatusProvider(private val app: Application) {
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            _isConnected.update {
-                connectivityManager.getNetworkCapabilities(network)?.hasInternet() == true
-            }
+            val hasInternet = connectivityManager.getNetworkCapabilities(network)?.hasInternet()
+            Log.d(TAG, "Network available, has internet: $hasInternet")
+            _isConnected.update { hasInternet == true }
         }
 
         override fun onCapabilitiesChanged(
@@ -39,6 +40,7 @@ class NetworkStatusProvider(private val app: Application) {
 
         override fun onLost(network: Network) {
             super.onLost(network)
+            Log.d(TAG, "Network connection lost")
             _isConnected.update { false }
         }
     }
@@ -73,3 +75,5 @@ class NetworkStatusProvider(private val app: Application) {
     private fun NetworkCapabilities.hasInternet(): Boolean =
         hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
+
+private const val TAG = "NetworkStatusProvider"
