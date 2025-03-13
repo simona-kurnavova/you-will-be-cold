@@ -1,28 +1,23 @@
 package com.youllbecold.trustme.log.edit.ui
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youllbecold.trustme.R
-import com.youllbecold.trustme.log.ui.components.LogExitDialog
-import com.youllbecold.trustme.log.ui.components.AddLogForm
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
-import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.log.ui.validator.LogStateValidator
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.edit.ui.model.EditLogUiState
+import com.youllbecold.trustme.log.ui.components.AddLogForm
+import com.youllbecold.trustme.log.ui.model.LogState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.koin.androidx.compose.koinViewModel
@@ -54,16 +49,13 @@ private fun EditLogScreen(
     onAction: (EditLogAction) -> Unit
 ) {
     val context = LocalContext.current
-
-    var showExitDialog by remember { mutableStateOf(false) }
-
     val update: (LogState) -> Unit = { onAction(EditLogAction.SaveProgress(it)) }
 
     val status = state.value.editState
     when {
         status.isError() ->
             Toast.makeText(
-            LocalContext.current,
+            context,
             stringResource(R.string.toast_error_editing_log),
             Toast.LENGTH_SHORT
         ).show()
@@ -71,7 +63,7 @@ private fun EditLogScreen(
         status.isSuccess() -> {
             Toast.makeText(
                 context,
-                context.getString(R.string.toast_saved_log),
+                stringResource(R.string.toast_saved_log),
                 Toast.LENGTH_SHORT
             ).show()
 
@@ -87,28 +79,9 @@ private fun EditLogScreen(
             onDateTimeChanged = { update(logState.copy(dateTimeState = it)) },
             onFeelingsChange = { update(logState.copy(feelings = it)) },
             onClothesCategoryChange = { update(logState.copy(clothes = it)) },
-            onSave = {
-                if (!LogStateValidator.validate(context, logState)) {
-                    return@AddLogForm
-                }
-
-                onAction(EditLogAction.SaveLog)
-            },
+            onSave = { onAction(EditLogAction.SaveLog) },
+            onExit = { onAction(EditLogAction.ExitForm) },
             isSaving = status.isLoading()
-        )
-    }
-
-    BackHandler {
-        showExitDialog = true
-    }
-
-    if (showExitDialog) {
-        LogExitDialog(
-            onConfirmation = {
-                onAction(EditLogAction.ExitForm)
-                showExitDialog = false
-            },
-            onDismiss = { showExitDialog = false }
         )
     }
 }

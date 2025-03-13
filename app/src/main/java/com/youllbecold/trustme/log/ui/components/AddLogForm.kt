@@ -1,5 +1,8 @@
 package com.youllbecold.trustme.log.ui.components
 
+import android.content.Context
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,10 +68,13 @@ fun AddLogForm(
     onFeelingsChange: (PersistentList<FeelingWithLabel>) -> Unit,
     onClothesCategoryChange: (PersistentSet<Clothes>) -> Unit,
     onSave: () -> Unit,
+    onExit: () -> Unit,
     isSaving: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val formScrollState = rememberScrollState()
+    var showExitDialog by remember { mutableStateOf(false) }
 
     Box(
        modifier = modifier.padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
@@ -103,7 +110,9 @@ fun AddLogForm(
                 ThemedButton(
                     text = stringResource(R.string.add_log_save),
                     onClick = {
-                        onSave()
+                        if (validateBeforeSave(context, dateTimeState, clothes)) {
+                            onSave()
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -111,6 +120,20 @@ fun AddLogForm(
 
             Spacer(modifier = Modifier.height(PADDING_BOTTOM.dp))
         }
+    }
+
+    BackHandler {
+        showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        LogExitDialog(
+            onConfirmation = {
+                onExit()
+                showExitDialog = false
+            },
+            onDismiss = { showExitDialog = false }
+        )
     }
 }
 
@@ -301,6 +324,36 @@ private fun List<Clothes>.toSelectableItemContent(): PersistentList<SelectableIt
         )
     }.toPersistentList()
 
+/**
+* Validates the log state and shows a toast if the state is invalid.
+*/
+private fun validateBeforeSave(
+    context: Context,
+    dateTimeState: DateTimeState,
+    clothes: PersistentSet<Clothes>
+): Boolean {
+    if (dateTimeState.timeTo.localTime.isBefore(dateTimeState.timeFrom.localTime) ||
+        dateTimeState.timeTo == dateTimeState.timeFrom) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.toast_invalid_time_range),
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
+
+    if (clothes.isEmpty()) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.toast_no_clothes_selected),
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
+
+    return true
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun AddLogFormPreview() {
@@ -321,6 +374,7 @@ private fun AddLogFormPreview() {
             onFeelingsChange = { },
             onClothesCategoryChange = { },
             onSave = { },
+            onExit = { },
             isSaving = true
         )
     }
