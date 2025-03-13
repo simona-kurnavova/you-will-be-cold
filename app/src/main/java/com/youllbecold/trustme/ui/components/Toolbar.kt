@@ -1,6 +1,9 @@
 package com.youllbecold.trustme.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,7 +27,8 @@ fun Toolbar(
     title: String = stringResource(R.string.app_name),
     iconType: IconType? = null,
     showInfoAction: Boolean = false,
-    navigateToInfo: () -> Unit
+    navigateToInfo: () -> Unit,
+    backButtonAction: (() -> Unit)? = null
 ) {
     TopAppBar(
         title = {
@@ -34,9 +38,19 @@ fun Toolbar(
                 textAttr = defaultLargeTextAttr()
             )
         },
+        navigationIcon = {
+            backButtonAction?.let {
+                IconButton(onClick = it) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
+            }
+        },
         actions = {
             if (showInfoAction) {
-                IconButton(onClick = { navigateToInfo() }) {
+                IconButton(onClick = navigateToInfo) {
                     Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.help))
                 }
             }
@@ -52,7 +66,8 @@ private fun ToolbarPreview() {
             title = "Title",
             iconType = IconType.Sun,
             showInfoAction = true,
-            navigateToInfo = {}
+            navigateToInfo = {},
+            backButtonAction = {}
         )
     }
 }

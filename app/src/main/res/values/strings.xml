@@ -290,6 +290,8 @@
 
     <!-- Content description of information icon in toolbar. -->
     <string name="help">Information</string>
+    <!-- Content description of back button action icon in toolbar. -->
+    <string name="back">Back</string>
 
     <!-- Notification permissions setup scree -->
     <!-- Text of grant permission button - for both notification and bg location. -->

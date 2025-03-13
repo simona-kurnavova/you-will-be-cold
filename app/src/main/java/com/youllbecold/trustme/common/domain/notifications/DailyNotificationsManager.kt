@@ -29,7 +29,6 @@ class DailyNotificationsManager(
     val allowRecommendNotification by dataStorePreferences::allowRecommendNotification
 
     init {
-        // TODO: this should be reactive
         // In case we lost permission, we should disable daily notifications
         if (!PermissionChecker.hasNotificationPermission(app)) {
             setDailyNotification(false)

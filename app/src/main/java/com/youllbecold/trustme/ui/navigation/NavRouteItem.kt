@@ -1,6 +1,5 @@
 package com.youllbecold.trustme.ui.navigation
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
@@ -84,12 +83,14 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
         navRoute = NavRoute.AddLog
     ), Toolbar {
         override val toolbarTitle: Int = R.string.toolbar_title_add_log
+        override val showBackButton: Boolean = true
     }
 
     data object EditLogItem : NavRouteItem(
         navRoute = NavRoute.EditLog
     ), Toolbar {
         override val toolbarTitle: Int = R.string.toolbar_title_edit_log
+        override val showBackButton: Boolean = true
     }
     data object WelcomeItem : NavRouteItem(
         navRoute = NavRoute.Welcome
@@ -104,6 +105,7 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
     ), Toolbar {
         override val toolbarTitle: Int = R.string.toolbar_title_info
         override val toolbarIcon: IconType = IconType.Thermometer
+        override val showBackButton: Boolean = true
     }
 
     data object RecommendNotificationPermItem : NavRouteItem(
@@ -147,34 +149,4 @@ sealed class NavRouteItem(val navRoute: NavRoute) {
             .filterIsInstance<MenuItem>()
             .sortedBy { it.position }
     }
-}
-
-/**
- * Interface to by implemented by menu items.
- */
-interface MenuItem {
-    val menuTitle: Int
-    val menuIcon: ImageVector
-    val position: Int
-}
-
-/**
- * Interface to be implemented by items that have floating action..
- */
-interface FloatingAction {
-    val floatingActionTitle: Int
-    val floatingActionIcon: ImageVector
-    val floatingActionTo: NavRoute
-}
-
-/**
- * Interface to be implemented by items that have toolbar.
- */
-interface Toolbar {
-    @get:StringRes
-    val toolbarTitle: Int
-    val toolbarIcon: IconType?
-        get() = null
-    val showInfoAction: Boolean
-        get() = false
 }

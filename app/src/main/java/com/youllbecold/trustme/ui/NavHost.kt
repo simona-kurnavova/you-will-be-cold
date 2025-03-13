@@ -67,11 +67,13 @@ fun NavHost() {
 @Composable
 private fun SetupToolbar(navController: NavController, currentRoute: NavRouteItem?) {
     currentRoute?.getToolbar()?.let {
+        val backAction: () -> Unit = { navController.popBackStack() }
         Toolbar(
             title = stringResource(it.toolbarTitle),
             iconType = it.toolbarIcon,
             showInfoAction = it.showInfoAction,
-            navigateToInfo = { navController.navigate(NavRoute.Info.route) }
+            navigateToInfo = { navController.navigate(NavRoute.Info.route) },
+            backButtonAction = if (it.showBackButton) backAction else null
         )
     }
 }
