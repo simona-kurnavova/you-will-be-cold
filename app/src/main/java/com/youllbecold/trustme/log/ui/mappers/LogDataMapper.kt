@@ -7,6 +7,7 @@ import com.youllbecold.logdatabase.model.WeatherData
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.mappers.toClothes
+import com.youllbecold.trustme.common.ui.utils.TemperatureUiUtils
 import com.youllbecold.trustme.log.ui.model.BodyPart
 import com.youllbecold.trustme.log.ui.model.FeelingState
 import com.youllbecold.trustme.log.ui.model.FeelingWithLabel
@@ -78,20 +79,17 @@ private fun WeatherData.toWeatherState(useCelsiusUnits: Boolean): WeatherParams 
     apparentTemperatureMin = if (useCelsiusUnits) {
         apparentTemperatureMinC
     } else {
-        celsiusToFahrenheit(apparentTemperatureMinC)
+        TemperatureUiUtils.celsiusToFahrenheit(apparentTemperatureMinC)
     },
     apparentTemperatureMax = if (useCelsiusUnits) {
         apparentTemperatureMaxC
     } else {
-        celsiusToFahrenheit(apparentTemperatureMaxC)
+        TemperatureUiUtils.celsiusToFahrenheit(apparentTemperatureMaxC)
     },
     avgTemperature = if (useCelsiusUnits) {
         avgTemperatureC
     } else {
-        celsiusToFahrenheit(avgTemperatureC)
+        TemperatureUiUtils.celsiusToFahrenheit(avgTemperatureC)
     },
     useCelsiusUnits = useCelsiusUnits
 )
-
-private fun celsiusToFahrenheit(celsius: Double): Double =
-    (celsius * 9 / 5) + 32

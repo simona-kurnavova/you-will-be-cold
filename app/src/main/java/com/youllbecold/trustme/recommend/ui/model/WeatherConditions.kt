@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Stable
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.themed.IconType
+import com.youllbecold.trustme.common.ui.utils.TemperatureUiUtils
 
 @Stable
 data class WeatherConditions(
@@ -24,7 +25,7 @@ data class WeatherConditions(
 @get:DrawableRes
 val WeatherConditions.thermometer: Int
     get() {
-        val celsius = if (unitsCelsius) temperature else fahrenheitToCelsius(temperature)
+        val celsius = if (unitsCelsius) temperature else TemperatureUiUtils.fahrenheitToCelsius(temperature)
         return when {
             celsius < 0 -> R.drawable.thermometer_0
             celsius < 10 -> R.drawable.thermometer_1
@@ -32,6 +33,3 @@ val WeatherConditions.thermometer: Int
             else -> R.drawable.thermometer_3
         }
     }
-
-private fun fahrenheitToCelsius(fahrenheit: Double): Double =
-    (fahrenheit - 32) * 5 / 9

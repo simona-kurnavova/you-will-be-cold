@@ -11,6 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
+/**
+ * Manager for daily notifications.
+ */
 @Singleton
 class DailyNotificationsManager(
     private val app: Application,

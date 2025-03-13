@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 import com.youllbecold.trustme.common.ui.components.themed.IconType
 
 /**
- * Represents one piece of clothing.
+ * Represents one piece of clothing, used as clothing representation in UI.
  *
  * @param id The unique identifier of the clothes.
  * @param name The name of the clothes.

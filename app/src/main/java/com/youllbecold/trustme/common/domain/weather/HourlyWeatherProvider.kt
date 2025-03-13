@@ -53,6 +53,9 @@ class HourlyWeatherProvider(
     }
 }
 
+/**
+ * Data class for the hourly weather with status.
+ */
 data class HourlyWeatherWithStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
     val weatherModel: List<WeatherModel> = emptyList()

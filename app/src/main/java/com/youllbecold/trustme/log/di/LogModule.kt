@@ -20,8 +20,8 @@ internal val logModule = module {
 
     factoryOf(::AddLogUseCase)
     factoryOf(::EditLogUseCase)
-    factoryOf(::ObtainLogWeatherParamsUseCase)
     factoryOf(::FetchLogUseCase)
     factoryOf(::DeleteLogUseCase)
     factoryOf(::FetchAllLogsUseCase)
+    factoryOf(::ObtainLogWeatherParamsUseCase)
 }

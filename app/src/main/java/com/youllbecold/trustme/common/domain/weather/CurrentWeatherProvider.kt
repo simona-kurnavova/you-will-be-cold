@@ -50,6 +50,9 @@ class CurrentWeatherProvider(
     }
 }
 
+/**
+ * Data class for the current weather with status.
+ */
 data class WeatherWithStatus(
     val status: LoadingStatus = LoadingStatus.Idle,
     val weatherModel: WeatherModel? = null,

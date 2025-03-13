@@ -7,6 +7,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 
+/**
+ * Attributes for setting up text for Composables.
+ */
 @Stable
 data class TextAttr(
     val style: TextStyle,

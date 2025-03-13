@@ -5,6 +5,9 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Attributes for setting up icons for Composables.
+ */
 @Stable
 data class IconAttr(
     val size: Dp,

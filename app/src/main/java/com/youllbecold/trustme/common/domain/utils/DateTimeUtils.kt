@@ -4,6 +4,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
+/**
+ * Utility functions for date and time.
+ */
 object DateTimeUtils {
 
     /**

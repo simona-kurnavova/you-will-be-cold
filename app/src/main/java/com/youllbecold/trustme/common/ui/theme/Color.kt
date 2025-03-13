@@ -12,5 +12,4 @@ val WarmOrange: Color = Color(0xFFFF6C41) // Warm Orange
 val Black = Color(0xFF000000) // Black
 val White = Color(0xFFFFFFFF) // White
 
-val Grey = Color(0xFFE2F3FA) // Grey
 val DarkGrey = Color(0xFF212121) // Dark Grey

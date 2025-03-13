@@ -20,8 +20,8 @@ internal val domainModule = module {
 
     // Providers
     factoryOf(::CurrentWeatherProvider)
-    factoryOf(::RangedWeatherProvider)
     factoryOf(::HourlyWeatherProvider)
+    factoryOf(::RangedWeatherProvider)
 
     // Notifications
     factoryOf(::DailyLogNotification)
