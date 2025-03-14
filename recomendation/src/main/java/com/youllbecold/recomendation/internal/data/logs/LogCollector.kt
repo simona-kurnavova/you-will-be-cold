@@ -1,6 +1,7 @@
 package com.youllbecold.recomendation.internal.data.logs
 
 import com.youllbecold.logdatabase.api.LogRepository
+import com.youllbecold.logdatabase.model.LogData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,7 +22,7 @@ internal class LogCollector(
     suspend fun gatherRelevantLogs(
         minApparentTemp: Double,
         maxApparentTemp: Double
-    ) = withContext(Dispatchers.Default) {
+    ): RelevantLogs = withContext(Dispatchers.Default) {
         var expandConstant = 0.0
 
         while (expandConstant <= MAX_RANGE_EXPAND) {
@@ -29,14 +30,27 @@ internal class LogCollector(
                 minApparentTemp - expandConstant to maxApparentTemp + expandConstant
             )
 
-            if (logs.isNotEmpty()) {
-                return@withContext logs
+            when {
+                logs.isError -> return@withContext RelevantLogs(result = LogQueryResult.Error)
+                logs.logs.isNotEmpty() ->
+                    return@withContext RelevantLogs(result = LogQueryResult.Success, logs = logs.logs)
             }
             expandConstant += 1.0
         }
 
-        return@withContext emptyList()
+        return@withContext RelevantLogs(result = LogQueryResult.NotEnoughLogs)
     }
 }
 
 private const val MAX_RANGE_EXPAND = 5.0
+
+data class RelevantLogs(
+    val result: LogQueryResult,
+    val logs: List<LogData> = emptyList(),
+)
+
+enum class LogQueryResult {
+    Success,
+    NotEnoughLogs,
+    Error
+}

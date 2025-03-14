@@ -21,5 +21,15 @@ interface RecommendRepository {
         usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
-    ): Recommendation?
+    ): RecommendationResult
+}
+
+sealed class RecommendationResult {
+    data class Success(val recommendation: Recommendation) : RecommendationResult()
+    data class Error(val reason: ErrorReason) : RecommendationResult()
+
+    enum class ErrorReason {
+        LOG_ACCESS_ERROR,
+        WRONG_INPUT
+    }
 }

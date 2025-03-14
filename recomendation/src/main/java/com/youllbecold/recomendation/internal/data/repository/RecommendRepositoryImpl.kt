@@ -3,7 +3,9 @@ package com.youllbecold.recomendation.internal.data.repository
 import android.util.Log
 import com.youllbecold.logdatabase.model.ClothesModel
 import com.youllbecold.recomendation.api.RecommendRepository
+import com.youllbecold.recomendation.api.RecommendationResult
 import com.youllbecold.recomendation.internal.data.logs.LogCollector
+import com.youllbecold.recomendation.internal.data.logs.LogQueryResult
 import com.youllbecold.recomendation.internal.data.outfit.CustomOutfitSelector
 import com.youllbecold.recomendation.internal.data.outfit.DefaultOutfitSelector
 import com.youllbecold.recomendation.internal.data.rain.RainAdvisor
@@ -32,9 +34,9 @@ internal class RecommendRepositoryImpl(
         usesCelsius: Boolean,
         uvIndex: List<Double>,
         rainProbability: List<Int>
-    ): Recommendation? = withContext(Dispatchers.Default) {
+    ): RecommendationResult = withContext(Dispatchers.Default) {
         if (hourlyApparentTemperatures.isEmpty()) {
-            return@withContext null
+            return@withContext RecommendationResult.Error(RecommendationResult.ErrorReason.WRONG_INPUT)
         }
 
         // Calculate min and max temperatures and convert to Celsius as needed
@@ -45,7 +47,13 @@ internal class RecommendRepositoryImpl(
             if (usesCelsius) it else fahrenheitToCelsius(it)
         }
 
-        val relevantLogs = logCollector.gatherRelevantLogs(minApparentC, maxApparentC)
+        val logQueryResult = logCollector.gatherRelevantLogs(minApparentC, maxApparentC)
+
+        if (logQueryResult.result == LogQueryResult.Error) {
+            return@withContext RecommendationResult.Error(RecommendationResult.ErrorReason.LOG_ACCESS_ERROR)
+        }
+
+        val relevantLogs = logQueryResult.logs
 
         val best: Pair<List<ClothesModel>, Double>? =
             CustomOutfitSelector.createOutfitRecommendation(relevantLogs, minApparentC, maxApparentC)
@@ -62,11 +70,13 @@ internal class RecommendRepositoryImpl(
             }
         }
 
-        Recommendation(
-            clothes = finalClothes,
-            certainty = certaintyMeasure,
-            uvLevel = UvAdvisor.uvRecommendation(uvIndex),
-            rainLevel = RainAdvisor.rainRecommendation(rainProbability),
+        RecommendationResult.Success(
+            Recommendation(
+                clothes = finalClothes,
+                certainty = certaintyMeasure,
+                uvLevel = UvAdvisor.uvRecommendation(uvIndex),
+                rainLevel = RainAdvisor.rainRecommendation(rainProbability),
+            )
         )
     }
 

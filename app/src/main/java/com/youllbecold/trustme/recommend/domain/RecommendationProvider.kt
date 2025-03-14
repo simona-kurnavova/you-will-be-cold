@@ -1,7 +1,8 @@
 package com.youllbecold.trustme.recommend.domain
 
 import com.youllbecold.recomendation.api.RecommendRepository
-import com.youllbecold.trustme.common.ui.model.status.Error.GenericError
+import com.youllbecold.recomendation.api.RecommendationResult
+import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.common.ui.model.status.Idle
 import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.model.status.Success
@@ -23,31 +24,33 @@ class RecommendationProvider(
     suspend fun recommend(hourlyWeatherModel: List<WeatherModel>): RecommendationWithStatus =
         withContext(Dispatchers.Default) { // List operations
             if (hourlyWeatherModel.isEmpty()) {
-                return@withContext RecommendationWithStatus(GenericError)
+                return@withContext RecommendationWithStatus(Error.GenericError)
             }
 
             val useCelsius = withContext(Dispatchers.IO) {
                 hourlyWeatherModel.first().unitsCelsius
             }
 
-            val rec = recommendRepository.recommend(
+            val result = recommendRepository.recommend(
                 hourlyWeatherModel.map { it.apparentTemperature },
                 useCelsius,
                 hourlyWeatherModel.map { it.uvIndex },
                 hourlyWeatherModel.map { it.precipitationProbability }
             )
 
-
-            val recommendation = rec?.toRecommendationState()
-
-            return@withContext RecommendationWithStatus(
-                recommendation = recommendation,
-                status = if (recommendation != null) {
-                    Success
-                } else {
-                    GenericError
-                }
-            )
+            when(result) {
+                is RecommendationResult.Error -> return@withContext RecommendationWithStatus(
+                    when(result.reason) {
+                        RecommendationResult.ErrorReason.LOG_ACCESS_ERROR -> Error.ApiError
+                        RecommendationResult.ErrorReason.WRONG_INPUT ->
+                            throw IllegalStateException("Wrong input") // Should not happen
+                    }
+                )
+                is RecommendationResult.Success -> return@withContext RecommendationWithStatus(
+                    recommendation = result.recommendation.toRecommendationState(),
+                    status = Success
+                )
+            }
         }
 }
 

@@ -2,6 +2,7 @@ package com.youllbecold.logdatabase.api
 
 import androidx.paging.PagingData
 import com.youllbecold.logdatabase.model.LogData
+import com.youllbecold.logdatabase.model.LogDataListState
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -20,7 +21,7 @@ interface LogRepository {
      *
      * @param apparentTempRange The range of apparent temperatures to filter logs by. Only inside this range.
      */
-    suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): List<LogData>
+    suspend fun getLogsInRange(apparentTempRange: Pair<Double, Double>): LogDataListState
 
     /**
      * Returns a log by its ID.

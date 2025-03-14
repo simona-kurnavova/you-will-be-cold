@@ -34,6 +34,7 @@ import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.model.status.isError
+import com.youllbecold.trustme.common.ui.model.status.isIdle
 import com.youllbecold.trustme.common.ui.model.status.isLoading
 import com.youllbecold.trustme.common.ui.model.status.isSuccess
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
