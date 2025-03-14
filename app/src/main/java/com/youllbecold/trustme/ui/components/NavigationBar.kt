@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.youllbecold.trustme.common.ui.attributes.defaultSmallTextAttr
 import com.youllbecold.trustme.common.ui.attributes.ellipsized
 import com.youllbecold.trustme.common.ui.components.themed.ThemedText
+import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.ui.navigation.MenuItem
 import com.youllbecold.trustme.ui.navigation.NavRoute
 import com.youllbecold.trustme.ui.navigation.NavRouteItem
@@ -29,10 +30,10 @@ fun NavigationBar(navController: NavController) {
     NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        NavRouteItem.Companion.getMenuItems()
-            .forEach {
-                BottomNavItem((it as NavRouteItem).navRoute, it, navController, currentDestination)
-            }
+
+        NavRouteItem.Companion.getMenuItems().forEach {
+            BottomNavItem((it as NavRouteItem).navRoute, it, navController, currentDestination)
+        }
     }
 }
 
@@ -47,7 +48,9 @@ private fun RowScope.BottomNavItem(
     currentDestination: NavDestination?
 )  {
     NavigationBarItem(
-        icon = { Icon(imageVector = menuItem.menuIcon, contentDescription = null) },
+        icon = {
+            Icon(imageVector = menuItem.menuIcon, contentDescription = null)
+        },
         label = {
             ThemedText(
                 text = stringResource(menuItem.menuTitle),
@@ -72,5 +75,7 @@ private fun RowScope.BottomNavItem(
 @Preview
 @Composable
 private fun NavigationBarPreview(navController: NavController = rememberNavController()) {
-    NavigationBar(navController)
+    YoullBeColdTheme {
+        NavigationBar(navController)
+    }
 }
