@@ -1,10 +1,11 @@
 package com.youllbecold.trustme.recommend.ranged.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Loading
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
 import com.youllbecold.trustme.recommend.ranged.usecase.RecommendForDateUseCase
 import com.youllbecold.trustme.recommend.ui.model.unitsCelsius
@@ -31,7 +32,10 @@ class RecommendViewModel(
 ) : ViewModel() {
     private var currentDateTimeRange = AtomicReference<DateTimeState?>(null)
 
-    private val _uiState: MutableStateFlow<RecommendUiState> = MutableStateFlow(RecommendUiState())
+    private val _uiState: MutableStateFlow<RecommendUiState> = MutableStateFlow(RecommendUiState()).apply {
+        onEach { Log.d("RecommendViewModel", "uiState: $it") }
+            .launchIn(viewModelScope)
+    }
 
     /**
      * UI state for the recommendation screen.
@@ -65,7 +69,7 @@ class RecommendViewModel(
     }
 
     private fun updateWeatherAndRecommendation(datetimeRange: DateTimeState) {
-        _uiState.update { RecommendUiState(status = LoadingStatus.Loading) }
+        _uiState.update { RecommendUiState(status = Loading) }
 
         viewModelScope.launch {
             val recommendState = recommendForDateUseCase.recommendForDate(

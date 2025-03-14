@@ -16,6 +16,7 @@ import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.common.domain.notifications.DailyNotificationsManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
 import com.youllbecold.trustme.common.domain.utils.DateTimeUtils
+import com.youllbecold.trustme.common.ui.model.status.isError
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit

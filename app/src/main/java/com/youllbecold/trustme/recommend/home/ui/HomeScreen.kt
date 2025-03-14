@@ -23,7 +23,10 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.animation.FadingItem
 import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Error
+import com.youllbecold.trustme.common.ui.model.status.Error.MissingPermission
+import com.youllbecold.trustme.common.ui.model.status.Loading
+import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCard
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCardType
@@ -57,7 +60,7 @@ private fun HomeScreen(
     onAction: (HomeAction) -> Unit,
 ) {
     val state = uiState.value
-    if (state.status == LoadingStatus.MissingPermission) {
+    if (state.status == MissingPermission) {
         return
     }
 
@@ -85,7 +88,7 @@ private fun HomeScreen(
                     FadingItem(visible = state.isError()) {
                         ErrorCard(
                             errorCardType = when (state.status) {
-                                LoadingStatus.NoInternet -> ErrorCardType.OFFLINE
+                                Error.NoInternet -> ErrorCardType.OFFLINE
                                 else -> ErrorCardType.GENERIC
                             },
                             modifier = Modifier.padding(PADDING_BETWEEN_ITEMS.dp)
@@ -139,7 +142,7 @@ private fun HomeScreenPreview() {
     val state = remember {
         mutableStateOf(
             HomeUiState(
-                status = LoadingStatus.Loading,
+                status = Loading,
                 forecast = Forecast(
                     current = weatherWithRecommendation,
                     today = weatherWithRecommendation,

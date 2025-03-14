@@ -8,7 +8,14 @@ import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.LocationPermissionManager
 import com.youllbecold.trustme.common.domain.units.UnitsManager
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Error.MissingPermission
+import com.youllbecold.trustme.common.ui.model.status.Error.NoInternet
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Loading
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.isError
+import com.youllbecold.trustme.common.ui.model.status.isIdle
+import com.youllbecold.trustme.common.ui.model.status.isLoading
 import com.youllbecold.trustme.recommend.home.ui.model.HomeUiState
 import com.youllbecold.trustme.recommend.home.usecases.AllWeatherWithStatus
 import com.youllbecold.trustme.recommend.home.usecases.FetchAllWeatherUseCase
@@ -38,7 +45,7 @@ class HomeViewModel(
     networkStatusProvider: NetworkStatusProvider,
 ) : ViewModel() {
     private val allWeather: MutableStateFlow<AllWeatherWithStatus> =
-        MutableStateFlow(AllWeatherWithStatus(status = LoadingStatus.Idle))
+        MutableStateFlow(AllWeatherWithStatus(status = Idle))
 
     private val currentUseCelsius: StateFlow<Boolean?> by lazy {
         allWeather
@@ -46,7 +53,7 @@ class HomeViewModel(
             .stateIn(viewModelScope, SharingStarted.Lazily, null)
     }
 
-    private val loadingStatus: LoadingStatus
+    private val status: Status
         get() = allWeather.value.status
 
     /**
@@ -74,12 +81,12 @@ class HomeViewModel(
             permissionManager.hasLocationPermission,
             networkStatusProvider.isConnected,
         ) { hasPermission, hasInternet ->
-            Log.d(TAG, "Permission: $hasPermission, Internet: $hasInternet, Status: $loadingStatus")
+            Log.d(TAG, "Permission: $hasPermission, Internet: $hasInternet, Status: $status")
             when {
-                !hasPermission -> allWeather.update { it.copy(LoadingStatus.MissingPermission) }
-                !hasInternet -> allWeather.update {it.copy(LoadingStatus.NoInternet) }
-                loadingStatus.isError()  // Recovery when we encountered an error
-                        || loadingStatus.isIdle() // First time loading
+                !hasPermission -> allWeather.update { it.copy(MissingPermission) }
+                !hasInternet -> allWeather.update {it.copy(NoInternet) }
+                status.isError()  // Recovery when we encountered an error
+                        || status.isIdle() // First time loading
                             -> updateWeatherAndRecommendations(unitsManager.fetchUnitsCelsius())
             }
         }.launchIn(viewModelScope)
@@ -106,14 +113,14 @@ class HomeViewModel(
     }
 
     private fun updateWeatherAndRecommendations(useCelsiusUnits: Boolean) {
-        Log.d(TAG, "Updating weather with units: $useCelsiusUnits; Status: $loadingStatus")
+        Log.d(TAG, "Updating weather with units: $useCelsiusUnits; Status: $status")
 
-        if (loadingStatus.isLoading()) {
+        if (status.isLoading()) {
             // Refresh already running, return
             return
         }
 
-        allWeather.update { it.copy(status = LoadingStatus.Loading) }
+        allWeather.update { it.copy(status = Loading) }
 
         viewModelScope.launch {
             val weather = fetchAllWeatherUseCase.fetchWeather(useCelsiusUnits)

@@ -5,6 +5,10 @@ import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
+import com.youllbecold.trustme.common.ui.model.status.Error
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.weather.api.WeatherRepository
 import com.youllbecold.weather.api.isSuccessful
 import com.youllbecold.weather.model.WeatherModel
@@ -15,13 +19,13 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * Use case for fetching the weather for a specific time range.
+ * Provider for fetching the weather for a specific time range.
  */
 class RangedWeatherProvider(
     private val weatherRepository: WeatherRepository,
     private val networkStatusProvider: NetworkStatusProvider
 ) {
-    private val dispatchers = Dispatchers.IO
+    private val dispatchers = Dispatchers.Default
 
     /**
      * Obtains the weather for a specific time range. Returns a list of weather data.
@@ -39,9 +43,9 @@ class RangedWeatherProvider(
         timeFrom: LocalTime,
         timeTo: LocalTime,
         useCelsiusUnits: Boolean
-    ): Result<List<WeatherModel>> = withContext(dispatchers) {
+    ): RangedWeatherWithStatus = withContext(dispatchers) {
         if (!networkStatusProvider.hasInternet()) {
-            return@withContext Result.failure(Exception("No internet connection"))
+            return@withContext RangedWeatherWithStatus(status = Error.NoInternet)
         }
 
         val result = weatherRepository.getDatedWeather(
@@ -56,7 +60,7 @@ class RangedWeatherProvider(
                 val data = result.getOrNull()
 
                 if (data.isNullOrEmpty()) {
-                    return@withContext Result.failure(Exception("No weather data"))
+                    return@withContext RangedWeatherWithStatus(status = Error.ApiError)
                 }
 
                 // In case the difference is smaller than hour, expand range as API cannot provide less than hourly.
@@ -64,18 +68,23 @@ class RangedWeatherProvider(
 
                 return@withContext data.filter { weather ->
                     val time = weather.time.millisToDateTime.toLocalTime()
-                    time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second)
-                }.let { Result.success(it) }
+                    time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second) // Sanity check (not mine, the code's)
+                }.let {
+                    RangedWeatherWithStatus(status = Success, weather = it)
+                }
             }
 
-            else -> Result.failure(Exception("Error fetching weather data"))
+            else -> RangedWeatherWithStatus(status = Error.ApiError)
         }
     }
 
-    private fun adjustTimeRange(timeFrom: LocalTime, timeTo: LocalTime): Pair<LocalTime, LocalTime> {
+    private suspend fun adjustTimeRange(
+        timeFrom: LocalTime,
+        timeTo: LocalTime
+    ): Pair<LocalTime, LocalTime> = withContext(dispatchers) { // Calculations
         val duration = Duration.between(timeFrom, timeTo)
 
-        return if (duration.toMinutes() <= MINUTES_IN_HOUR) {
+        if (duration.toMinutes() <= MINUTES_IN_HOUR) {
             val expandedTimeFrom = timeFrom.minusMinutes(MINUTES_IN_HALF_HOUR)  // 30 minutes before
             val expandedTimeTo = timeTo.plusMinutes(MINUTES_IN_HALF_HOUR)      // 30 minutes after
             Pair(expandedTimeFrom, expandedTimeTo)
@@ -87,3 +96,11 @@ class RangedWeatherProvider(
 
 private const val MINUTES_IN_HOUR = 60
 private const val MINUTES_IN_HALF_HOUR: Long = 30
+
+/**
+ * Data class for the ranged weather with status.
+ */
+data class RangedWeatherWithStatus(
+    val status: Status = Idle,
+    val weather: List<WeatherModel> = emptyList()
+)

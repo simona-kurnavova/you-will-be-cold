@@ -1,23 +1,23 @@
 package com.youllbecold.trustme.common.domain.weather
 
 import android.annotation.SuppressLint
-import android.app.Application
 import com.youllbecold.trustme.common.data.location.LocationController
-import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
-import com.youllbecold.trustme.common.data.permissions.PermissionChecker
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.domain.weather.utils.WeatherPrerequisitesChecker
+import com.youllbecold.trustme.common.ui.model.status.Error
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.weather.api.WeatherRepository
+import com.youllbecold.weather.api.isSuccessful
 import com.youllbecold.weather.model.WeatherModel
 import org.koin.core.annotation.Singleton
 
 /**
- * Use case for fetching and refreshing the hourly weather.
+ * Provider for fetching and refreshing the hourly weather.
  */
 @Singleton
 class HourlyWeatherProvider(
-    private val app: Application,
     private val weatherRepository: WeatherRepository,
-    private val networkStatusProvider: NetworkStatusProvider,
     private val locationController: LocationController,
 ) {
 
@@ -27,29 +27,32 @@ class HourlyWeatherProvider(
      * @param useCelsius Whether to use Celsius units.
      * @param days The number of days to fetch the weather for.
      */
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission") // Checked in prerequisites
     suspend fun fetchHourlyWeather(useCelsius: Boolean, days: Int): HourlyWeatherWithStatus {
-        when {
-            !networkStatusProvider.hasInternet() ->
-                return HourlyWeatherWithStatus(status = LoadingStatus.NoInternet)
-            !PermissionChecker.hasLocationPermission(app) ->
-                return HourlyWeatherWithStatus(status = LoadingStatus.MissingPermission)
+        WeatherPrerequisitesChecker.check().let {
+            if (it != Success) {
+                return HourlyWeatherWithStatus(status = it)
+            }
         }
 
         val location = locationController.quickGetLastLocation()
-            ?: return HourlyWeatherWithStatus(status = LoadingStatus.GenericError)
+            ?: return HourlyWeatherWithStatus(status = Error.LocationMissing)
 
         val result = weatherRepository.getHourlyWeather(
             location.latitude,
             location.longitude,
             useCelsius,
             forecastDays = days
-        ).getOrNull()
-
-        return HourlyWeatherWithStatus(
-            weatherModel = result ?: emptyList(),
-            status = if (result != null) LoadingStatus.Success else LoadingStatus.GenericError,
         )
+
+        return when {
+            result.isSuccessful -> HourlyWeatherWithStatus(
+                status = Success,
+                weatherModel = result.getOrNull() ?: emptyList()
+            )
+
+            else -> HourlyWeatherWithStatus(status = Error.ApiError)
+        }
     }
 }
 
@@ -57,6 +60,6 @@ class HourlyWeatherProvider(
  * Data class for the hourly weather with status.
  */
 data class HourlyWeatherWithStatus(
-    val status: LoadingStatus = LoadingStatus.Idle,
+    val status: Status = Idle,
     val weatherModel: List<WeatherModel> = emptyList()
 )

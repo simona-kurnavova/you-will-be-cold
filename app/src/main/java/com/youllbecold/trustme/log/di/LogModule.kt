@@ -8,7 +8,7 @@ import com.youllbecold.trustme.log.edit.usecases.EditLogUseCase
 import com.youllbecold.trustme.log.edit.usecases.FetchLogUseCase
 import com.youllbecold.trustme.log.history.usecases.DeleteLogUseCase
 import com.youllbecold.trustme.log.history.usecases.FetchAllLogsUseCase
-import com.youllbecold.trustme.log.usecases.ObtainLogWeatherParamsUseCase
+import com.youllbecold.trustme.log.domain.LogWeatherProvider
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -23,5 +23,5 @@ internal val logModule = module {
     factoryOf(::FetchLogUseCase)
     factoryOf(::DeleteLogUseCase)
     factoryOf(::FetchAllLogsUseCase)
-    factoryOf(::ObtainLogWeatherParamsUseCase)
+    factoryOf(::LogWeatherProvider)
 }

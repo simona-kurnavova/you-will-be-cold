@@ -3,14 +3,17 @@ package com.youllbecold.trustme.recommend.ranged.usecase
 import android.annotation.SuppressLint
 import android.app.Application
 import com.youllbecold.trustme.common.data.location.LocationController
-import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.common.domain.weather.RangedWeatherProvider
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Error
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.Success
+import com.youllbecold.trustme.common.ui.model.status.isSuccess
 import com.youllbecold.trustme.recommend.ui.mappers.toWeatherCondPersistList
 import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
-import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
+import com.youllbecold.trustme.recommend.domain.RecommendationProvider
 
 /**
  * Use case for recommending clothes for a date.
@@ -18,8 +21,7 @@ import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
 class RecommendForDateUseCase(
     private val app: Application,
     private val locationController: LocationController,
-    private val networkStatusProvider: NetworkStatusProvider,
-    private val recommendationUseCase: RecommendationUseCase,
+    private val recommendationProvider: RecommendationProvider,
     private val weatherUseCase: RangedWeatherProvider,
 ) {
     /**
@@ -30,18 +32,12 @@ class RecommendForDateUseCase(
         datetimeRange: DateTimeState,
         useCelsius: Boolean
     ): RecommendationStatus {
-        when {
-            !networkStatusProvider.hasInternet() ->
-                return RecommendationStatus(status = LoadingStatus.NoInternet)
-            !PermissionChecker.hasLocationPermission(app) ->
-                return RecommendationStatus(status = LoadingStatus.MissingPermission)
+        if (!PermissionChecker.hasLocationPermission(app)) {
+            return RecommendationStatus(status = Error.MissingPermission)
         }
 
         val location = locationController.quickGetLastLocation()
-
-        if (location == null) {
-            return RecommendationStatus(status = LoadingStatus.GenericError)
-        }
+            ?: return RecommendationStatus(status = Error.LocationMissing)
 
         val weather = weatherUseCase.obtainRangedWeather(
             location = location,
@@ -49,31 +45,31 @@ class RecommendForDateUseCase(
             timeFrom = datetimeRange.timeFrom.localTime,
             timeTo = datetimeRange.timeTo.localTime,
             useCelsiusUnits = useCelsius
-        ).getOrNull()
+        )
 
-        if (weather == null) {
-            return RecommendationStatus(status = LoadingStatus.GenericError)
+        if (!weather.status.isSuccess()) {
+            return RecommendationStatus(status = weather.status)
         }
 
-        val recommendation = recommendationUseCase.recommend(weather)
+        val recommendation = recommendationProvider.recommend(weather.weather)
 
-        if (recommendation == null) {
-            return RecommendationStatus(status = LoadingStatus.GenericError)
+        if (!recommendation.status.isSuccess()) {
+            return RecommendationStatus(status = Error.ApiError)
         }
 
         return RecommendationStatus(
             weatherWithRecommendation = WeatherWithRecommendation(
-                weather = weather.toWeatherCondPersistList(),
-                recommendationState = recommendation
+                weather = weather.weather.toWeatherCondPersistList(),
+                recommendationState = recommendation.recommendation
             ),
-            status = LoadingStatus.Idle,
+            status = Success,
             dateTimeState = datetimeRange
         )
     }
  }
 
 data class RecommendationStatus(
-    val status: LoadingStatus = LoadingStatus.Idle,
+    val status: Status = Idle,
     val weatherWithRecommendation: WeatherWithRecommendation? = null,
     val dateTimeState: DateTimeState? = null
 )

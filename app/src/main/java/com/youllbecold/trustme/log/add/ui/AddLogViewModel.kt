@@ -3,8 +3,10 @@ package com.youllbecold.trustme.log.add.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Loading
 import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.log.add.ui.model.AddLogUiState
 import com.youllbecold.trustme.log.add.usecases.AddLogUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,7 @@ import java.time.LocalDateTime
 class AddLogViewModel(
     private val addLogUseCase: AddLogUseCase
 ) : ViewModel() {
-    private val saveState: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
+    private val saveState: MutableStateFlow<Status> = MutableStateFlow(Idle)
     private val logState: MutableStateFlow<LogState> = MutableStateFlow(initialiseState())
 
     /**
@@ -58,7 +60,7 @@ class AddLogViewModel(
     }
 
     private fun saveLogWithWeather(logState: LogState) {
-        saveState.update { LoadingStatus.Loading }
+        saveState.update { Loading }
 
         viewModelScope.launch {
             saveState.update { addLogUseCase.saveLogWithWeather(logState) }

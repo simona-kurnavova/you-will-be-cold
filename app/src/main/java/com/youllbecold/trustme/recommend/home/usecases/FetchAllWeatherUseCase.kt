@@ -5,14 +5,16 @@ import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.domain.weather.CurrentWeatherProvider
 import com.youllbecold.trustme.common.domain.weather.HourlyWeatherProvider
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Error
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.trustme.recommend.home.ui.mappers.toHourlyTemperatures
 import com.youllbecold.trustme.recommend.home.ui.model.Forecast
 import com.youllbecold.trustme.recommend.home.ui.model.HourlyTemperature
 import com.youllbecold.trustme.recommend.home.ui.model.unitsCelsius
 import com.youllbecold.trustme.recommend.ui.mappers.toWeatherCondPersistList
 import com.youllbecold.trustme.recommend.ui.mappers.toWeatherConditions
-import com.youllbecold.trustme.recommend.usecases.RecommendationUseCase
+import com.youllbecold.trustme.recommend.domain.RecommendationProvider
 import com.youllbecold.trustme.recommend.ui.model.WeatherWithRecommendation
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -26,7 +28,7 @@ import java.time.LocalDateTime
 class FetchAllWeatherUseCase(
     private val hourlyWeatherProvider: HourlyWeatherProvider,
     private val currentWeatherProvider: CurrentWeatherProvider,
-    private val recommendUseCase: RecommendationUseCase
+    private val recommendUseCase: RecommendationProvider
 ) {
 
     /**
@@ -35,14 +37,14 @@ class FetchAllWeatherUseCase(
     suspend fun fetchWeather(useCelsius: Boolean): AllWeatherWithStatus =
         withContext(Dispatchers.Default) {
             val current = currentWeatherProvider.fetchCurrentWeather(useCelsius)
-            if (current.status != LoadingStatus.Success) {
+            if (current.status != Success) {
                 Log.e(TAG, "Failed to fetch current weather: ${current.status}")
                 return@withContext AllWeatherWithStatus(status = current.status)
             }
 
             val hourly =
                 hourlyWeatherProvider.fetchHourlyWeather(useCelsius, DAYS_FOR_HOURLY_WEATHER)
-            if (hourly.status != LoadingStatus.Success) {
+            if (hourly.status != Success) {
                 Log.e(TAG, "Failed to fetch hourly weather: ${hourly.status}")
                 return@withContext AllWeatherWithStatus(status = hourly.status)
             }
@@ -56,25 +58,25 @@ class FetchAllWeatherUseCase(
                 .filter { it.time.millisToDateTime.toLocalTime() >= now.toLocalTime() }
 
             val currentWeather = current.weatherModel
-                ?: return@withContext AllWeatherWithStatus(status = LoadingStatus.GenericError)
+                ?: return@withContext AllWeatherWithStatus(status = Error.ApiError)
 
             val forecast = Forecast(
                 current = WeatherWithRecommendation(
                     persistentListOf(currentWeather.toWeatherConditions()),
-                    recommendUseCase.recommend(listOf(currentWeather))
+                    recommendUseCase.recommend(listOf(currentWeather)).recommendation
                 ),
                 today = WeatherWithRecommendation(
                     todayWeather.toWeatherCondPersistList(),
-                    recommendUseCase.recommend(todayWeather)
+                    recommendUseCase.recommend(todayWeather).recommendation
                 ),
                 tomorrow = WeatherWithRecommendation(
                     tomorrowWeather.toWeatherCondPersistList(),
-                    recommendUseCase.recommend(tomorrowWeather)
+                    recommendUseCase.recommend(tomorrowWeather).recommendation
                 )
             )
 
             return@withContext AllWeatherWithStatus(
-                status = LoadingStatus.Success,
+                status = Success,
                 forecast = forecast,
                 hourlyTemperatures = forecast.toHourlyTemperatures(),
                 location = current.location,
@@ -86,7 +88,7 @@ class FetchAllWeatherUseCase(
 private const val DAYS_FOR_HOURLY_WEATHER = 2
 
 data class AllWeatherWithStatus(
-    val status: LoadingStatus,
+    val status: Status,
     val forecast: Forecast? = null,
     val hourlyTemperatures: PersistentList<HourlyTemperature> = persistentListOf(),
     val location: GeoLocation? = null,

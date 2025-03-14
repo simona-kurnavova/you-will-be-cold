@@ -1,7 +1,10 @@
 package com.youllbecold.trustme.recommend.home.ui.model
 
 import androidx.compose.runtime.Stable
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Idle
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.isError
+import com.youllbecold.trustme.common.ui.model.status.isLoading
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -14,7 +17,7 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Stable
 data class HomeUiState(
-    val status: LoadingStatus = LoadingStatus.Idle,
+    val status: Status = Idle,
     val city: String? = null,
     val forecast: Forecast? = null,
     val hourlyTemperature: PersistentList<HourlyTemperature> = persistentListOf()

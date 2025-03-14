@@ -2,8 +2,9 @@ package com.youllbecold.trustme.log.edit.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.youllbecold.trustme.common.ui.model.status.Idle
 import com.youllbecold.trustme.log.ui.model.LogState
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.log.edit.ui.model.EditLogUiState
 import com.youllbecold.trustme.log.edit.usecases.EditLogUseCase
 import com.youllbecold.trustme.log.edit.usecases.FetchLogUseCase
@@ -26,7 +27,7 @@ class EditLogViewModel(
 ) : ViewModel() {
     private var oldLogState = AtomicReference<LogState?>(null)
 
-    private val editState: MutableStateFlow<LoadingStatus> = MutableStateFlow(LoadingStatus.Idle)
+    private val editState: MutableStateFlow<Status> = MutableStateFlow(Idle)
     private val logState: MutableStateFlow<LogState?> = MutableStateFlow(null)
 
     val state: StateFlow<EditLogUiState> = combine(

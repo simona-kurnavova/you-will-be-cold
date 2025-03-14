@@ -32,14 +32,16 @@ class DailyNotificationsManager(
     val allowRecommendNotification by dataStorePreferences::allowRecommendNotification
 
     init {
-        // In case we lost permission, we should disable daily notifications
-        if (!PermissionChecker.hasNotificationPermission(app)) {
-            setDailyNotification(false)
-            setRecommendNotification(false)
-        }
+        coroutineScope.launch {
+            // In case we lost permission, we should disable daily notifications
+            if (!PermissionChecker.hasNotificationPermission(app)) {
+                setDailyNotification(false)
+                setRecommendNotification(false)
+            }
 
-        if (!PermissionChecker.hasBgLocationPermission(app)) {
-            setRecommendNotification(false)
+            if (!PermissionChecker.hasBgLocationPermission(app)) {
+                setRecommendNotification(false)
+            }
         }
     }
 

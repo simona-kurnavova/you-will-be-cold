@@ -13,6 +13,9 @@ import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
+import com.youllbecold.trustme.common.ui.model.status.isError
+import com.youllbecold.trustme.common.ui.model.status.isLoading
+import com.youllbecold.trustme.common.ui.model.status.isSuccess
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.add.ui.model.AddLogUiState
 import com.youllbecold.trustme.log.ui.components.AddLogForm

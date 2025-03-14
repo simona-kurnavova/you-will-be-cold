@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Application
 import com.youllbecold.logdatabase.api.LogRepository
 import com.youllbecold.trustme.common.data.permissions.PermissionChecker
+import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.mappers.toLogData
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
-import com.youllbecold.trustme.log.usecases.ObtainLogWeatherParamsUseCase
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.Success
+import com.youllbecold.trustme.log.domain.LogWeatherProvider
 
 /**
  * Use case to edit a log with weather data.
@@ -15,7 +17,7 @@ import com.youllbecold.trustme.log.usecases.ObtainLogWeatherParamsUseCase
 class EditLogUseCase(
     private val app: Application,
     private val logRepository: LogRepository,
-    private val obtainLogWeatherParamsUseCase: ObtainLogWeatherParamsUseCase,
+    private val logWeatherProvider: LogWeatherProvider,
 ) {
     /**
      * Updates a log with the weather data.
@@ -25,10 +27,9 @@ class EditLogUseCase(
      * @param newLog The new log state.
      */
     @SuppressLint("MissingPermission") // It is checked
-    suspend fun updateLog(oldLog: LogState, newLog: LogState): LoadingStatus {
-        when {
-            oldLog == newLog -> return LoadingStatus.Success
-            !PermissionChecker.hasLocationPermission(app) -> return LoadingStatus.MissingPermission
+    suspend fun updateLog(oldLog: LogState, newLog: LogState): Status {
+        if (oldLog == newLog) {
+            return Success // Nothing to update
         }
 
         var log = newLog
@@ -37,13 +38,17 @@ class EditLogUseCase(
             oldLog.timeFrom != newLog.timeFrom ||
             oldLog.timeTo != newLog.timeTo
         ) {
-            val weather = obtainLogWeatherParamsUseCase.obtainWeather(newLog.dateTimeState)
-                ?: return LoadingStatus.GenericError
+            val weather = logWeatherProvider.obtainWeather(newLog.dateTimeState)
 
-            log = log.copy(weather = weather)
+            when {
+                weather.status != Success -> return weather.status
+                weather.weatherParams == null -> return Error.ApiError
+            }
+
+            log = log.copy(weather = weather.weatherParams)
         }
 
         logRepository.updateLog(log.toLogData())
-        return LoadingStatus.Success
+        return Success
     }
 }

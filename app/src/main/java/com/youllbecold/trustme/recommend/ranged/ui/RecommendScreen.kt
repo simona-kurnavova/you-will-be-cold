@@ -32,7 +32,10 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.mappers.getAllItems
 import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
-import com.youllbecold.trustme.common.ui.model.status.LoadingStatus
+import com.youllbecold.trustme.common.ui.model.status.Status
+import com.youllbecold.trustme.common.ui.model.status.isError
+import com.youllbecold.trustme.common.ui.model.status.isLoading
+import com.youllbecold.trustme.common.ui.model.status.isSuccess
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.ranged.ui.components.RecommendationCard
 import com.youllbecold.trustme.recommend.ranged.ui.model.RecommendUiState
@@ -117,7 +120,7 @@ private fun DateTimePickerSection(
 
 @Composable
 private fun RecommendContentSection(
-    status: LoadingStatus,
+    status: Status,
     weatherWithRecommendation: WeatherWithRecommendation?,
     modifier: Modifier = Modifier
 ) {
@@ -137,7 +140,7 @@ private fun RecommendContentSection(
                 textAttr = defaultMediumErrorTextAttr()
             )
 
-            else -> FadingItem(visible = status.isIdle()) {
+            else -> FadingItem(visible = status.isSuccess()) {
                 weatherWithRecommendation?.let { weatherWithRec ->
                     weatherWithRec.recommendationState?.let {
                         RecommendationCard(
