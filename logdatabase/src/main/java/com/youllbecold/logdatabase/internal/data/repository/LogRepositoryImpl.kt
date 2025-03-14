@@ -48,21 +48,21 @@ internal class LogRepositoryImpl(
                 ?.toLogData()
         }
 
-    override suspend fun addLog(log: LogData) {
+    override suspend fun addLog(log: LogData): Boolean =
         withContext(dispatchers) {
-            logDao.insert(log.toLogEntity())
+            val result = logDao.insert(log.toLogEntity())
+            return@withContext result > 0
         }
-    }
 
-    override suspend fun updateLog(log: LogData) {
+    override suspend fun updateLog(log: LogData): Boolean =
         withContext(dispatchers) {
-            logDao.update(log.toLogEntity())
+            val result = logDao.update(log.toLogEntity())
+            return@withContext result > 0
         }
-    }
 
-    override suspend fun deleteLog(log: LogData) {
+    override suspend fun deleteLog(log: LogData): Boolean =
         withContext(dispatchers) {
-            logDao.delete(log.toLogEntity())
+            val result = logDao.delete(log.toLogEntity())
+            return@withContext result > 0
         }
-    }
 }

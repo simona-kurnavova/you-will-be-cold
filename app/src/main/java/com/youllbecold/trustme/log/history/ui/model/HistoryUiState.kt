@@ -11,7 +11,14 @@ import kotlinx.coroutines.flow.flow
  */
 @Stable
 data class HistoryUiState(
-   val logs: Flow<PagingData<LogState>> = flow {
-       emit(PagingData.empty<LogState>())
-   }
+    val logs: Flow<PagingData<LogState>> = flow {
+        emit(PagingData.empty<LogState>())
+    },
+    val deleteStatus: DeleteStatus = DeleteStatus.Idle
 )
+
+enum class DeleteStatus {
+    Idle,
+    Success,
+    Error
+}

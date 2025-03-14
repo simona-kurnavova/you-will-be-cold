@@ -29,13 +29,13 @@ internal interface LogDao {
     fun getById(id: Int): Flow<LogEntity?>
 
     @Upsert
-    fun insert(logEntity: LogEntity)
+    fun insert(logEntity: LogEntity): Long
 
     @Update
-    fun update(logEntity: LogEntity)
+    fun update(logEntity: LogEntity): Int
 
     @Delete
-    fun delete(logEntity: LogEntity)
+    fun delete(logEntity: LogEntity): Int
 }
 
 private const val DEFAULT_LIMIT = 1000

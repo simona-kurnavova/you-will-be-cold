@@ -32,6 +32,7 @@ import com.youllbecold.trustme.common.ui.components.utils.TimeState
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.history.ui.components.LogCard
+import com.youllbecold.trustme.log.history.ui.model.DeleteStatus
 import com.youllbecold.trustme.log.history.ui.model.HistoryUiState
 import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.koinViewModel
@@ -68,6 +69,26 @@ private fun HistoryScreen(
     onAction: (HistoryAction) -> Unit
 ) {
     val logs = state.value.logs.collectAsLazyPagingItems()
+
+    val context = LocalContext.current
+
+    when(state.value.deleteStatus) {
+        DeleteStatus.Success -> {
+            Toast.makeText(
+                context,
+                stringResource(R.string.message_log_deleted),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        DeleteStatus.Error -> {
+            Toast.makeText(
+                context,
+                stringResource(R.string.message_error_deleting_log),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        else -> Unit
+    }
 
     LazyColumn(
         Modifier

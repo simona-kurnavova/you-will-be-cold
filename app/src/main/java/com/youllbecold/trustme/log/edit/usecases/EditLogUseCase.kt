@@ -48,7 +48,7 @@ class EditLogUseCase(
             log = log.copy(weather = weather.weatherParams)
         }
 
-        logRepository.updateLog(log.toLogData())
-        return Success
+        val successful = logRepository.updateLog(log.toLogData())
+        return if (successful) Success else Error.ApiError
     }
 }

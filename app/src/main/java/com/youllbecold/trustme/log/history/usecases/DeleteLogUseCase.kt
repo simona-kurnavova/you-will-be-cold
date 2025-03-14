@@ -14,7 +14,6 @@ class DeleteLogUseCase(
     /**
      * Deletes a log from the database.
      */
-    suspend fun deleteLog(log: LogState) {
+    suspend fun deleteLog(log: LogState): Boolean =
         logRepository.deleteLog(log.toLogData())
-    }
 }

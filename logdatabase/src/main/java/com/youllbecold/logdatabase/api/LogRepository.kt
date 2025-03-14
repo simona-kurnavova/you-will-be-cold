@@ -34,21 +34,21 @@ interface LogRepository {
      *
      * @param log The log to add.
      */
-    suspend fun addLog(log: LogData)
+    suspend fun addLog(log: LogData): Boolean
 
     /**
      * Updates a log.
      *
      * @param log The log to update.
      */
-    suspend fun updateLog(log: LogData)
+    suspend fun updateLog(log: LogData): Boolean
 
     /**
      * Deletes a log.
      *
      * @param log The log to delete.
      */
-    suspend fun deleteLog(log: LogData)
+    suspend fun deleteLog(log: LogData): Boolean
 }
 
 private const val PAGER_PAGE_SIZE: Int = 20

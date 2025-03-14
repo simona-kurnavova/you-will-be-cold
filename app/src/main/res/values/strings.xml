@@ -129,6 +129,10 @@
     <string name="generic_error_message">Ooops, something gone aloof.</string>
     <!-- Toast message to inform user that log was saved -->
     <string name="toast_saved_log">Your log was saved</string>
+    <!-- Toast message to inform user that log was deleted -->
+    <string name="message_log_deleted">Log successfully deleted</string>
+    <!-- Toast message to inform user that log was not deleted - some error happened. -->
+    <string name="message_error_deleting_log">There was an unexpected error during deleting log, ooops.</string>
 
     <!-- Generic Error message -->
     <string name="message_error_editing_log">There was an unexpected error</string>
@@ -312,7 +316,9 @@
     <string name="dialog_dismiss">Dismiss</string>
     <!-- Confirming button. -->
     <string name="dialog_ok">OK</string>
+    <!-- Placeholder for unknown values. -->
+    <string name="unknown_label">Unknown</string>
+
     <string name="home_section_current_weather">Current weather</string>
     <string name="home_section_recommendations">Recommendations</string>
-    <string name="unknown_label">Unknown</string>
 </resources>

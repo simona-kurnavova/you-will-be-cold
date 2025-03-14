@@ -30,10 +30,10 @@ class AddLogUseCase(
             weather.weatherParams == null -> return Error.ApiError
         }
 
-        logRepository.addLog(
+        val successful = logRepository.addLog(
             logState.copy(weather = weather.weatherParams).toLogData()
         )
 
-        return Success
+        return if (successful) Success else Error.ApiError
     }
 }
