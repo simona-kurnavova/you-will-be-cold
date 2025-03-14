@@ -14,7 +14,7 @@ interface WeatherRepository {
         latitude: Double,
         longitude: Double,
         useCelsius: Boolean,
-    ): Result<WeatherModel>
+    ): WeatherResult<WeatherModel>
 
     /**
      * Get hourly weather for specified number of days.
@@ -25,7 +25,7 @@ interface WeatherRepository {
         longitude: Double,
         useCelsius: Boolean,
         forecastDays: Int = 1
-    ): Result<List<WeatherModel>>
+    ): WeatherResult<List<WeatherModel>>
 
     /**
      * Get forecast weather for a specific date.
@@ -35,8 +35,6 @@ interface WeatherRepository {
         longitude: Double,
         useCelsius: Boolean,
         date: LocalDate,
-    ): Result<List<WeatherModel>>
+    ): WeatherResult<List<WeatherModel>>
 }
 
-val <T> Result<T>.isSuccessful: Boolean
-    get() = this.isSuccess && this.getOrNull() != null

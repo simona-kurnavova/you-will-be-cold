@@ -5,12 +5,13 @@ import androidx.annotation.RequiresPermission
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.network.NetworkStatusProvider
 import com.youllbecold.trustme.common.ui.components.utils.millisToDateTime
+import com.youllbecold.trustme.common.ui.mappers.toError
 import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.common.ui.model.status.Idle
 import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.api.isSuccessful
+import com.youllbecold.weather.api.WeatherResult
 import com.youllbecold.weather.model.WeatherModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +20,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * Provider for fetching the weather for a specific time range.
+ * Provider for fetching the weather for a specific time range and mapping to UI-ready Status.
  */
 class RangedWeatherProvider(
     private val weatherRepository: WeatherRepository,
@@ -55,18 +56,12 @@ class RangedWeatherProvider(
             date = date,
         )
 
-        return@withContext when {
-            result.isSuccessful -> {
-                val data = result.getOrNull()
-
-                if (data.isNullOrEmpty()) {
-                    return@withContext RangedWeatherWithStatus(status = Error.ApiError)
-                }
-
+        return@withContext when(result) {
+            is WeatherResult.Success -> {
                 // In case the difference is smaller than hour, expand range as API cannot provide less than hourly.
                 val adjustedTimeRange = adjustTimeRange(timeFrom, timeTo)
 
-                return@withContext data.filter { weather ->
+                return@withContext result.data.filter { weather ->
                     val time = weather.time.millisToDateTime.toLocalTime()
                     time.isAfter(adjustedTimeRange.first) && time.isBefore(adjustedTimeRange.second) // Sanity check (not mine, the code's)
                 }.let {
@@ -74,7 +69,8 @@ class RangedWeatherProvider(
                 }
             }
 
-            else -> RangedWeatherWithStatus(status = Error.ApiError)
+            is WeatherResult.Error ->
+                RangedWeatherWithStatus(status = result.toError())
         }
     }
 

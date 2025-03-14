@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import com.youllbecold.trustme.common.data.location.GeoLocation
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.domain.weather.utils.WeatherPrerequisitesChecker
+import com.youllbecold.trustme.common.ui.mappers.toError
 import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.common.ui.model.status.Idle
 import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.api.isSuccessful
+import com.youllbecold.weather.api.WeatherResult
 import com.youllbecold.weather.model.WeatherModel
 
 /**
- * Provider for fetching and refreshing the current weather.
+ * Provider for fetching and refreshing the current weather and mapping to UI-ready Status.
  */
 class CurrentWeatherProvider(
     private val weatherRepository: WeatherRepository,
@@ -41,13 +42,14 @@ class CurrentWeatherProvider(
             useCelsius
         )
 
-        return when {
-            result.isSuccessful -> WeatherWithStatus(
+        return when(result) {
+            is WeatherResult.Success -> WeatherWithStatus(
                 status = Success,
-                weatherModel = result.getOrNull(),
+                weatherModel = result.data,
                 location = location
             )
-            else -> WeatherWithStatus(status = Error.ApiError)
+            is WeatherResult.Error ->
+                WeatherWithStatus(status =  result.toError())
         }
     }
 }

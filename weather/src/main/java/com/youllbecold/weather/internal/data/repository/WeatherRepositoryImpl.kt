@@ -1,9 +1,11 @@
 package com.youllbecold.weather.internal.data.repository
 
 import com.youllbecold.weather.api.WeatherRepository
+import com.youllbecold.weather.api.WeatherResult
 import com.youllbecold.weather.internal.data.dao.WeatherDao
 import com.youllbecold.weather.internal.data.mappers.toWeather
 import com.youllbecold.weather.internal.data.mappers.toWeatherList
+import com.youllbecold.weather.internal.data.mappers.toWeatherResult
 import com.youllbecold.weather.internal.data.request.TemperatureUnitRequest
 import com.youllbecold.weather.model.WeatherModel
 import retrofit2.Response
@@ -21,13 +23,13 @@ internal class WeatherRepositoryImpl(
     /**
      * Get current weather.
      */
-    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): Result<WeatherModel> =
+    override suspend fun getCurrentWeather(latitude: Double, longitude: Double, useCelsius: Boolean): WeatherResult<WeatherModel> =
         processCall(
             call = { weatherDao.getCurrentWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius)) },
             processBody = { responseBody -> responseBody.toWeather() }
         )
 
-    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): Result<List<WeatherModel>> =
+    override suspend fun getHourlyWeather(latitude: Double, longitude: Double, useCelsius: Boolean, forecastDays: Int): WeatherResult<List<WeatherModel>> =
         processCall(
             call = { weatherDao.getHourlyWeather(latitude, longitude, temperatureUnit = getUnits(useCelsius), forecastDays = forecastDays) },
             processBody = { responseBody -> responseBody.toWeatherList() }
@@ -38,7 +40,7 @@ internal class WeatherRepositoryImpl(
         longitude: Double,
         useCelsius: Boolean,
         date: LocalDate,
-    ): Result<List<WeatherModel>> {
+    ): WeatherResult<List<WeatherModel>> {
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
         return processCall(
@@ -56,28 +58,13 @@ internal class WeatherRepositoryImpl(
     private suspend fun <R, T> processCall(
         call: suspend () -> Response<R>,
         processBody: (R) -> T,
-    ): Result<T> = try {
-        call().processResponse(processBody)
+    ): WeatherResult<T> = try {
+        val result = call()
+        result.toWeatherResult(processBody)
     } catch (_: IOException) { // Network issues
-        Result.failure(Exception("No internet connection. Please try again later."))
+        WeatherResult.Error.NoInternet
     } catch (e: Exception) {
-        Result.failure(Exception("Unknown exception: ${e.message}"))
-    }
-
-    private fun <R, T> Response<R>.processResponse(
-        processBody: (R) -> T
-    ): Result<T> = if (isSuccessful) {
-        val body = body()
-
-        if (body == null) {
-            Result.failure(Exception("Weather data is null"))
-        } else {
-            Result.success(processBody(body))
-        }
-    } else {
-        Result.failure(
-            Exception("Error while fetching, code: ${code()}, message: ${message()}")
-        )
+        WeatherResult.Error.UnknownError
     }
 
     private fun getUnits(useCelsius: Boolean): String =

@@ -3,17 +3,18 @@ package com.youllbecold.trustme.common.domain.weather
 import android.annotation.SuppressLint
 import com.youllbecold.trustme.common.data.location.LocationController
 import com.youllbecold.trustme.common.domain.weather.utils.WeatherPrerequisitesChecker
+import com.youllbecold.trustme.common.ui.mappers.toError
 import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.common.ui.model.status.Idle
 import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.model.status.Success
 import com.youllbecold.weather.api.WeatherRepository
-import com.youllbecold.weather.api.isSuccessful
+import com.youllbecold.weather.api.WeatherResult
 import com.youllbecold.weather.model.WeatherModel
 import org.koin.core.annotation.Singleton
 
 /**
- * Provider for fetching and refreshing the hourly weather.
+ * Provider for fetching and refreshing the hourly weather and mapping to UI-ready Status.
  */
 @Singleton
 class HourlyWeatherProvider(
@@ -45,13 +46,13 @@ class HourlyWeatherProvider(
             forecastDays = days
         )
 
-        return when {
-            result.isSuccessful -> HourlyWeatherWithStatus(
+        return when(result) {
+            is WeatherResult.Success -> HourlyWeatherWithStatus(
                 status = Success,
-                weatherModel = result.getOrNull() ?: emptyList()
+                weatherModel = result.data
             )
-
-            else -> HourlyWeatherWithStatus(status = Error.ApiError)
+            is WeatherResult.Error ->
+                HourlyWeatherWithStatus(status =  result.toError())
         }
     }
 }
