@@ -37,4 +37,3 @@ interface WeatherRepository {
         date: LocalDate,
     ): WeatherResult<List<WeatherModel>>
 }
-

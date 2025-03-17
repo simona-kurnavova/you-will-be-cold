@@ -13,7 +13,6 @@ import org.koin.core.component.get
  * Utility class for checking the prerequisites for a use case.
  */
 object WeatherPrerequisitesChecker : KoinComponent {
-
     private val app by lazy { get<Application>() }
     private val networkStatusProvider by lazy { get<NetworkStatusProvider>() }
 

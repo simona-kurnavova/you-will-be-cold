@@ -26,7 +26,6 @@ import com.youllbecold.trustme.common.ui.model.clothes.ClothesCategory
 import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.common.ui.model.status.Error.MissingPermission
 import com.youllbecold.trustme.common.ui.model.status.Loading
-import com.youllbecold.trustme.common.ui.model.status.Status
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCard
 import com.youllbecold.trustme.recommend.home.ui.components.ErrorCardType

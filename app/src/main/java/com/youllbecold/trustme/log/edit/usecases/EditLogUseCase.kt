@@ -3,7 +3,6 @@ package com.youllbecold.trustme.log.edit.usecases
 import android.annotation.SuppressLint
 import android.app.Application
 import com.youllbecold.logdatabase.api.LogRepository
-import com.youllbecold.trustme.common.data.permissions.PermissionChecker
 import com.youllbecold.trustme.common.ui.model.status.Error
 import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.log.ui.mappers.toLogData

@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -20,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.youllbecold.trustme.R
 import com.youllbecold.trustme.common.ui.attributes.centered
@@ -29,11 +28,10 @@ import com.youllbecold.trustme.common.ui.components.themed.ThemedText
 import com.youllbecold.trustme.common.ui.components.utils.DateState
 import com.youllbecold.trustme.common.ui.components.utils.DateTimeState
 import com.youllbecold.trustme.common.ui.components.utils.TimeState
-import com.youllbecold.trustme.log.ui.model.LogState
 import com.youllbecold.trustme.common.ui.theme.YoullBeColdTheme
 import com.youllbecold.trustme.log.history.ui.components.LogCard
 import com.youllbecold.trustme.log.history.ui.model.DeleteStatus
-import com.youllbecold.trustme.log.history.ui.model.HistoryUiState
+import com.youllbecold.trustme.log.ui.model.LogState
 import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.koinViewModel
 
@@ -44,8 +42,11 @@ fun HistoryScreenRoot(
 ) {
     val context = LocalContext.current
 
+    val state = viewModel.uiState.collectAsStateWithLifecycle()
+
     HistoryScreen(
-        state = viewModel.uiState.collectAsStateWithLifecycle(),
+        logs = state.value.logs.collectAsLazyPagingItems(),
+        deleteStatus = state.value.deleteStatus,
         onAction = { action ->
             when(action) {
                 is HistoryAction.Edit -> action.state.id?.let { navigateToEdit(it) }
@@ -65,14 +66,13 @@ fun HistoryScreenRoot(
  */
 @Composable
 private fun HistoryScreen(
-    state: State<HistoryUiState>,
+    logs: LazyPagingItems<LogState>,
+    deleteStatus: DeleteStatus,
     onAction: (HistoryAction) -> Unit
 ) {
-    val logs = state.value.logs.collectAsLazyPagingItems()
-
     val context = LocalContext.current
 
-    when(state.value.deleteStatus) {
+    when(deleteStatus) {
         DeleteStatus.Success -> {
             Toast.makeText(
                 context,
@@ -90,11 +90,23 @@ private fun HistoryScreen(
         else -> Unit
     }
 
-    LazyColumn(
-        Modifier
+    HistoryScreenContent(
+        logs = logs,
+        onAction = onAction,
+        modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = HORIZONTAL_SCREEN_PADDING.dp)
-    ) {
+    )
+
+}
+
+@Composable
+private fun HistoryScreenContent(
+    logs: LazyPagingItems<LogState>,
+    onAction: (HistoryAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
         item { Spacer(modifier = Modifier.height(SPACE_ON_TOP.dp)) }
 
         items(logs.itemCount) { index ->
@@ -169,14 +181,11 @@ private fun HistoryScreenPreview() {
         )
         val logs = flow {
             emit(PagingData.from(listOf(log, log, log)))
-        }
+        }.collectAsLazyPagingItems()
 
         HistoryScreen(
-            state = mutableStateOf(
-                HistoryUiState(
-                    logs = logs
-                )
-            ),
+            logs = logs,
+            deleteStatus = DeleteStatus.Idle,
             onAction = {}
         )
     }
@@ -188,11 +197,8 @@ private fun HistoryScreenPreview() {
 private fun HistoryScreenEmptyPreview() {
     YoullBeColdTheme {
         HistoryScreen(
-            mutableStateOf(
-                HistoryUiState(
-                    logs = flow { emit(PagingData.empty()) }
-                )
-            ),
+            logs = flow { emit(PagingData.empty<LogState>()) }.collectAsLazyPagingItems(),
+            deleteStatus = DeleteStatus.Idle,
             onAction = {}
         )
     }
